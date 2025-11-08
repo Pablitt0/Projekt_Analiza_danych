@@ -1,0 +1,16 @@
+---
+title: "Analiza danych - projekt"
+author: "Paweł Cyrocki; Damian Skinder; Patryk Siuda"
+date: "`r Sys.Date()`"
+output:
+  rmdformats::robobook:
+    highlight: kate
+---
+
+```{r setup, include=FALSE}
+## Global options
+knitr::opts_chunk$set(cache = TRUE)
+library(tidyverse)
+library(zip)
+dane <- read.csv("dane/Car_sale_ads.csv.zip/Car_sale_ads.csv")
+```
