@@ -2,10 +2,12 @@
 title: "Analiza danych - projekt"
 author: "Paweł Cyrocki; Damian Skinder; Patryk Siuda"
 date: "`r Sys.Date()`"
-output:
-  rmdformats::robobook:
-    highlight: kate
+output: rmdformats::readthedown
 ---
+
+
+## Wstęp
+
 
 ```{r setup, include=FALSE}
 ## Global options
@@ -15,3 +17,55 @@ library(zip)
 unzip("dane/Car_sale_ads.csv.zip", exdir = "dane")
 dane <- read.csv("dane/Car_sale_ads.csv")
 ```
+
+## Opis zmiennych
+
+`Index` - unikalny identyfikator ogłoszenia
+
+`Price` - cena samochodu
+
+`Currency` - waluta, w której podana jest cena
+
+`Condition` - stan samochodu (nowy/używany)
+
+`Vehicle_brand` - marka samochodu
+
+`Vehicle_model` - model samochodu
+
+`Vehicle_version` - wersja samochodu
+
+`Vehicle__generation` - generacja samochodu
+
+`Production_year` - rok produkcji samochodu
+
+`Mileage__km` - przebieg samochodu w kilometrach
+
+`Power_HP` - moc samochodu w koniach mechanicznych
+
+`Displacement__cm3` - pojemność silnika w centymetrach sześciennych
+
+`Fuel_type` - rodzaj paliwa
+
+`CO2_emission` - emisja CO2 w gramach na kilometr
+
+`Drive` - typ napędu
+
+`Transmission` - rodzaj skrzyni biegów 
+
+`Type` - typ nadwozia
+
+`Doors_nuber1` - liczba drzwi
+
+`Color` - kolor samochodu
+
+`Orgin_country` - kraj pochodzenia
+
+`First_owner` - czy właściciel jest pierwszym właścicielem
+
+`First_registration_date` - data pierwszej rejestracji
+
+`Offer_publication_date` - data publikacji ogłoszenia
+
+`Offer_location` - lokalizacja oferty
+
+`Features` - cechy dodatkowe samochodu
