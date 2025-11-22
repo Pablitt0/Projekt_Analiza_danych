@@ -69,3 +69,138 @@ dane <- read.csv("dane/Car_sale_ads.csv")
 `Offer_location` - lokalizacja oferty
 
 `Features` - cechy dodatkowe samochodu
+
+# 2. Porządkowanie danych
+
+# 2.1. Braki danych
+Sprawdzenie braków w danych
+```{r}
+library(VIM)
+library( naniar )
+# Procent braków w każdej zmiennej
+procent <- prop_complete_var(dane)
+procent
+VIM::aggr(dane, numbers = TRUE, sortVars = TRUE, 
+          labels = names(dane), cex.axis = .7, gap = 3, 
+          ylab = c("Procent braków w zmiennych", "Histogram braków"))
+```
+```{r}
+# Usunięcie zmiennych z dużą ilością braków
+dane <- dane %>%
+  select(-c(CO2_emissions))
+```
+Sprawdzenie braków po usunięciu zmiennych
+```{r}
+library(VIM)
+library( naniar )
+# Procent braków w każdej zmiennej
+procent <- prop_complete_var(dane)
+procent
+VIM::aggr(dane, numbers = TRUE, sortVars = TRUE, 
+          labels = names(dane), cex.axis = .7, gap = 3, 
+          ylab = c("Procent braków w zmiennych", "Histogram braków"))
+```
+korelacja między zmiennymi
+```{r}
+library(ggplot2)
+ggplot(data = dane) +
+  geom_miss_point(aes(x = Displacement_cm3, y = Power_HP), size = 2, alpha = 0.5) +
+  labs(title = "Braki danych w Displacement_cm3 i Power_HP",
+       x = "Displacement_cm3",
+       y = "Power_HP") +
+  theme_minimal()
+```
+
+
+Wypełnienie braków w zmiennych numerycznych (proponuje model liniowy między tymi zmiennymi )
+```{r}
+library(mice)
+# Wybór zmiennych do imputacji
+dane_impute <- dane %>%
+  select(Power_HP, Displacement_cm3)
+# Imputacja braków za pomocą metody MICE
+imputed_data <- mice(dane_impute, m = 5, method = 'pmm', maxit = 5, seed = 123)
+# Uzupełnienie oryginalnych danych
+dane$Power_HP <- complete(imputed_data)$Power_HP
+dane$Displacement_cm3 <- complete(imputed_data)$Displacement_cm3
+```
+Sprawdzenie braków po imputacji
+```{r}
+library(VIM)
+library( naniar )
+# Procent braków w każdej zmiennej
+procent <- prop_complete_var(dane)
+procent
+VIM::aggr(dane, numbers = TRUE, sortVars = TRUE, 
+          labels = names(dane), cex.axis = .7, gap = 3, 
+          ylab = c("Procent braków w zmiennych", "Histogram braków"))
+```
+zobaczenie korelacji między zmiennymi po imputacji
+```{r}
+library(ggplot2)
+ggplot(data = dane) +
+  geom_miss_point(aes(x = Displacement_cm3, y = Power_HP), size = 2, alpha = 0.5) +
+  labs(title = "Braki danych w Displacement_cm3 i Power_HP",
+       x = "Displacement_cm3",
+       y = "Power_HP") +
+  theme_minimal()
+```
+użycie mice dla zmiuennej `Mileage_km`
+```{r}
+library(mice)
+# Wybór zmiennych do imputacji
+dane_impute <- dane %>%
+  select(Mileage_km,Production_year,Power_HP)
+# Imputacja braków za pomocą metody MICE
+imputed_data <- mice(dane_impute, m = 5, method = 'pmm', maxit = 5, seed = 123)
+# Uzupełnienie oryginalnych danych
+dane$Mileage_km <- complete(imputed_data)$Mileage_km
+```
+uzupełnienie liczby drzwi medianą
+```{r}
+dane$Doors_number[is.na(dane$Doors_number)] <- median(dane$Doors_number, na.rm = TRUE)
+```
+Sprawdzenie braków po imputacji
+```{r}
+library(VIM)
+library( naniar )
+# Procent braków w każdej zmiennej
+procent <- prop_complete_var(dane)
+procent
+VIM::aggr(dane, numbers = TRUE, sortVars = TRUE, 
+          labels = names(dane), cex.axis = .7, gap = 3, 
+          ylab = c("Procent braków w zmiennych", "Histogram braków"))
+```
+Koniec uzupełniania braków danych, można przejść do dalszych kroków
+## 2.2. Walidacja danych
+Ustalenie reguł walidacji dla zmiennych numerycznych i kategorycznych
+
+`Price` - powinna być większa od 0
+itp reguły
+
+error locate, walidate - pakiety do wykorzystania
+
+raport4 tam jest zrobione błędy walidacji
+
+Następnie przeprowadzenie walidacji danych zgodnie z ustalonymi regułami
+
+np zamienić na braki lub wyliczyć
+
+```{r}
+library(validate)
+rules <- validator(
+  Price > 0,
+  Production_year >= 1886 & Production_year <= as.numeric(format(Sys.Date(), "%Y")),
+  Mileage_km >= 0,
+  Power_HP > 1,
+  Displacement_cm3 > 0,
+  Doors_number %in% c(1:6)
+)
+```
+
+```{r}
+cf <- confront(dane, rules)
+summary(cf)
+barplot(cf)
+```
+Na podstawie wyników walidacji, trzeba dokonać lekkich poprawek - V4 i V5
