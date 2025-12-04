@@ -156,9 +156,16 @@ imputed_data <- mice(dane_impute, m = 5, method = 'pmm', maxit = 5, seed = 123)
 # Uzupełnienie oryginalnych danych
 dane$Mileage_km <- complete(imputed_data)$Mileage_km
 ```
-uzupełnienie liczby drzwi medianą
+uzupełnienie liczby drzwi za pomocą mice
 ```{r}
-dane$Doors_number[is.na(dane$Doors_number)] <- median(dane$Doors_number, na.rm = TRUE)
+library(mice)
+dane_impute <- dane %>%
+  select(Doors_number,Type)
+# Imputacja braków za pomocą metody MICE
+imputed_data <- mice(dane_impute, m = 5, method = 'pmm', maxit = 5, seed = 123)
+# Uzupełnienie oryg inalnych danych
+dane$Doors_number <- complete(imputed_data)$Doors_number
+
 ```
 Sprawdzenie braków po imputacji
 ```{r}
@@ -203,4 +210,60 @@ cf <- confront(dane, rules)
 summary(cf)
 barplot(cf)
 ```
-Na podstawie wyników walidacji, trzeba dokonać lekkich poprawek - V4 i V5
+Zamiana niespełnionych kryteriów v4 i v6 na braki danych
+```{r}
+dane$Price[!(dane$Price > 0)] <- NA
+dane$Production_year[!(dane$Production_year >= 1886 & 
+                       dane$Production_year <= as.numeric(format(Sys.Date(), "%Y")))] <- NA
+dane$Mileage_km[!(dane$Mileage_km >= 0)] <- NA
+dane$Power_HP[!(dane$Power_HP > 1)] <- NA
+dane$Displacement_cm3[!(dane$Displacement_cm3 > 0)] <- NA
+dane$Doors_number[!(dane$Doors_number %in% 1:6)] <- NA
+```
+Sprawdzenie braków po walidacji
+```{r}
+library(VIM)
+library( naniar )
+# Procent braków w każdej zmiennej
+procent <- prop_complete_var(dane)
+procent
+VIM::aggr(dane, numbers = TRUE, sortVars = TRUE, 
+          labels = names(dane), cex.axis = .7, gap = 3, 
+          ylab = c("Procent braków w zmiennych", "Histogram braków"))
+```
+Dalsze uzupełnianie braków danych Power_HP po walidacji za pomocą MICE
+```{r}
+library(mice)
+# Wybór zmiennych do imputacji
+dane_impute <- dane %>%
+  select(Power_HP, Doors_number, Displacement_cm3, Type)
+# Imputacja braków za pomocą metody MICE
+imputed_data <- mice(dane_impute, m = 5, method = 'pmm', maxit = 5, seed = 123)
+# Uzupełnienie oryginalnych danych
+dane$Power_HP <- complete(imputed_data)$Power_HP
+```
+
+Uzupełnianie braków w Doors_number po walidacji za pomocą KNN imputation
+  
+```{r}
+library(VIM)
+
+dane <- kNN(dane, variable = "Doors_number", k = 5, dist_var = c("Type","Vehicle_model"))
+```
+Sprawdzenie braków po uzupełnianiu po walidacji
+```{r}
+library(VIM)
+library( naniar )
+# Procent braków w każdej zmiennej
+procent <- prop_complete_var(dane)
+procent
+```
+Spradzenie spełniania reguł walidacji po uzupełnianiu braków
+```{r}
+cf <- confront(dane, rules)
+summary(cf)
+barplot(cf)
+```
+Ostatecznie mamy dane, które spełniają kryteria walidacji i nie zawierają braków danych. Możemy przejść do dalszej analizy danych.(Super, tylko to jest na brudno i trzeba to przenieść na czysto potem)
+zapiszę tu dane po poprawie
+
