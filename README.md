@@ -68,4 +68,4 @@ Reguły walidacji danych brzmią następująco:
 3. Production_year (rok produkcji) - musi być liczbą całkowitą mieszczącą się w rozsądnym zakresie (np. 1900-2025).
 4. Power_HP (moc silnika) - musi być liczbą nieujemną.
 5. Displacement_cm3 (pojemność silnika) - musi być liczbą nieujemną.
-6. Doors_number (liczba  drzwi) - musi być liczbą całkowitą z przedziału (3-7)
+6. Doors_number (liczba  drzwi) - musi być liczbą całkowitą z przedziału (1-6)
