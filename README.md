@@ -7,19 +7,19 @@ Niniejszy dokument opisuje projekt zespołowy dotyczący analizy danych przy uż
 Celem tego projektu jest przeprowadzenie kompleksowej analizy danych przy użyciu języka R. Projekt obejmuje zbieranie, przetwarzanie, analizę oraz wizualizację danych.
 Dane do analizy pozyskano ze strony:https://www.kaggle.com/datasets/bartoszpieniak/poland-cars-for-sale-dataset.
 
-## Struktura zespołu
+Struktura zespołu
 - Paweł Cyrocki (leader)
 - Patryk Siuda
 - Damian Skinder
 
-## Etapy projektu
+Etapy projektu
 1. Zbieranie danych
-2. Przetwarzanie danych
+2. Porządkowanie danych
 3. Analiza danych
 4. Wizualizacja danych
 5. Prezentacja wyników
 
-## Zawartość
+# 1. Opis zmiennych
 Zbiór danych zawiera 208 304 obserwacje oraz 25 zmiennych.
 Opis zmiennych:
 1.	ID - unikalny identyfikator oferty
@@ -48,16 +48,24 @@ Opis zmiennych:
 24.	Offer_location - adres podany przez wystawcę
 25.	Cechy - wymienione cechy samochodu (ABS, poduszka powietrzna, czujniki parkowania itp.)
 
-# Walidacja danych
+# 2. Porządkowanie danych
+
+W tym etapie dokanano sprawdzenia braków w danych oraz ich walidacji.
+
+## 2.1. Braki danych
+
+Etap ten objął sprawdzenie braków w danych. Na tej podstawie usunięto zmienną CO2_emissions ze względu na zbyt dużą liczbę braków danych.
+Po usunięciu braków danych wyznaczono korelację między zmiennymi. Następnie dokonano wypełnienia braków w zmiennych numerycznych, po czym zaimputowano dane za pomocą metody MICE.
+
+## 2.2. Walidacja danych
 
 Dane zostały poddane procesowi walidacji w celu zapewnienia ich jakości i spójności.
 
-## Reguły danych
+Reguły walidacji danych brzmią następująco:
 
-Aby analiza danych była wiarygodna, zastosowano następujące reguły walidacji danych:
-1. Cena - musi być liczbą dodatnią.
-2. Mileage_km - musi być liczbą nieujemną.
-3. Production_year - musi być liczbą całkowitą mieszczącą się w rozsądnym zakresie (np. 1900-2025).
-4. Power_HP - musi być liczbą nieujemną.
-5. Displacement_cm3 - musi być liczbą nieujemną.
-6. Doors_number - musi być liczbą całkowitą z przedziału (3-7)
+1. Price (cena) - musi być liczbą dodatnią.
+2. Mileage_km (przebieg) - musi być liczbą nieujemną.
+3. Production_year (rok produkcji) - musi być liczbą całkowitą mieszczącą się w rozsądnym zakresie (np. 1900-2025).
+4. Power_HP (moc silnika) - musi być liczbą nieujemną.
+5. Displacement_cm3 (pojemność silnika) - musi być liczbą nieujemną.
+6. Doors_number (liczba  drzwi) - musi być liczbą całkowitą z przedziału (3-7)

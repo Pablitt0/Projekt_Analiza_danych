@@ -18,7 +18,7 @@ unzip("dane/Car_sale_ads.csv.zip", exdir = "dane")
 dane <- read.csv("dane/Car_sale_ads.csv")
 ```
 
-## Opis zmiennych
+## 1. Opis zmiennych
 
 `Index` - unikalny identyfikator ogłoszenia
 
@@ -183,7 +183,11 @@ Koniec uzupełniania braków danych, można przejść do dalszych kroków
 Ustalenie reguł walidacji dla zmiennych numerycznych i kategorycznych
 
 `Price` - powinna być większa od 0
-itp reguły
+`Mileage_km` - musi być liczbą nieujemną.
+`Production_year` - musi być liczbą całkowitą mieszczącą się w rozsądnym zakresie (np. od 1886 włącznie).
+`Power_HP` - musi być liczbą nieujemną.
+`Displacement_cm3` - musi być liczbą nieujemną.
+`Doors_number` - musi być liczbą całkowitą z przedziału (1-6)
 
 error locate, walidate - pakiety do wykorzystania
 
