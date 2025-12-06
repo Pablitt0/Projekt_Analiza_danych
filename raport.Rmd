@@ -8,6 +8,38 @@ output: rmdformats::readthedown
 
 ## Wstęp
 
+## Hipotezy badawcze
+
+W tej części definiujemy hipotezy, które będą weryfikowane w dalszej analizie eksploracyjnej oraz modelowaniu.
+
+**H1 (Cena a przebieg)**  
+Samochody z większym przebiegiem mają istotnie niższą cenę niż samochody z mniejszym przebiegiem.  
+Weryfikacja: analiza zależności między zmiennymi `Price` i `Mileage_km` (wykresy rozrzutu, korelacja, model regresji).
+
+**H2 (Cena a rok produkcji)**  
+Nowsze samochody (z wyższym rokiem produkcji) są istotnie droższe niż starsze samochody.  
+Weryfikacja: analiza związku `Price` z `Production_year` (przedziały roczników, wykresy pudełkowe, modele regresji).
+
+**H3 (Typ nadwozia a cena)**  
+Cena samochodu zależy od typu nadwozia; SUV-y i crossovery są średnio droższe niż hatchbacki i sedany.  
+Weryfikacja: porównanie rozkładów ceny między kategoriami zmiennej `Typ` (boxploty, testy różnic średnich / ANOVA).
+
+**H4 (Skrzynia biegów a cena)**  
+Samochody z automatyczną skrzynią biegów są średnio droższe niż samochody z manualną skrzynią biegów.  
+Weryfikacja: porównanie cen w dwóch grupach (`Skrzynia_biegów` = automat vs manual) z użyciem odpowiednich testów statystycznych i wizualizacji.
+
+**H5 (Pierwszy właściciel a cena)**  
+Samochody od pierwszego właściciela osiągają wyższą cenę niż samochody z wieloma właścicielami.  
+Weryfikacja: porównanie cen dla zmiennej `First_owner` (tak vs nie) z wykorzystaniem wykresów oraz testów różnic średnich.
+
+**H6 (Napęd a cena)**  
+Samochody z napędem na cztery koła (4x4) są średnio droższe niż samochody z napędem na jedną oś, przy porównywalnych pozostałych parametrach.  
+Weryfikacja: porównanie rozkładów ceny pomiędzy kategoriami zmiennej `Drive` (np. FWD, RWD, 4x4) z uwzględnieniem innych cech w modelu (m.in. `Power_HP`, `Production_year`).
+
+**H7 (Moc silnika a cena)**  
+Wyższa moc silnika wiąże się z wyższą ceną samochodu, nawet po uwzględnieniu przebiegu i roku produkcji.  
+Weryfikacja: model regresji z ceną jako zmienną zależną i `Power_HP`, `Mileage_km`, `Production_year` jako głównymi zmiennymi objaśniającymi.
+
 
 ```{r setup, include=FALSE}
 ## Global options

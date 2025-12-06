@@ -12,6 +12,18 @@ Struktura zespołu
 - Patryk Siuda
 - Damian Skinder
 
+# Hipotezy badawcze
+
+W projekcie analizujemy zależności między ceną samochodu a jego cechami technicznymi i dodatkowymi. Zdefiniowano następujące hipotezy badawcze:
+
+H1: Samochody z większym przebiegiem mają istotnie niższą cenę niż samochody z mniejszym przebiegiem.
+H2: Nowsze samochody (z wyższym rokiem produkcji) są istotnie droższe niż starsze samochody.
+H3: Cena samochodu zależy od typu nadwozia; SUV-y i crossovery są średnio droższe niż hatchbacki i sedany.
+H4: Samochody z automatyczną skrzynią biegów są średnio droższe niż samochody z manualną skrzynią biegów.
+H5: Samochody od pierwszego właściciela osiągają wyższą cenę niż samochody z wieloma właścicielami.
+H6: Samochody z napędem na cztery koła (4x4) są średnio droższe niż samochody z napędem na jedną oś, przy porównywalnych pozostałych parametrach.
+H7: Wyższa moc silnika wiąże się z wyższą ceną samochodu, nawet po uwzględnieniu przebiegu i roku produkcji.
+
 Etapy projektu
 1. Zbieranie danych
 2. Porządkowanie danych
