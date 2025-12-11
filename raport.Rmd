@@ -323,39 +323,11 @@ write.csv(dane, "dane/Car_sale_ads_cleaned.csv", row.names = FALSE)
 ## Wizualizacja danych w celu weryfikacji hipotez
 
 Hipoteza H1 (Cena a przebieg) - tylko dla używanych samochodów, weług typów samochodów
+dla mercedesa i bmw osobno
+
 ```{r}
 library(ggplot2)
 dane_used <- dane %>% filter(Condition == "Used")
-#Wykluczenie ekstremalnych wartości przebiegu i ceny - 3 odchylenia standardowe od średniej
-mean_mileage <- mean(dane_used$Mileage_km, na.rm = TRUE)
-sd_mileage <- sd(dane_used$Mileage_km, na.rm = TRUE)
-mean_price <- mean(dane_used$Price, na.rm = TRUE)
-sd_price <- sd(dane_used$Price, na.rm = TRUE)
-ggplot(dane_used %>%
-         filter(Mileage_km >= (mean_mileage - 3 * sd_mileage) &
-                  Mileage_km <= (mean_mileage + 3 * sd_mileage) &
-                  Price >= (mean_price - 3 * sd_price) &
-                  Price <= (mean_price + 3 * sd_price)),
-       aes(x = Mileage_km, y = Price)) +
-  geom_point(aes(color = Type),alpha = 0.1) +
-  geom_smooth(method = "lm", se = FALSE, color = "blue") +
-  facet_wrap(~ Type, scales = "fixed") +
-  labs(title = "Zależność ceny od przebiegu samochodu używanego")+
-scale_x_continuous(
-    labels = function(x) x / 1000,  
-    name = "Przebieg (tys. km)"
-  ) +
-  scale_y_continuous(
-    labels = function(x) x / 1000,
-    name = "Cena (tys. PLN)"
-  ) +
-  theme_minimal()
-
-```
-teraz weźmy samego mercedesa i bmw i zróbmy te wykresy dla 2 marek
-```{r}
-library(ggplot2)
-dane_used <- dane %>% filter(Condition == "Used", Vehicle_brand %in% c("BMW", "Mercedes-Benz"))
 #Wykluczenie ekstremalnych wartości przebiegu
 mean_mileage <- mean(dane_used$Mileage_km, na.rm = TRUE)
 sd_mileage <- sd(dane_used$Mileage_km, na.rm = TRUE)
@@ -380,4 +352,21 @@ ggplot(dane_used %>%
     name = "Cena (tys. PLN)"
   ) +
   theme_minimal()
+```
+Hipoteza H2 (Cena a rok produkcji) - tylko dla używanych samochodów, weług marek
+```{r}
+library(ggplot2)
+dane_used <- dane %>% filter(Condition == "Used")
+ggplot(dane_used, aes(x = as.factor(Production_year), y = Price, fill = Vehicle_brand)) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.7) +
+  facet_grid(~ Vehicle_brand, scales = "fixed") +
+  labs(title = "Zależność ceny od roku produkcji samochodu używanego - BMW i Mercedes-Benz",
+       x = "Rok produkcji",
+       y = "Cena (PLN)") +
+  scale_y_continuous(
+    labels = function(x) x / 1000,
+    name = "Cena (tys. PLN)"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
