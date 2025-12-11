@@ -312,12 +312,12 @@ cf <- confront(dane, rules)
 summary(cf)
 barplot(cf)
 ```
-Ostatecznie mamy dane, które spełniają kryteria walidacji i nie zawierają braków danych. Możemy przejść do dalszej analizy danych.(Super, tylko to jest na brudno i trzeba to przenieść na czysto potem)
-zapiszę tu dane po poprawie
+Ostatecznie mamy dane, które spełniają kryteria walidacji i nie zawierają braków danych. Możemy przejść do dalszej analizy danych.
+Dla uzyskanych danych wybieramy marki mercedes i bmw do dalszej analizy i zapisujemy plik zawierający te dane
 ```{r}
-install.packages("piggyback")
-library(piggyback)
-"tu muszę wykonać to potem"
+dane <- dane %>% filter(Vehicle_brand %in% c("BMW", "Mercedes-Benz"))
+write.csv(dane, "dane/Car_sale_ads_cleaned.csv", row.names = FALSE)
+
 ```
 
 ## Wizualizacja danych w celu weryfikacji hipotez
