@@ -6,40 +6,11 @@ output: rmdformats::readthedown
 ---
 
 
-## Wstęp
+# Wstęp
 
-## Hipotezy badawcze
+Niniejszy dokument opisuje projekt zespołowy dotyczący analizy danych przy użycia języka R. Projekt obejmuje zbieranie, przetwarzanie, analizę oraz wizualizację danych. Jego celem jest porównawcza analiza cenowa i predykcja wartości samochodów premium na polskim rynku wtórnym.
 
-W tej części definiujemy hipotezy, które będą weryfikowane w dalszej analizie eksploracyjnej oraz modelowaniu.
-
-**H1 (Cena a przebieg)**  
-Samochody z większym przebiegiem mają istotnie niższą cenę niż samochody z mniejszym przebiegiem.  
-Weryfikacja: analiza zależności między zmiennymi `Price` i `Mileage_km` (wykresy rozrzutu, korelacja, model regresji).
-
-**H2 (Cena a rok produkcji)**  
-Nowsze samochody (z wyższym rokiem produkcji) są istotnie droższe niż starsze samochody.  
-Weryfikacja: analiza związku `Price` z `Production_year` (przedziały roczników, wykresy pudełkowe, modele regresji).
-
-**H3 (Typ nadwozia a cena)**  
-Cena samochodu zależy od typu nadwozia; SUV-y i crossovery są średnio droższe niż hatchbacki i sedany.  
-Weryfikacja: porównanie rozkładów ceny między kategoriami zmiennej `Typ` (boxploty, testy różnic średnich / ANOVA).
-
-**H4 (Skrzynia biegów a cena)**  
-Samochody z automatyczną skrzynią biegów są średnio droższe niż samochody z manualną skrzynią biegów.  
-Weryfikacja: porównanie cen w dwóch grupach (`Skrzynia_biegów` = automat vs manual) z użyciem odpowiednich testów statystycznych i wizualizacji.
-
-**H5 (Pierwszy właściciel a cena)**  
-Samochody od pierwszego właściciela osiągają wyższą cenę niż samochody z wieloma właścicielami.  
-Weryfikacja: porównanie cen dla zmiennej `First_owner` (tak vs nie) z wykorzystaniem wykresów oraz testów różnic średnich.
-
-**H6 (Napęd a cena)**  
-Samochody z napędem na cztery koła (4x4) są średnio droższe niż samochody z napędem na jedną oś, przy porównywalnych pozostałych parametrach.  
-Weryfikacja: porównanie rozkładów ceny pomiędzy kategoriami zmiennej `Drive` (np. FWD, RWD, 4x4) z uwzględnieniem innych cech w modelu (m.in. `Power_HP`, `Production_year`).
-
-**H7 (Moc silnika a cena)**  
-Wyższa moc silnika wiąże się z wyższą ceną samochodu, nawet po uwzględnieniu przebiegu i roku produkcji.  
-Weryfikacja: model regresji z ceną jako zmienną zależną i `Power_HP`, `Mileage_km`, `Production_year` jako głównymi zmiennymi objaśniającymi.
-
+Dane do analizy pozyskano ze strony: https://www.kaggle.com/datasets/bartoszpieniak/poland-cars-for-sale-dataset.
 
 ```{r setup, include=FALSE}
 ## Global options
@@ -50,7 +21,35 @@ unzip("dane/Car_sale_ads.csv.zip", exdir = "dane")
 dane <- read.csv("dane/Car_sale_ads.csv")
 ```
 
-## 1. Opis zmiennych
+Analizę ograniczono jest do samochodów marek BMW i Mercedes-Benz, co wynika z konieczności zapewnienia wysokiej jakości statystycznej danych. Szeroki zakres wszystkich marek (~200k obserwacji, 20+ brandów) wprowadza znaczną heteroskedastyczność (różną wariancję reszt w modelach regresji) oraz nadmiar obserwacji odstających, co destabilizuje estymatory i obniża moc testów hipotez.
+
+Uzasadnienie wyboru marek premium:
+```{r}
+# Utworzenie podzbioru danych dla BMW i Mercedes
+library(dplyr)
+bmw_mercedes <- dane %>% 
+  filter(Vehicle_brand %in% c("BMW", "Mercedes")) %>%  # Filtrowanie danych
+  filter(!is.na(Price), !is.na(Mileage_km), Price > 0)   # Podstawowe czyszczenie
+
+# 1. Test Breusch-Pagan (heteroskedastyczność)
+library(lmtest)
+model <- lm(Price ~ Mileage_km + Production_year, data = bmw_mercedes)
+bp_test <- bptest(model)
+print(bp_test)  # Oczekiwane: p-value > 0.05 = brak heteroskedastyczności
+
+# 2. Moc statystyczna testu t (dla H4-H5)
+library(pwr)
+pwr.t.test(n = nrow(bmw_mercedes)/2,     # ~połowa na grupę (BMW vs Mercedes)
+           d = 0.5,                      # średni efekt (Cohen's d)
+           sig.level = 0.05,
+           power = NULL)                 # Wynik: power ≈ 1.0
+
+# 3. Sprawdzenie proporcji obserwacji odstających (reguła IQR)
+boxplot.stats(bmw_mercedes$Price)$out  # Liczba outlierów
+nrow(boxplot.stats(bmw_mercedes$Price)$out) / nrow(bmw_mercedes) * 100  # % outlierów
+```
+
+# Opis zmiennych
 
 `Index` - unikalny identyfikator ogłoszenia
 
@@ -102,9 +101,59 @@ dane <- read.csv("dane/Car_sale_ads.csv")
 
 `Features` - cechy dodatkowe samochodu
 
+# 1. Hipotezy badawcze
+
+W tej części definiujemy hipotezy, które będą weryfikowane w dalszej analizie eksploracyjnej oraz modelowaniu.
+
+**H1 (Cena a przebieg)**  
+Samochody BMW i Mercedes z większym przebiegiem mają istotnie niższą cenę niż z mniejszym przebiegiem, z potencjalnie silniejszą zależnością u Mercedes. 
+Weryfikacja: analiza zależności między zmiennymi `Price` i `Mileage_km` (wykresy rozrzutu, korelacja, model regresji).
+
+**H2 (Cena a rok produkcji)**  
+Nowsze modele BMW i Mercedes są droższe niż starsze, przy czym BMW może szybciej tracić na wartości w porównaniu do Mercedes.
+Weryfikacja: analiza związku `Price` z `Production_year` (przedziały roczników, wykresy pudełkowe, modele regresji).
+
+**H3 (Typ nadwozia a cena)**  
+W segmencie BMW i Mercedes SUV-y/crossovery są droższe niż sedany/hatchbacki, z różnicami między markami (np. większe premiowanie SUV-ów u BMW).
+Weryfikacja: porównanie rozkładów `Price`między kategoriami zmiennej `Type` (boxploty, testy różnic średnich / ANOVA).
+
+**H4 (Skrzynia biegów a cena)**  
+Samochody BMW i Mercedes z automatyczną skrzynią biegów są średnio droższe niż samochody z manualną skrzynią biegów (mocniej dla Mercedesa)
+Weryfikacja: porównanie cen w dwóch grupach (`Transmission` = automat vs manual) z użyciem odpowiednich testów statystycznych i wizualizacji - proponowane wykorzystanie t-test lub Wilcoxon Price ~ Transmission w podzbiorach marek, wizualizacja violin plots.
+
+**H5 (Pierwszy właściciel a cena)**  
+BMW i Mercedes od pierwszego właściciela są droższe, z większą premią u Mercedes ze względu na prestiż.
+Weryfikacja: porównanie cen dla zmiennej `First_owner` (tak vs nie) z wykorzystaniem wykresów oraz testów różnic średnich.
+
+**H6 (Napęd a cena)**  
+Samochody BMW i Mercedes z napędem na cztery koła (4x4) są średnio droższe niż samochody z napędem na jedną oś, przy porównywalnych pozostałych parametrach, szczególnie w modelach BMW.
+Weryfikacja: porównanie rozkładów ceny pomiędzy kategoriami zmiennej `Drive` (np. FWD, RWD, 4x4) z uwzględnieniem innych cech w modelu (m.in. `Power_HP`, `Production_year`), np. regresja Price ~ Drive * Vehicle_brand + Power_HP + Production_year
+
+**H7 (Moc silnika a cena)**  
+Wyższa moc (Power_HP) koreluje z ceną w obu markach po kontroli przebiegu i roku, z silniejszą relacją u BMW sportowych modeli.
+Weryfikacja: model regresji z ceną jako zmienną zależną i `Power_HP`, `Mileage_km`, `Production_year` jako głównymi zmiennymi objaśniającymi.
+
+Dodatkowe hipotezy (dopisane 11.12.2025)
+
+**H8 (Paliwo a cena – BMW vs Mercedes)**
+Hybrydy i elektryki BMW/Mercedes są droższe niż diesle/benzyna przy porównywalnym przebiegu i roku, z większą premią u Mercedes (ekoprestiż).
+Weryfikacja: boxplot Price ~ Fuel_type * Vehicle_brand, regresja z kontrolą Mileage_km + Production_year.
+
+**H9 (Kolor a cena – premium psychologia)**
+Popularne kolory kojarzone z markami premium (czarny, szary, biały) osiągają wyższe ceny niż mniej typowe (czerwony, zielony), mocniej u Mercedes.
+Weryfikacja: violin plot Price ~ Kolor * Vehicle_brand, ANOVA z TukeyHSD post-hoc.
+
+**H10 (Sezonowość ogłoszeń)**
+Ceny BMW/Mercedes spadają zimą (Offer_publication_date grudzień-luty) vs. wzrost wiosną – efekt popytu.
+Weryfikacja: Price ~ lubridate::month(Offer_publication_date) * Vehicle_brand, smooth ggplot + ANOVA.
+
+**H11 (Trwałość marki – cena/km)**
+Mercedes ma wyższy stosunek Price/Mileage_km niż BMW (lepsza wartość rezydualna) dla aut >10 lat.
+Weryfikacja: cena_per_km <- Cena / Mileage_km, boxplot po grupach Production_year + marka, t-test.
+
 # 2. Porządkowanie danych
 
-# 2.1. Braki danych
+## 2.1. Braki danych
 Sprawdzenie braków w danych
 ```{r}
 library(VIM)
@@ -177,7 +226,7 @@ ggplot(data = dane) +
        y = "Power_HP") +
   theme_minimal()
 ```
-użycie mice dla zmiuennej `Mileage_km`
+użycie mice dla zmiennnej `Mileage_km`
 ```{r}
 library(mice)
 # Wybór zmiennych do imputacji
@@ -211,6 +260,7 @@ VIM::aggr(dane, numbers = TRUE, sortVars = TRUE,
           ylab = c("Procent braków w zmiennych", "Histogram braków"))
 ```
 Koniec uzupełniania braków danych, można przejść do dalszych kroków
+
 ## 2.2. Walidacja danych
 Ustalenie reguł walidacji dla zmiennych numerycznych i kategorycznych
 
@@ -313,17 +363,17 @@ summary(cf)
 barplot(cf)
 ```
 Ostatecznie mamy dane, które spełniają kryteria walidacji i nie zawierają braków danych. Możemy przejść do dalszej analizy danych.
-Dla uzyskanych danych wybieramy marki mercedes i bmw do dalszej analizy i zapisujemy plik zawierający te dane
+Dla uzyskanych danych wybieramy marki Mercedes i BMW do dalszej analizy i zapisujemy plik zawierający te dane.
 ```{r}
 dane <- dane %>% filter(Vehicle_brand %in% c("BMW", "Mercedes-Benz"))
 write.csv(dane, "dane/Car_sale_ads_cleaned.csv", row.names = FALSE)
 
 ```
 
-## Wizualizacja danych w celu weryfikacji hipotez
+# 3. Wizualizacja danych w celu weryfikacji hipotez
 
 Hipoteza H1 (Cena a przebieg) - tylko dla używanych samochodów, weług typów samochodów
-dla mercedesa i bmw osobno
+dla Mercedesa i BMW osobno
 
 ```{r}
 library(ggplot2)
@@ -353,7 +403,7 @@ ggplot(dane_used %>%
   ) +
   theme_minimal()
 ```
-Hipoteza H2 (Cena a rok produkcji) - tylko dla używanych samochodów, weług marek
+Hipoteza H2 (Cena a rok produkcji) - tylko dla używanych samochodów, weług marek (moze dodac tu ymax? i pokombinowac z rokiem zeby bylo czytelniej?)
 ```{r}
 library(ggplot2)
 dane_used <- dane %>% filter(Condition == "Used")
@@ -362,6 +412,25 @@ ggplot(dane_used, aes(x = as.factor(Production_year), y = Price, fill = Vehicle_
   facet_grid(~ Vehicle_brand, scales = "fixed") +
   labs(title = "Zależność ceny od roku produkcji samochodu używanego - BMW i Mercedes-Benz",
        x = "Rok produkcji",
+       y = "Cena (PLN)") +
+  scale_y_continuous(
+    labels = function(x) x / 1000,
+    name = "Cena (tys. PLN)"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+Hipoteza H3 (Typ nadwozia a cena) - tylko dla używanych samochodów, weług marek
+Weryfikacja: porównanie rozkładów `Price`między kategoriami zmiennej `Type` (boxploty, testy różnic średnich / ANOVA).
+```{r}
+library(ggplot2)
+dane_used <- dane %>% filter(Condition == "Used")
+ggplot(dane_used, aes(x = Type, y = Price, fill = Vehicle_brand)) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.7) +
+  facet_grid(~ Vehicle_brand, scales = "fixed") +
+  coord_cartesian(ylim = c(0, 400000)) +
+  labs(title = "Zależność ceny od typu nadwozia samochodu używanego - BMW i Mercedes-Benz",
+       x = "Typ nadwozia",
        y = "Cena (PLN)") +
   scale_y_continuous(
     labels = function(x) x / 1000,
