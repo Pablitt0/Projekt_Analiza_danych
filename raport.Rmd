@@ -21,34 +21,9 @@ unzip("dane/Car_sale_ads.csv.zip", exdir = "dane")
 dane <- read.csv("dane/Car_sale_ads.csv")
 ```
 
-Analizę ograniczono jest do samochodów marek BMW i Mercedes-Benz, co wynika z konieczności zapewnienia wysokiej jakości statystycznej danych. Szeroki zakres wszystkich marek (~200k obserwacji, 20+ brandów) wprowadza znaczną heteroskedastyczność (różną wariancję reszt w modelach regresji) oraz nadmiar obserwacji odstających, co destabilizuje estymatory i obniża moc testów hipotez.
+Analizę ograniczono do samochodów marek BMW i Mercedes-Benz, co wynika z konieczności zapewnienia wysokiej jakości statystycznej danych. Szeroki zakres wszystkich marek (~200k obserwacji, 20+ brandów) wprowadza znaczną heteroskedastyczność (różną wariancję reszt w modelach regresji) oraz nadmiar obserwacji odstających, co destabilizuje estymatory i obniża moc testów hipotez.
 
-Uzasadnienie wyboru marek premium:
-```{r}
-# Utworzenie podzbioru danych dla BMW i Mercedes
-library(dplyr)
-bmw_mercedes <- dane %>% 
-  filter(Vehicle_brand %in% c("BMW", "Mercedes")) %>%  # Filtrowanie danych
-  filter(!is.na(Price), !is.na(Mileage_km), Price > 0)   # Podstawowe czyszczenie
-
-# 1. Test Breusch-Pagan (heteroskedastyczność)
-library(lmtest)
-model <- lm(Price ~ Mileage_km + Production_year, data = bmw_mercedes)
-bp_test <- bptest(model)
-print(bp_test)  # Oczekiwane: p-value > 0.05 = brak heteroskedastyczności
-
-# 2. Moc statystyczna testu t (dla H4-H5)
-library(pwr)
-pwr.t.test(n = nrow(bmw_mercedes)/2,     # ~połowa na grupę (BMW vs Mercedes)
-           d = 0.5,                      # średni efekt (Cohen's d)
-           sig.level = 0.05,
-           power = NULL)                 # Wynik: power ≈ 1.0
-
-# 3. Sprawdzenie proporcji obserwacji odstających (reguła IQR)
-boxplot.stats(bmw_mercedes$Price)$out  # Liczba outlierów
-nrow(boxplot.stats(bmw_mercedes$Price)$out) / nrow(bmw_mercedes) * 100  # % outlierów
-```
-
+Uzasadnienie wyboru marek premium - DO NAPISANIA!
 # Opis zmiennych
 
 `Index` - unikalny identyfikator ogłoszenia
@@ -87,7 +62,7 @@ nrow(boxplot.stats(bmw_mercedes$Price)$out) / nrow(bmw_mercedes) * 100  # % outl
 
 `Doors_nuber1` - liczba drzwi
 
-`Color` - kolor samochodu
+`Colour` - kolor samochodu
 
 `Orgin_country` - kraj pochodzenia
 
@@ -127,7 +102,7 @@ Weryfikacja: porównanie cen dla zmiennej `First_owner` (tak vs nie) z wykorzyst
 
 **H6 (Napęd a cena)**  
 Samochody BMW i Mercedes z napędem na cztery koła (4x4) są średnio droższe niż samochody z napędem na jedną oś, przy porównywalnych pozostałych parametrach, szczególnie w modelach BMW.
-Weryfikacja: porównanie rozkładów ceny pomiędzy kategoriami zmiennej `Drive` (np. FWD, RWD, 4x4) z uwzględnieniem innych cech w modelu (m.in. `Power_HP`, `Production_year`), np. regresja Price ~ Drive * Vehicle_brand + Power_HP + Production_year
+Weryfikacja: porównanie rozkładów ceny pomiędzy kategoriami zmiennej `Drive` (np. FWD, RWD, 4x4) z uwzględnieniem innych cech w modelu (m.in. `Power_HP`, `Production_year`), np. regresja `Price` ~ `Drive` * `Vehicle_brand` + `Power_HP` + `Production_year`
 
 **H7 (Moc silnika a cena)**  
 Wyższa moc (Power_HP) koreluje z ceną w obu markach po kontroli przebiegu i roku, z silniejszą relacją u BMW sportowych modeli.
@@ -137,19 +112,19 @@ Dodatkowe hipotezy (dopisane 11.12.2025)
 
 **H8 (Paliwo a cena – BMW vs Mercedes)**
 Hybrydy i elektryki BMW/Mercedes są droższe niż diesle/benzyna przy porównywalnym przebiegu i roku, z większą premią u Mercedes (ekoprestiż).
-Weryfikacja: boxplot Price ~ Fuel_type * Vehicle_brand, regresja z kontrolą Mileage_km + Production_year.
+Weryfikacja: boxplot `Price` ~ `Fuel_type` * `Vehicle_brand`, regresja z kontrolą `Mileage_km` + `Production_year`.
 
 **H9 (Kolor a cena – premium psychologia)**
 Popularne kolory kojarzone z markami premium (czarny, szary, biały) osiągają wyższe ceny niż mniej typowe (czerwony, zielony), mocniej u Mercedes.
-Weryfikacja: violin plot Price ~ Kolor * Vehicle_brand, ANOVA z TukeyHSD post-hoc.
+Weryfikacja: violin plot `Price` ~ `Coluor` * `Vehicle_brand`, ANOVA z TukeyHSD post-hoc.
 
 **H10 (Sezonowość ogłoszeń)**
 Ceny BMW/Mercedes spadają zimą (Offer_publication_date grudzień-luty) vs. wzrost wiosną – efekt popytu.
-Weryfikacja: Price ~ lubridate::month(Offer_publication_date) * Vehicle_brand, smooth ggplot + ANOVA.
+Weryfikacja: Price ~ lubridate::month(Offer_publication_date) * `Vehicle_brand`, smooth ggplot + ANOVA.
 
 **H11 (Trwałość marki – cena/km)**
-Mercedes ma wyższy stosunek Price/Mileage_km niż BMW (lepsza wartość rezydualna) dla aut >10 lat.
-Weryfikacja: cena_per_km <- Cena / Mileage_km, boxplot po grupach Production_year + marka, t-test.
+Mercedes ma wyższy stosunek `Price`/`Mileage_km` niż BMW (lepsza wartość rezydualna) dla aut >10 lat.
+Weryfikacja: cena_per_km <- `Price` / `Mileage_km`, boxplot po grupach `Production_year` + marka, t-test.
 
 # 2. Porządkowanie danych
 
@@ -436,6 +411,148 @@ ggplot(dane_used, aes(x = Type, y = Price, fill = Vehicle_brand)) +
     labels = function(x) x / 1000,
     name = "Cena (tys. PLN)"
   ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+Hipoteza H4 (Skrzynia biegów a cena) - tylko dla używanych samochodów
+Weryfikacja: porównanie cen `Price` w dwóch grupach (`Transmission` = automat vs manual) z użyciem odpowiednich testów statystycznych i wizualizacji - proponowane wykorzystanie t-test lub Wilcoxon `Price` ~ `Transmission` w podzbiorach marek, wizualizacja violin plots.
+```{r}
+library(ggplot2)
+dane_used <- dane %>% filter(Condition == "Used")
+ggplot(dane_used, aes(x = Transmission, y = Price, fill = Vehicle_brand)) +
+  geom_violin(alpha = 0.7) +
+  facet_grid(~ Vehicle_brand, scales = "fixed") +
+  coord_cartesian(ylim = c(0, 400000)) +
+  labs(title = "Zależność ceny od rodzaju skrzyni biegów samochodu używanego - BMW i Mercedes-Benz",
+       x = "Rodzaj skrzyni biegów",
+       y = "Cena (PLN)") +
+  scale_y_continuous(
+    labels = function(x) x / 1000,
+    name = "Cena (tys. PLN)"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+Hipoteza H5 (Pierwszy właściciel a cena) - tylko dla używanych samochodów
+Weryfikacja: porównanie `Price` dla zmiennej `First_owner` (tak vs nie) z wykorzystaniem wykresów oraz testów różnic średnich.
+```{r}
+library(ggplot2)
+dane_used <- dane %>% filter(Condition == "Used")
+ggplot(dane_used, aes(x = First_owner, y = Price, fill = Vehicle_brand)) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.7) +
+  facet_grid(~ Vehicle_brand, scales = "fixed") +
+  coord_cartesian(ylim = c(0, 400000)) +
+  labs(title = "Zależność ceny od bycia pierwszym właścicielem samochodu używanego - BMW i Mercedes-Benz",
+       x = "Czy pierwszy właściciel",
+       y = "Cena (PLN)") +
+  scale_y_continuous(
+    labels = function(x) x / 1000,
+    name = "Cena (tys. PLN)"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+Hipoteza H6 (Napęd a cena) - tylko dla używanych samochodów
+Weryfikacja: porównanie rozkładów ceny pomiędzy kategoriami zmiennej `Drive` (np. FWD, RWD, 4x4) z uwzględnieniem innych cech w modelu (m.in. `Power_HP`, `Production_year`) - boxplot
+```{r}
+library(ggplot2)
+dane_used <- dane %>% filter(Condition == "Used")
+ggplot(dane_used, aes(x = Drive, y = Price, fill = Vehicle_brand)) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.7) +
+  facet_grid(~ Vehicle_brand, scales = "fixed") +
+  coord_cartesian(ylim = c(0, 400000)) +
+  labs(title = "Zależność ceny od typu napędu samochodu używanego - BMW i Mercedes-Benz",
+       x = "Typ napędu",
+       y = "Cena (PLN)") +
+  scale_y_continuous(
+    labels = function(x) x / 1000,
+    name = "Cena (tys. PLN)"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+Hipoteza H7 (Moc silnika a cena) - tylko dla używanych samochodów, według mocy  
+Weryfikacja: model regresji z ceną `Price` jako zmienną zależną i `Power_HP`, `Mileage_km`, `Production_year` jako głównymi zmiennymi objaśniającymi.
+```{r}
+library(ggplot2)
+dane_used <- dane %>% filter(Condition == "Used")
+ggplot(dane_used %>% filter(Price <= 150000),
+       aes(x = Power_HP, y = Price, color = Vehicle_brand)) +
+  geom_point(alpha = 0.1) +
+  geom_smooth(method = "lm", se = FALSE) +
+  facet_grid(~ Vehicle_brand, scales = "fixed") +
+  labs(title = "Zależność ceny od mocy silnika samochodu używanego - BMW i Mercedes-Benz (do 150 tys. PLN)") +
+  scale_x_continuous(name = "Moc silnika (HP)") +
+  scale_y_continuous(
+    limits = c(0, 250000),
+    labels = function(x) x / 1000,
+    name = "Cena (tys. PLN)"
+  ) +
+  theme_minimal()
+
+```
+
+Dodatkowe hipotezy (dopisane 11.12.2025)
+
+Hipoteza H8 (Paliwo a cena – BMW vs Mercedes)
+Weryfikacja: boxplot `Price` ~ `Fuel_type` * `Vehicle_brand`, regresja z kontrolą Mileage_km + Production_year.
+```{r}
+library(ggplot2)
+dane_used <- dane %>% filter(Condition == "Used")
+ggplot(dane_used, aes(x = Fuel_type, y = Price, fill = Vehicle_brand)) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.7) +
+  facet_grid(~ Vehicle_brand, scales = "fixed") +
+  coord_cartesian(ylim = c(0, 400000)) +
+  labs(title = "Zależność ceny od rodzaju paliwa samochodu używanego - BMW i Mercedes-Benz",
+       x = "Rodzaj paliwa",
+       y = "Cena (PLN)") +
+  scale_y_continuous(
+    labels = function(x) x / 1000,
+    name = "Cena (tys. PLN)"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+Hipoteza H9 (Kolor a cena – premium psychologia)
+Weryfikacja: boxplot `Price` ~ `Colour` * `Vehicle_brand`, ANOVA z TukeyHSD post-hoc.
+
+```{r}
+library(ggplot2)
+dane_top <- dane %>% 
+  filter(Colour %in% names(sort(table(Colour), decreasing=T))[1:10])
+
+ggplot(dane_top, aes(x = Colour, y = Price/1000)) +  # Usunięto fill=Vehicle_brand
+  geom_bin2d(bins = 30) +
+  scale_fill_viridis_c() +  # Teraz OK - fill to gęstość (liczba)
+  facet_wrap(~ Vehicle_brand, scales = "free_y", ncol = 2) +  # Podzielone na marki
+  labs(title = "Gęstość cen według koloru - BMW vs Mercedes", 
+       x = "Kolor", y = "Cena (tys. PLN)") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Hipoteza H10 (Sezonowość ogłoszeń)
+Weryfikacja: `Price` ~ lubridate::month(Offer_publication_date) * `Vehicle_brand`, smooth ggplot + ANOVA. - MOZNA ZROBIC ALE NIE TRZEBA
+
+Hipoteza H11 (Trwałość marki – cena/km)
+Weryfikacja: cena_per_km <- `Price` / `Mileage_km`, boxplot po grupach `Production_year` + `Brand`, t-test.
+```{r}
+library(ggplot2)
+dane_used <- dane %>% filter(Condition == "Used")
+dane_used <- dane_used %>%
+  mutate(cena_per_km = Price / Mileage_km,
+         Production_year_group = case_when(
+           Production_year <= 2000 ~ "Do 2000",
+           Production_year > 2000 & Production_year <= 2010 ~ "2001-2010",
+           Production_year > 2010 ~ "Po 2010"
+         ))
+ggplot(dane_used, aes(x = Production_year_group, y = cena_per_km, fill = Vehicle_brand)) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.7) +
+  facet_grid(~ Vehicle_brand, scales = "fixed") +
+  coord_cartesian(ylim = c(0, )) +
+  labs(title = "Zależność ceny za kilometr od roku produkcji samochodu używanego - BMW i Mercedes-Benz",
+       x = "Grupa roku produkcji",
+       y = "Cena za kilometr (PLN/km)") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
