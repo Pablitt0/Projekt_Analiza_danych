@@ -105,10 +105,9 @@ Dodatkowe hipotezy (dopisane 11.12.2025)
 
 **H9 (Kolor a cena – premium psychologia)** Popularne kolory kojarzone z markami premium (czarny, szary, biały) osiągają wyższe ceny niż mniej typowe (czerwony, zielony), mocniej u Mercedes. Weryfikacja: violin plot `Price` \~ `Coluor` \* `Vehicle_brand`, ANOVA z TukeyHSD post-hoc.
 
-**H10 (Sezonowość ogłoszeń)** Ceny BMW/Mercedes spadają zimą (Offer_publication_date grudzień-luty) vs. wzrost wiosną – efekt popytu. Weryfikacja: Price \~ lubridate::month(Offer_publication_date) \* `Vehicle_brand`, smooth ggplot + ANOVA.
+**H10 (Trwałość marki – cena/km)** Mercedes ma wyższy stosunek `Price`/`Mileage_km` niż BMW (lepsza wartość rezydualna) dla aut \>10 lat. Weryfikacja: cena_per_km \<- `Price` / `Mileage_km`, boxplot po grupach `Production_year` + marka, t-test.
 
-**H11 (Trwałość marki – cena/km)** Mercedes ma wyższy stosunek `Price`/`Mileage_km` niż BMW (lepsza wartość rezydualna) dla aut \>10 lat. Weryfikacja: cena_per_km \<- `Price` / `Mileage_km`, boxplot po grupach `Production_year` + marka, t-test.
-
+**H11 (Cena a moc i lokalizacja – BMW vs Mercedes (województwa))** Średnia moc silnika `Power_HP` BMW i Mercedesa jest wyższa w regionach o wyższej średniej cenie `Price` ofert.
 # 2. Porządkowanie danych
 
 ## 2.1. Braki danych
@@ -600,8 +599,6 @@ ggplot(dane_used %>% filter(Price <= 150000),
 
 ```
 
-Dodatkowe hipotezy (dopisane 11.12.2025)
-
 Hipoteza H8 (Paliwo a cena – BMW vs Mercedes) Weryfikacja: boxplot `Price` \~ `Fuel_type` \* `Vehicle_brand`, regresja z kontrolą Mileage_km + Production_year.
 
 ```{r}
@@ -660,9 +657,7 @@ ggplot(dane_top, aes(x = Colour, y = Price/1000)) +  # Usunięto fill=Vehicle_br
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-Hipoteza H10 (Sezonowość ogłoszeń) Weryfikacja: `Price` \~ lubridate::month(Offer_publication_date) \* `Vehicle_brand`, smooth ggplot + ANOVA. - MOZNA ZROBIC ALE NIE TRZEBA
-
-Hipoteza H11 (Trwałość marki – cena/km) Weryfikacja: cena_per_km \<- `Price` / `Mileage_km`, boxplot po grupach `Production_year` + `Brand`, t-test.
+Hipoteza H10 (Trwałość marki – cena/km) Weryfikacja: cena_per_km \<- `Price` / `Mileage_km`, boxplot po grupach `Production_year` + `Brand`, t-test.
 
 ```{r}
 library(ggplot2)
@@ -684,4 +679,384 @@ ggplot(dane_used, aes(x = Production_year_group, y = cena_per_km, fill = Vehicle
        fill = "Marka Samochodu") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Hipoteza H11 (Cena a moc i lokalizacja  – BMW vs Mercedes (województwa)) - kilka map
+
+```{r}
+# Pakiety --------------------------------------------------
+library(ggplot2)
+library(dplyr)
+library(stringr)
+library(sf)
+library(geodata)
+
+# Lista województw
+wojewodztwa <- c(
+  "dolnośląskie", "kujawsko-pomorskie", "lubelskie", "lubuskie",
+  "łódzkie", "małopolskie", "mazowieckie", "opolskie",
+  "podkarpackie", "podlaskie", "pomorskie", "śląskie",
+  "świętokrzyskie", "warmińsko-mazurskie", "wielkopolskie", "zachodniopomorskie"
+)
+
+# Ekstrakcja województwa z lokalizacji oferty
+dane_used <- dane_used %>%
+  mutate(
+    wojewodztwo = str_extract(
+      str_to_lower(Offer_location),
+      paste(wojewodztwa, collapse = "|")
+    )
+  ) %>%
+  filter(!is.na(wojewodztwo))
+
+# Agregacja średnich cen
+ceny_woj <- dane_used %>%
+  group_by(wojewodztwo, Vehicle_brand) %>%
+  summarise(
+    mean_price = mean(Price, na.rm = TRUE),
+    n = n(),
+    .groups = "drop"
+  ) %>%
+  filter(n >= 30)
+
+# Granice województw
+poland_sf <- gadm(
+  country = "POL",
+  level = 1,
+  path = tempdir()
+) %>%
+  st_as_sf() %>%
+  mutate(
+    wojewodztwo = str_to_lower(NAME_1)
+  )
+
+# Połączenie danych z granicami
+map_data <- poland_sf %>%
+  left_join(ceny_woj, by = "wojewodztwo") %>%
+  mutate(
+    mean_price_label = ifelse(
+      is.na(mean_price),
+      NA,
+      format(round(mean_price, 0), big.mark = " ")
+    )
+  )
+
+# MAPA 1: BMW
+ggplot(
+  map_data %>% filter(Vehicle_brand == "BMW")
+) +
+  geom_sf(aes(fill = mean_price), color = "white") +
+  geom_sf_text(
+    aes(label = mean_price_label),
+    size = 3,
+    color = "black",
+    fontface = "bold"
+  ) +
+  scale_fill_gradient(
+    name = "Średnia cena (PLN)",
+    low = "#FFFFB2",
+    high = "#FC4E2A",
+    na.value = "grey90"
+  ) +
+  labs(
+    title = "Średnie ceny samochodów BMW (używane)",
+    subtitle = "Podział na województwa",
+    caption = "Źródło: Otomoto / Kaggle (GADM)",
+    x = NULL,
+    y = NULL
+  ) +
+  theme_minimal()
+
+# MAPA 2: Mercedes-Benz
+ggplot(
+  map_data %>% filter(Vehicle_brand == "Mercedes-Benz")
+) +
+  geom_sf(aes(fill = mean_price), color = "white") +
+  geom_sf_text(
+    aes(label = mean_price_label),
+    size = 3,
+    color = "black",
+    fontface = "bold"
+  ) +
+  scale_fill_gradient(
+    name = "Średnia cena (PLN)",
+    low = "#FFFFB2",
+    high = "#FC4E2A",
+    na.value = "grey90"
+  ) +
+  labs(
+    title = "Średnie ceny samochodów Mercedes-Benz (używane)",
+    subtitle = "Podział na województwa",
+    caption = "Źródło: Otomoto / Kaggle (GADM)",
+    x = NULL,
+    y = NULL
+  ) +
+  theme_minimal()
+
+```
+
+```{r}
+# 1. Pakiety ------------------------------------------------
+library(dplyr)
+library(stringr)
+library(sf)
+library(ggplot2)
+library(geodata)
+
+# 2. Dane: używane BMW i Mercedes z mocą -------------------
+dane_used <- dane %>%
+  filter(
+    Condition == "Used",
+    Vehicle_brand %in% c("BMW", "Mercedes-Benz"),
+    !is.na(Power_HP)
+  )
+
+# 3. Lista województw --------------------------------------
+wojewodztwa <- c(
+  "dolnośląskie", "kujawsko-pomorskie", "lubelskie", "lubuskie",
+  "łódzkie", "małopolskie", "mazowieckie", "opolskie",
+  "podkarpackie", "podlaskie", "pomorskie", "śląskie",
+  "świętokrzyskie", "warmińsko-mazurskie", "wielkopolskie",
+  "zachodniopomorskie"
+)
+
+# 4. Ekstrakcja województwa --------------------------------
+dane_used <- dane_used %>%
+  mutate(
+    wojewodztwo = str_extract(
+      str_to_lower(Offer_location),
+      paste(wojewodztwa, collapse = "|")
+    )
+  ) %>%
+  filter(!is.na(wojewodztwo))
+
+# 5. Agregacja: średnia moc --------------------------------
+power_woj <- dane_used %>%
+  group_by(wojewodztwo, Vehicle_brand) %>%
+  summarise(
+    mean_power = mean(Power_HP, na.rm = TRUE),
+    n = n(),
+    .groups = "drop"
+  ) %>%
+  filter(n >= 30)
+
+# 6. Granice województw ------------------------------------
+poland_sf <- gadm(
+  country = "POL",
+  level = 1,
+  path = tempdir()
+) %>%
+  st_as_sf() %>%
+  mutate(
+    wojewodztwo = str_to_lower(NAME_1)
+  )
+
+# 7. Połączenie z mapą -------------------------------------
+map_data <- poland_sf %>%
+  left_join(power_woj, by = "wojewodztwo") %>%
+  mutate(
+    mean_power_label = ifelse(
+      is.na(mean_power),
+      NA,
+      paste0(round(mean_power, 0), " KM")
+    )
+  )
+
+# 8. MAPA: BMW ----------------------------------------------
+ggplot(
+  map_data %>% filter(Vehicle_brand == "BMW")
+) +
+  geom_sf(aes(fill = mean_power), color = "white") +
+  geom_sf_text(aes(label = mean_power_label), size = 3) +
+  scale_fill_gradient(
+    name = "Średnia cena (PLN)",
+    low = "#FFFFB2",
+    high = "#FC4E2A",
+    na.value = "grey90"
+  ) +
+  labs(
+    title = "Średnia moc silnika samochodów BMW",
+    subtitle = "Podział na województwa",
+    caption = "Źródło: Otomoto / Kaggle | Granice: GADM",
+    x = NULL,
+    y = NULL
+  ) +
+  theme_minimal()
+
+# 9. MAPA: Mercedes-Benz -----------------------------------
+ggplot(
+  map_data %>% filter(Vehicle_brand == "Mercedes-Benz")
+) +
+  geom_sf(aes(fill = mean_power), color = "white") +
+  geom_sf_text(aes(label = mean_power_label), size = 3) +
+ scale_fill_gradient(
+    name = "Średnia cena (PLN)",
+    low = "#FFFFB2",
+    high = "#FC4E2A",
+    na.value = "grey90"
+  ) +
+  labs(
+    title = "Średnia moc silnika samochodów Mercedes-Benz",
+    subtitle = "Podział na województwa",
+    caption = "Źródło: Otomoto / Kaggle | Granice: GADM",
+    x = NULL,
+    y = NULL 
+  ) +
+  theme_minimal()
+
+
+```
+```{r}
+############################################################
+# H13 – Udział samochodów >200 KM
+# Marki: BMW, Mercedes-Benz
+# Poziom: WOJEWÓDZTWA (GADM level = 1)
+############################################################
+
+# 1. Pakiety ------------------------------------------------
+library(dplyr)
+library(stringr)
+library(sf)
+library(ggplot2)
+library(geodata)
+
+# 2. Dane wejściowe ----------------------------------------
+dane_used <- dane %>%
+  filter(
+    Condition == "Used",
+    Vehicle_brand %in% c("BMW", "Mercedes-Benz")
+  )
+
+# 3. Zmienna wysoka moc ------------------------------------
+dane_used <- dane_used %>%
+  filter(!is.na(Power_HP)) %>%
+  mutate(
+    High_power = Power_HP > 200
+  )
+
+# 4. Lista województw --------------------------------------
+wojewodztwa <- c(
+  "dolnośląskie", "kujawsko-pomorskie", "lubelskie", "lubuskie",
+  "łódzkie", "małopolskie", "mazowieckie", "opolskie",
+  "podkarpackie", "podlaskie", "pomorskie", "śląskie",
+  "świętokrzyskie", "warmińsko-mazurskie", "wielkopolskie",
+  "zachodniopomorskie"
+)
+
+# 5. Ekstrakcja województwa z lokalizacji -------------------
+dane_used <- dane_used %>%
+  mutate(
+    wojewodztwo = str_extract(
+      str_to_lower(Offer_location),
+      paste(wojewodztwa, collapse = "|")
+    )
+  ) %>%
+  filter(!is.na(wojewodztwo))
+
+# 6. Agregacja: udział >200 KM ------------------------------
+power_woj <- dane_used %>%
+  group_by(wojewodztwo, Vehicle_brand) %>%
+  summarise(
+    share_high_power = mean(High_power, na.rm = TRUE),
+    n = n(),
+    .groups = "drop"
+  ) %>%
+  filter(n >= 30)
+
+# 7. Granice WOJEWÓDZTW (GADM) ------------------------------
+wojewodztwa_sf <- gadm(
+  country = "POL",
+  level = 1,
+  path = tempdir()
+) %>%
+  st_as_sf() %>%
+  mutate(
+    wojewodztwo = str_to_lower(NAME_1)
+  )
+
+# 8. Połączenie danych z mapą -------------------------------
+map_data <- wojewodztwa_sf %>%
+  left_join(power_woj, by = "wojewodztwo")
+
+library(ggrepel) # przydatne do lepszych etykiet na mapie
+
+# 9. MAPA: BMW ----------------------------------------------
+ggplot(
+  map_data %>% filter(Vehicle_brand == "BMW")
+) +
+  geom_sf(aes(fill = share_high_power), color = "white") +
+  geom_text(
+    aes(label = scales::percent(share_high_power, accuracy = 1),
+        geometry = geometry),
+    stat = "sf_coordinates", size = 3
+  ) +
+  scale_fill_gradient(
+    name = "Udział aut >200 KM",
+    low = "#FFFFB2",
+    high = "#FC4E2A",
+    na.value = "grey90"
+  ) +
+  labs(
+    title = "Udział samochodów BMW o mocy >200 KM",
+    subtitle = "Podział na województwa",
+    caption = "Źródło: Otomoto / Kaggle | Granice: GADM",
+    x = NULL,
+    y = NULL
+  ) +
+  theme_minimal()
+
+# 10. MAPA: Mercedes-Benz -----------------------------------
+ggplot(
+  map_data %>% filter(Vehicle_brand == "Mercedes-Benz")
+) +
+  geom_sf(aes(fill = share_high_power), color = "white") +
+  geom_text(
+    aes(label = scales::percent(share_high_power, accuracy = 1),
+        geometry = geometry),
+    stat = "sf_coordinates", size = 3
+  ) +
+  scale_fill_gradient(
+    name = "Udział aut >200 KM",
+    low = "#FFFFB2",
+    high = "#FC4E2A",
+    na.value = "grey90"
+  ) +
+  labs(
+    title = "Udział samochodów Mercedes-Benz o mocy >200 KM",
+    subtitle = "Podział na województwa",
+    caption = "Źródło: Otomoto / Kaggle | Granice: GADM",
+    x = NULL,
+    y = NULL
+  ) +
+  theme_minimal()
+
+```
+# 4. Analiza opisowa
+## 4.1. Wykres korelacji
+```{r}
+library(dplyr)
+library(corrplot)
+dane_used <- dane %>% filter(Condition == "Used")
+# wybór zmiennych numerycznych
+num_cols <- dane_used %>%
+  select_if(is.numeric)
+
+# macierz korelacji (Pearson)
+M <- cor(num_cols, use = "pairwise.complete.obs", method = "pearson")
+
+# testy istotności korelacji
+testRes <- cor.mtest(num_cols, conf.level = 0.95)
+
+# wykres korelacji – wersja finalna
+corrplot(
+  M,
+  p.mat = testRes$p,
+  method = "circle",
+  type = "lower",
+  insig = "blank",
+  addCoef.col = "black",
+  number.cex = 0.8,
+  order = "AOE",
+  diag = FALSE
+)
 ```
