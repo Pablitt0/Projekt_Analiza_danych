@@ -583,7 +583,7 @@ library(dplyr)
 
 # Filtrujemy samochody używane i usuwamy brakujące wartości w Drive
 dane_used <- dane %>%
-  filter(Condition == "Used" & !(Drive ==))
+  filter(Condition == "Used" & !(Drive ==""))
 
 ggplot(dane_used, aes(x = Drive, y = Price, fill = Vehicle_brand)) +
   geom_boxplot(outlier.shape = NA, alpha = 0.7) +
