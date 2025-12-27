@@ -20,7 +20,7 @@ unzip("dane/Car_sale_ads.csv.zip", exdir = "dane")
 dane <- read.csv("dane/Car_sale_ads.csv")
 ```
 
-Analizę ograniczono do samochodów marek BMW i Mercedes-Benz, co wynika z konieczności zapewnienia wysokiej jakości statystycznej danych. Szeroki zakres wszystkich marek (\~200k obserwacji, 20+ brandów) wprowadza znaczną heteroskedastyczność (różną wariancję reszt w modelach regresji) oraz nadmiar obserwacji odstających, co destabilizuje estymatory i obniża moc testów hipotez.
+Analizę ograniczono do samochodów marek BMW i Mercedes-Benz, co wynika z konieczności zapewnienia wysokiej jakości statystycznej danych. Szeroki zakres wszystkich marek (\~200k obserwacji, 20+ brandów) wprowadza znaczną heteroskedastyczność (różną wariancję reszt w modelach regresji) oraz nadmiar obserwacji odstających, co destabilizuje estymatory i obniża moc testów hipotez. Aby analizowane wartosci były bardziej miarodajne do badania posłużyły ogłoszenia dla samochodów używanych.
 
 Uzasadnienie wyboru marek premium - DO NAPISANIA! \# Opis zmiennych
 
@@ -362,7 +362,16 @@ brand_colors <- c(
   "Mercedes" = "#7f7f7f"   # elegancka szarość
 )
 ```
-Hipoteza H1 (Cena a przebieg) - tylko dla używanych samochodów, dla Mercedesa i BMW osobno
+#Główna statystyka opisowa (opis badanych zmiennych podstawowe informacje i tabelka z nimi)
+ Poniżej przedstawiono głowne statystyki opisowe dla zmiennych numerycznych w zbiorze danych. Statystyki dotyczą używanych samochodów marek BMW oraz Mercedes Benz. Poniżej przedstawiono tabelę zawierającą liczebność próby, średnie wartości kluczonych zmiennych i (tutaj pomysleć do dalej)
+ 
+ (tutaj tabela ze statystykami)
+
+
+
+Hipoteza H1 (Cena a przebieg) - tylko dla używanych samochodów, dla Mercedesa i BMW
+
+tutaj zdanie wstępu do statystyki opisowej, tabela dla zmiennych z wykresu, wykres i na koniec opis wyników z tabeli i wykresu i tak dla wszystkich wykresów
 
 ```{r}
 library(dplyr)
@@ -462,107 +471,131 @@ Hipoteza H3 (Typ nadwozia a cena) - tylko dla używanych samochodów, weług mar
 
 ```{r}
 library(ggplot2)
+
+# Paleta kolorów marek
+brand_colors <- c(
+  "BMW" = "#1f77b4",
+  "Mercedes" = "#7f7f7f"
+)
+
 dane_used <- dane %>% filter(Condition == "Used")
+
 ggplot(dane_used, aes(x = Type, y = Price, fill = Vehicle_brand)) +
   geom_boxplot(outlier.shape = NA, alpha = 0.7) +
   facet_grid(~ Vehicle_brand, scales = "fixed") +
   coord_cartesian(ylim = c(0, 400000)) +
-  labs(title = "Zależność ceny od typu nadwozia samochodu używanego - BMW i Mercedes-Benz",
-       x = "Typ nadwozia",
-       y = "Cena (PLN)",
-       fill = "Marka Samochodu") +
-  scale_y_continuous(
-    labels = function(x) x / 1000,
-    name = "Cena (tys. PLN)"
+  labs(
+    title = "Zależność ceny od typu nadwozia samochodu używanego:",
+    x = "Typ nadwozia",
+    y = "Cena (tys. PLN)"
   ) +
-   scale_x_discrete(labels = c(
+  scale_y_continuous(labels = function(x) x / 1000) +
+  scale_x_discrete(labels = c(
     "city_cars"     = "Miejskie",
     "compact"       = "Kompakt",
     "convertible"   = "Kabriolet",
     "coupe"         = "Coupe",
     "minivan"       = "Minivan",
     "sedan"         = "Sedan",
-    "small_cars"    = "Małe Auta",
+    "small_cars"    = "Małe auta",
     "station_wagon" = "Kombi",
     "SUV"           = "SUV"
   )) +
+  scale_fill_manual(values = brand_colors) +
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.position = "none"
+  )
 ```
 
 Hipoteza H4 (Skrzynia biegów a cena) - tylko dla używanych samochodów Weryfikacja: porównanie cen `Price` w dwóch grupach (`Transmission` = automat vs manual) z użyciem odpowiednich testów statystycznych i wizualizacji - proponowane wykorzystanie t-test lub Wilcoxon `Price` \~ `Transmission` w podzbiorach marek, wizualizacja violin plots.
 
 ```{r}
 library(ggplot2)
-dane_used <- dane %>% filter(Condition == "Used")
+library(dplyr)
+
+# Filtrujemy tylko samochody używane
+dane_used <- dane %>% filter(Condition == "Used" & !(Transmission == ""))
+
 ggplot(dane_used, aes(x = Transmission, y = Price, fill = Vehicle_brand)) +
   geom_violin(alpha = 0.7) +
   facet_grid(~ Vehicle_brand, scales = "fixed") +
   coord_cartesian(ylim = c(0, 400000)) +
-  labs(title = "Zależność ceny od rodzaju skrzyni biegów samochodu używanego - BMW i Mercedes-Benz",
-       x = "Rodzaj skrzyni biegów",
-       y = "Cena (PLN)",
-       fill = "Marka Samochodu"
-       ) +
+  labs(
+    title = "Zależność ceny od rodzaju skrzyni biegów samochodu używanego:",
+    x = "Rodzaj skrzyni biegów",
+    y = "Cena (tys. PLN)"
+  ) +
   scale_y_continuous(
-    labels = function(x) x / 1000,
-    name = "Cena (tys. PLN)"
+    labels = function(x) x / 1000
   ) +
   scale_x_discrete(labels = c(
     "Automatic" = "Automatyczna",
     "Manual"    = "Manualna"
   )) +
+  scale_fill_manual(values = brand_colors) +  # używamy Twojej palety
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.position = "none"  # ukrywamy legendę
+  )
 ```
 
 Hipoteza H5 (Pierwszy właściciel a cena) - tylko dla używanych samochodów Weryfikacja: porównanie `Price` dla zmiennej `First_owner` (tak vs nie) z wykorzystaniem wykresów oraz testów różnic średnich.
 
 ```{r}
 library(ggplot2)
+library(dplyr)
+
 dane_used <- dane %>% 
   filter(Condition == "Used") %>%
   mutate(
     First_owner_lab = ifelse(First_owner == "Yes", "Tak", "Nie")
   )
+
 ggplot(dane_used, aes(x = First_owner_lab, y = Price, fill = Vehicle_brand)) +
   geom_boxplot(outlier.shape = NA, alpha = 0.7) +
   facet_grid(~ Vehicle_brand, scales = "fixed") +
   coord_cartesian(ylim = c(0, 400000)) +
-  labs(title = "Zależność ceny od bycia pierwszym właścicielem samochodu używanego - \nBMW i Mercedes-Benz",
-       x = "Czy pierwszy właściciel?",
-       y = "Cena (PLN)",
-       fill = "Marka Samochodu"
-       ) +
-  scale_y_continuous(
-    labels = function(x) x / 1000,
-    name = "Cena (tys. PLN)"
+  labs(
+    title = "Zależność ceny od bycia pierwszym właścicielem samochodu używanego:",
+    x = "Czy pierwszy właściciel?",
+    y = "Cena (tys. PLN)",
+    fill = "Marka Samochodu"
   ) +
-  scale_x_discrete(labels = c(
-"Yes" = "Tak",
-"No" = "Nie"
-)) +
+  scale_y_continuous(
+    labels = function(x) x / 1000
+  ) +
+  scale_fill_manual(values = brand_colors) +  # używamy Twojej palety kolorów
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.position = "none"  # legendę możemy ukryć, bo mamy facet_grid
+  )
 ```
 
 Hipoteza H6 (Napęd a cena) - tylko dla używanych samochodów Weryfikacja: porównanie rozkładów ceny pomiędzy kategoriami zmiennej `Drive` (np. FWD, RWD, 4x4) z uwzględnieniem innych cech w modelu (m.in. `Power_HP`, `Production_year`) - boxplot
 
 ```{r}
 library(ggplot2)
-dane_used <- dane %>% filter(Condition == "Used")
+library(dplyr)
+
+# Filtrujemy samochody używane i usuwamy brakujące wartości w Drive
+dane_used <- dane %>%
+  filter(Condition == "Used" & !(Drive ==))
+
 ggplot(dane_used, aes(x = Drive, y = Price, fill = Vehicle_brand)) +
   geom_boxplot(outlier.shape = NA, alpha = 0.7) +
   facet_grid(~ Vehicle_brand, scales = "fixed") +
   coord_cartesian(ylim = c(0, 400000)) +
-  labs(title = "Zależność ceny od typu napędu samochodu używanego - BMW i Mercedes-Benz",
-       x = "Typ napędu",
-       y = "Cena (PLN)",
-       fill = "Marka Samochodu"
-       ) +
+  labs(
+    title = "Zależność ceny od typu napędu samochodu używanego - BMW i Mercedes-Benz",
+    x = "Typ napędu",
+    y = "Cena (tys. PLN)"
+  ) +
   scale_y_continuous(
-    labels = function(x) x / 1000,
-    name = "Cena (tys. PLN)"
+    labels = function(x) x / 1000
   ) +
   scale_x_discrete(labels = c(
     "4x4 (attached automatically)" = "4x4 dołączany (automat)",
@@ -571,8 +604,12 @@ ggplot(dane_used, aes(x = Drive, y = Price, fill = Vehicle_brand)) +
     "Front wheels"             = "Napęd na przód",
     "Rear wheels"              = "Napęd na tył"
   )) +
+  scale_fill_manual(values = brand_colors) +  # używamy palety kolorów marek
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.position = "none"  # ukrywamy legendę
+  )
 ```
 
 Hipoteza H7 (Moc silnika a cena) - tylko dla używanych samochodów, według mocy\
@@ -580,22 +617,29 @@ Weryfikacja: model regresji z ceną `Price` jako zmienną zależną i `Power_HP`
 
 ```{r}
 library(ggplot2)
-dane_used <- dane %>% filter(Condition == "Used")
-ggplot(dane_used %>% filter(Price <= 150000),
-       aes(x = Power_HP, y = Price, color = Vehicle_brand)) +
+library(dplyr)
+
+# Filtrujemy samochody używane, brakujące wartości i cenę do 500k
+dane_used <- dane %>%
+  filter(Condition == "Used" & !is.na(Power_HP) & !is.na(Price) & Price <= 500000)
+
+ggplot(dane_used, aes(x = Power_HP, y = Price, color = Vehicle_brand)) +
   geom_point(alpha = 0.1) +
-  geom_smooth(method = "lm", se = FALSE) +
+  geom_smooth(aes(group = 1), method = "lm", se = FALSE, color = "black", size = 1.6) +
   facet_grid(~ Vehicle_brand, scales = "fixed") +
-  labs(title = "Zależność ceny od mocy silnika samochodu używanego - BMW i\n Mercedes-Benz (do 150 tys. PLN)",
-       color = "Marka Samochodu"
-       ) +
+  labs(
+    title = "Zależność ceny od mocy silnika samochodu używanego:"
+  ) +
   scale_x_continuous(name = "Moc silnika (HP)") +
   scale_y_continuous(
-    limits = c(0, 200000),
     labels = function(x) x / 1000,
     name = "Cena (tys. PLN)"
   ) +
-  theme_minimal()
+  scale_color_manual(values = brand_colors) +
+  theme_minimal() +
+  theme(
+    legend.position = "none"
+  )
 
 ```
 
@@ -603,20 +647,25 @@ Hipoteza H8 (Paliwo a cena – BMW vs Mercedes) Weryfikacja: boxplot `Price` \~ 
 
 ```{r}
 library(ggplot2)
-dane_used <- dane %>% filter(Condition == "Used")
+library(dplyr)
+
+# Filtrujemy samochody używane i brakujące wartości w Fuel_type
+dane_used <- dane %>%
+  filter(Condition == "Used" & !is.na(Fuel_type))
+
 ggplot(dane_used, aes(x = Fuel_type, y = Price, fill = Vehicle_brand)) +
   geom_boxplot(outlier.shape = NA, alpha = 0.7) +
   facet_grid(~ Vehicle_brand, scales = "fixed") +
   coord_cartesian(ylim = c(0, 400000)) +
-  labs(title = "Zależność ceny od rodzaju paliwa samochodu używanego - BMW i Mercedes-Benz",
-       x = "Rodzaj paliwa",
-       y = "Cena (PLN)",
-       fill = "Marka Samochodu") +
-  scale_y_continuous(
-    labels = function(x) x / 1000,
-    name = "Cena (tys. PLN)"
+  labs(
+    title = "Zależność ceny od rodzaju paliwa samochodu używanego:",
+    x = "Rodzaj paliwa",
+    y = "Cena (tys. PLN)"
   ) +
-   scale_x_discrete(labels = c(
+  scale_y_continuous(
+    labels = function(x) x / 1000
+  ) +
+  scale_x_discrete(labels = c(
     "Diesel"         = "Diesel",
     "Electric"       = "Elektryczny",
     "Gasoline"       = "Benzyna",
@@ -624,7 +673,12 @@ ggplot(dane_used, aes(x = Fuel_type, y = Price, fill = Vehicle_brand)) +
     "Gasoline + LPG" = "Benzyna + LPG",
     "Hybrid"         = "Hybrydowy"
   )) +
+  scale_fill_manual(values = brand_colors) +  # spójne kolory marek
   theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.position = "none"  # ukrywamy legendę
+  )
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
@@ -632,15 +686,23 @@ Hipoteza H9 (Kolor a cena – premium psychologia) Weryfikacja: boxplot `Price` 
 
 ```{r}
 library(ggplot2)
-dane_top <- dane %>% 
-  filter(Colour %in% names(sort(table(Colour), decreasing=T))[1:10])
+library(dplyr)
 
-ggplot(dane_top, aes(x = Colour, y = Price/1000)) +  # Usunięto fill=Vehicle_brand
+# Filtrujemy samochody używane, brakujące wartości w Colour i Price <= 500k
+dane_used_top <- dane %>%
+  filter(Condition == "Used" & !is.na(Colour) & !is.na(Price) & Price <= 500000) %>%
+  # Bierzemy 10 najczęstszych kolorów
+  filter(Colour %in% names(sort(table(Colour), decreasing = TRUE))[1:10])
+
+ggplot(dane_used_top, aes(x = Colour, y = Price / 1000)) +
   geom_bin2d(bins = 30) +
-  scale_fill_viridis_c() +  # Teraz OK - fill to gęstość (liczba)
-  facet_wrap(~ Vehicle_brand, scales = "free_y", ncol = 2) +  # Podzielone na marki
-  labs(title = "Gęstość cen według koloru - BMW vs Mercedes", 
-       x = "Kolor", y = "Cena (tys. PLN)", fill = "Liczba aut") +
+  scale_fill_viridis_c(name = "Liczba aut") +  # fill = liczba aut w binie
+  facet_wrap(~ Vehicle_brand, scales = "free_y", ncol = 2) +
+  labs(
+    title = "Gęstość cen według koloru samochodów używanych:",
+    x = "Kolor",
+    y = "Cena (tys. PLN)"
+  ) +
   scale_x_discrete(labels = c(
     "black"  = "czarny",
     "blue"   = "niebieski",
@@ -673,10 +735,11 @@ ggplot(dane_used, aes(x = Production_year_group, y = cena_per_km, fill = Vehicle
   geom_boxplot(outlier.shape = NA, alpha = 0.7) +
   facet_grid(~ Vehicle_brand, scales = "fixed") +
   coord_cartesian(ylim = c(0, 15)) +
-  labs(title = "Zależność ceny za kilometr od roku produkcji samochodu używanego - BMW i Mercedes-Benz",
+  labs(title = "Zależność ceny za kilometr od roku produkcji samochodu używanego:",
        x = "Grupa roku produkcji",
        y = "Cena za kilometr (PLN/km)",
        fill = "Marka Samochodu") +
+  scale_fill_manual(values = brand_colors) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
@@ -711,6 +774,7 @@ dane_used <- dane_used %>%
 
 # Agregacja średnich cen
 ceny_woj <- dane_used %>%
+  filter(Condition == "Used") %>%
   group_by(wojewodztwo, Vehicle_brand) %>%
   summarise(
     mean_price = mean(Price, na.rm = TRUE),
