@@ -639,6 +639,8 @@ library(dplyr)
 library(knitr)
 library(kableExtra)
 library(scales)
+
+# Przygotowanie danych z grupami lat
 dane_used <- dane %>%
   filter(Condition == "Used") %>%
   mutate(
@@ -653,31 +655,34 @@ dane_used <- dane %>%
         "16–20",
         "21–24"
       ),
-      right = FALSE  # lewy przedział włącznie, prawy wyłącznie
+      right = FALSE
     )
-  )%>%
+  ) %>%
   filter(!is.na(Year_group))
 
+# Tabela H2 z dodaną średnią arytmetyczną
 tab_h2 <- dane_used %>%
   filter(Price <= 450000) %>%
   filter(Vehicle_brand %in% c("BMW", "Mercedes-Benz")) %>%
   group_by(Vehicle_brand, Year_group) %>%
   summarise(
     n = sum(!is.na(Price)),
+    Srednia = mean(Price, na.rm = TRUE),
     Q1 = quantile(Price, 0.25, na.rm = TRUE),
     Mediana = median(Price, na.rm = TRUE),
     Q3 = quantile(Price, 0.75, na.rm = TRUE),
     .groups = "drop"
   ) %>%
   arrange(Vehicle_brand, Year_group) %>%
-  mutate(across(c(n, Q1, Mediana, Q3), ~comma(round(.x, 0), big.mark = " ")))
+  mutate(across(c(n, Srednia, Q1, Mediana, Q3), ~comma(round(.x, 0), big.mark = " ")))
 
+# Render tabeli
 tab_h2 %>%
   kable(
     "html",
-    caption = "H2: Cena samochodów według roku produkcji",
+    caption = "H2: Cena samochodów W PLN według roku produkcji",
     align = "c",
-    col.names = c("Marka", "Rok grupy", "Liczba", "Q1", "Mediana", "Q3")
+    col.names = c("Marka", "Rok grupy", "Liczba", "Średnia", "Q1", "Mediana", "Q3")
   ) %>%
   kable_styling(
     full_width = FALSE,
