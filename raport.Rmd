@@ -349,9 +349,14 @@ barplot(cf)
 Ostatecznie mamy dane, które spełniają kryteria walidacji i nie zawierają braków danych. Możemy przejść do dalszej analizy danych. Dla uzyskanych danych wybieramy marki Mercedes i BMW do dalszej analizy i zapisujemy plik zawierający te dane.
 
 ```{r}
-dane <- dane %>% filter(Vehicle_brand %in% c("BMW", "Mercedes-Benz"))
-write.csv(dane, "dane/Car_sale_ads_cleaned.csv", row.names = FALSE)
+dane <- dane %>%
+  filter(
+    Vehicle_brand %in% c("BMW", "Mercedes-Benz"),
+    Currency == "PLN",
+    Condition == "Used"
+  )
 
+write.csv(dane, "dane/Car_sale_ads_cleaned.csv", row.names = FALSE)
 ```
 
 # 3. Wizualizacja danych w celu weryfikacji hipotez
