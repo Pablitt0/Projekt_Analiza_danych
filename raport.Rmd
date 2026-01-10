@@ -377,15 +377,17 @@ library(dplyr)
 library(tidyr)
 library(knitr)
 library(kableExtra)
+library(scales)
 
+# Filtrujemy tylko auta używane i wybrane marki
 daneused <- dane %>% 
-  filter(Condition == "Used") %>%
-  group_by(Vehicle_brand)
+  filter(Condition == "Used", Vehicle_brand %in% c("BMW", "Mercedes-Benz"))
 
-# Proponowane nazwy (jak w opisie), ale weźmiemy tylko te, które realnie istnieją
+# Lista zmiennych numerycznych, które istnieją w danych
 num_vars <- c("Price", "Mileagekm", "Productionyear", "PowerHP", "Displacementcm3")
 num_vars_exist <- intersect(num_vars, names(daneused))
 
+# Tworzymy tabelę opisową
 tabela_opisowa <- daneused %>%
   group_by(Vehicle_brand) %>%
   summarise(
@@ -404,22 +406,35 @@ tabela_opisowa <- daneused %>%
     ),
     .groups = "drop"
   ) %>%
-  pivot_longer(-c(Vehicle_brand, n),
-               names_to = c("Zmienna", "Stat"),
-               names_sep = "_",
-               values_to = "Wartosc") %>%
-  pivot_wider(names_from = Stat, values_from = Wartosc) %>%
-  relocate(Vehicle_brand, Zmienna, n, mean, sd, min, q1, med, q3, max) %>%
-  mutate(across(c(mean, sd, min, q1, med, q3, max), ~round(.x, 2)))
-
-tabela_opisowa %>%
-  arrange(Zmienna, Vehicle_brand) %>%
-  kable(
-    caption = "Statystyki opisowe po czyszczeniu danych (auta używane) – BMW vs Mercedes-Benz",
-    col.names = c("Marka", "Zmienna", "n", "Średnia", "SD", "Min", "Q1", "Mediana", "Q3", "Max"),
-    align = "l"
+  pivot_longer(
+    -c(Vehicle_brand, n),
+    names_to = c("Zmienna", "Stat"),
+    names_sep = "_",
+    values_to = "Wartosc"
   ) %>%
-  kable_styling(full_width = FALSE, bootstrap_options = c("striped", "condensed"))
+  pivot_wider(names_from = Stat, values_from = Wartosc) %>%
+  # Usuwamy kolumnę Zmienna
+  select(-Zmienna) %>%
+  relocate(Vehicle_brand, n, mean, sd, min, q1, med, q3, max) %>%
+  mutate(
+    across(c(mean, sd, min, q1, med, q3, max), ~round(.x, 0)),
+    across(c(mean, sd, min, q1, med, q3, max), ~comma(.x, big.mark = " "))
+  )
+
+# Tworzymy tabelę HTML z wyśrodkowanymi kolumnami
+tabela_opisowa %>%
+  arrange(Vehicle_brand) %>%
+  kable(
+    "html",
+    caption = "Statystyki opisowe po czyszczeniu danych (auta używane) – BMW vs Mercedes-Benz",
+    col.names = c("Marka", "Liczba ogłoszeń", "Średnia", "SD", "Min", "Q1", "Mediana", "Q3", "Max"),
+    align = "c"  # wyśrodkowanie wszystkich kolumn
+  ) %>%
+  kable_styling(
+    full_width = FALSE,
+    bootstrap_options = c("striped", "condensed", "hover")
+  ) %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#2C3E50")  # nagłówek
 ```
 W tabeli widać, że po czyszczeniu danych liczba ogłoszeń aut używanych jest większa dla BMW (n = 15168) niż dla Mercedes-Benz (n = 10983), co sugeruje większą reprezentację BMW w tej próbce.
 
