@@ -819,11 +819,12 @@ ggplot(dane_used, aes(x = Transmission, y = Price, fill = Vehicle_brand)) +
 ```
 ```{r}
 library(dplyr)
-library(tidyr)
 library(knitr)
 library(kableExtra)
+library(scales)
 
-tab_h4_opis <- dane %>%
+# Tabela H4 w układzie długim
+tab_h4_long <- dane %>%
   filter(
     Condition == "Used",
     Vehicle_brand %in% c("BMW", "Mercedes-Benz"),
@@ -834,35 +835,29 @@ tab_h4_opis <- dane %>%
   group_by(Vehicle_brand, Transmission) %>%
   summarise(
     n = sum(!is.na(Price)),
+    Srednia = mean(Price, na.rm = TRUE),
     Q1 = quantile(Price, 0.25, na.rm = TRUE),
     Mediana = median(Price, na.rm = TRUE),
     Q3 = quantile(Price, 0.75, na.rm = TRUE),
     .groups = "drop"
   ) %>%
-  pivot_wider(
-    id_cols = Vehicle_brand,
-    names_from = Transmission,
-    values_from = c(n, Q1, Mediana, Q3),
-    names_glue = "{.value}_{Transmission}"
-  ) %>%
-  mutate(
-    roznica_median = Mediana_Automatic - Mediana_Manual
-  ) %>%
-  rename(Marka = Vehicle_brand) %>%
-  select(
-    Marka,
-    n_Automatic, Q1_Automatic, Mediana_Automatic, Q3_Automatic,
-    n_Manual,    Q1_Manual,    Mediana_Manual,    Q3_Manual,
-    roznica_median
-  )
+  rename(Marka = Vehicle_brand, Skrzynia = Transmission) %>%
+  arrange(Marka, Skrzynia) %>%
+  mutate(across(c(n, Srednia, Q1, Mediana, Q3), ~comma(round(.x, 0), big.mark = " ")))
 
-tab_h4_opis %>%
-  kbl(
+# Render w stylu raportowym
+tab_h4_long %>%
+  kable(
+    "html",
     caption = "H4: Cena a skrzynia biegów (używane, Price ≤ 400 000)",
-    digits = 0
+    align = "c",
+    col.names = c("Marka", "Skrzynia biegów", "Liczba", "Średnia", "Q1", "Mediana", "Q3")
   ) %>%
-  kable_styling(full_width = FALSE)
-
+  kable_styling(
+    full_width = FALSE,
+    bootstrap_options = c("striped", "condensed", "hover")
+  ) %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#2C3E50")
 
 ```
 Na wykresie violin oraz w tabeli kwartylowej widać, że w obu markach rozkład cen dla aut z automatem jest przesunięty w górę względem manuali (Price ≤ 400000). Dla BMW mediana automatu to 78900 PLN, a manuala 23300 PLN (różnica median 55600 PLN), natomiast dla Mercedes-Benz odpowiednio 73900 PLN vs 19900 PLN (różnica 54000 PLN). Wniosek wspiera hipotezę H4 na poziomie opisu danych, przy czym obserwowana różnica może wynikać także z tego, że automaty częściej występują w droższych konfiguracjach (np. nowsze roczniki/wyższe wersje), a nie wyłącznie z samego typu skrzyni.
@@ -900,8 +895,52 @@ ggplot(dane_used, aes(x = First_owner_lab, y = Price, fill = Vehicle_brand)) +
     legend.position = "none"  # legendę możemy ukryć, bo mamy facet_grid
   )
 ```
+```{r}
+library(dplyr)
+library(knitr)
+library(kableExtra)
+library(scales)
 
+# Przygotowanie danych do tabeli H5
+tab_h5 <- dane %>%
+  filter(
+    Condition == "Used",
+    Vehicle_brand %in% c("BMW", "Mercedes-Benz"),
+    !is.na(Price),
+    Price <= 400000
+  ) %>%
+  mutate(
+    Pierwszy_wlasciciel = ifelse(First_owner == "Yes", "Tak", "Nie")
+  ) %>%
+  group_by(Vehicle_brand, Pierwszy_wlasciciel) %>%
+  summarise(
+    n = sum(!is.na(Price)),
+    Srednia = mean(Price, na.rm = TRUE),
+    Q1 = quantile(Price, 0.25, na.rm = TRUE),
+    Mediana = median(Price, na.rm = TRUE),
+    Q3 = quantile(Price, 0.75, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  rename(Marka = Vehicle_brand, `Pierwszy właściciel` = Pierwszy_wlasciciel) %>%
+  arrange(Marka, `Pierwszy właściciel`) %>%
+  mutate(across(c(n, Srednia, Q1, Mediana, Q3), ~comma(round(.x, 0), big.mark = " ")))
+
+# Render tabeli w stylu raportowym
+tab_h5 %>%
+  kable(
+    "html",
+    caption = "H5: Cena samochodu w zależności od bycia pierwszym właścicielem (używane, Price ≤ 400 000)",
+    align = "c",
+    col.names = c("Marka", "Pierwszy właściciel", "Liczba", "Średnia", "Q1", "Mediana", "Q3")
+  ) %>%
+  kable_styling(
+    full_width = FALSE,
+    bootstrap_options = c("striped", "condensed", "hover")
+  ) %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#2C3E50")
+```
 Hipoteza H6 (Napęd a cena) - tylko dla używanych samochodów Weryfikacja: porównanie rozkładów ceny pomiędzy kategoriami zmiennej `Drive` (np. FWD, RWD, 4x4) z uwzględnieniem innych cech w modelu (m.in. `Power_HP`, `Production_year`) - boxplot
+
 
 ```{r}
 library(ggplot2)
@@ -937,6 +976,59 @@ ggplot(dane_used, aes(x = Drive, y = Price, fill = Vehicle_brand)) +
     legend.position = "none"  # ukrywamy legendę
   )
 ```
+```{r}
+library(dplyr)
+library(knitr)
+library(kableExtra)
+library(scales)
+
+# Przygotowanie danych do tabeli H6
+tab_h6 <- dane %>%
+  filter(
+    Condition == "Used",
+    Vehicle_brand %in% c("BMW", "Mercedes-Benz"),
+    !is.na(Price),
+    Price <= 400000,
+    Drive != ""
+  ) %>%
+  # Możemy przypisać polskie nazwy napędu tak jak na wykresie
+  mutate(
+    Typ_napedu = case_when(
+      Drive == "4x4 (attached automatically)" ~ "4x4 dołączany (automat)",
+      Drive == "4x4 (attached manually)" ~ "4x4 dołączany (manual)",
+      Drive == "4x4 (permanent)" ~ "4x4 stały",
+      Drive == "Front wheels" ~ "Napęd na przód",
+      Drive == "Rear wheels" ~ "Napęd na tył",
+      TRUE ~ Drive
+    )
+  ) %>%
+  group_by(Vehicle_brand, Typ_napedu) %>%
+  summarise(
+    n = sum(!is.na(Price)),
+    Srednia = mean(Price, na.rm = TRUE),
+    Q1 = quantile(Price, 0.25, na.rm = TRUE),
+    Mediana = median(Price, na.rm = TRUE),
+    Q3 = quantile(Price, 0.75, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  rename(Marka = Vehicle_brand, `Typ napędu` = Typ_napedu) %>%
+  arrange(Marka, `Typ napędu`) %>%
+  mutate(across(c(n, Srednia, Q1, Mediana, Q3), ~comma(round(.x, 0), big.mark = " ")))
+
+# Render tabeli w stylu raportowym
+tab_h6 %>%
+  kable(
+    "html",
+    caption = "H6: Cena samochodu w zależności od typu napędu (używane, Price ≤ 400 000)",
+    align = "c",
+    col.names = c("Marka", "Typ napędu", "Liczba", "Średnia", "Q1", "Mediana", "Q3")
+  ) %>%
+  kable_styling(
+    full_width = FALSE,
+    bootstrap_options = c("striped", "condensed", "hover")
+  ) %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#2C3E50")
+```
 
 Hipoteza H7 (Moc silnika a cena) - tylko dla używanych samochodów, według mocy\
 Weryfikacja: model regresji z ceną `Price` jako zmienną zależną i `Power_HP`, `Mileage_km`, `Production_year` jako głównymi zmiennymi objaśniającymi.
@@ -968,7 +1060,49 @@ ggplot(dane_used, aes(x = Power_HP, y = Price, color = Vehicle_brand)) +
   )
 
 ```
+```{r}
+library(dplyr)
+library(knitr)
+library(kableExtra)
+library(scales)
 
+# Przygotowanie danych
+tab_h7 <- dane %>%
+  filter(
+    Condition == "Used",
+    !is.na(Power_HP),
+    !is.na(Price),
+    Price <= 500000
+  ) %>%
+  filter(Vehicle_brand %in% c("BMW", "Mercedes-Benz")) %>%
+  group_by(Vehicle_brand) %>%
+  summarise(
+    n = n(),
+    Srednia = mean(Price, na.rm = TRUE),
+    Q1 = quantile(Price, 0.25, na.rm = TRUE),
+    Mediana = median(Price, na.rm = TRUE),
+    Q3 = quantile(Price, 0.75, na.rm = TRUE),
+    r_cena_moc = cor(Power_HP, Price, use = "complete.obs", method = "pearson"),
+    .groups = "drop"
+  ) %>%
+  rename(Marka = Vehicle_brand) %>%
+  mutate(across(c(n, Srednia, Q1, Mediana, Q3), ~comma(round(.x, 0), big.mark = " "))) %>%
+  mutate(r_cena_moc = round(r_cena_moc, 2))  # korelacja z dwoma miejscami po przecinku
+
+# Render tabeli w stylu raportowym
+tab_h7 %>%
+  kable(
+    "html",
+    caption = "H7: Cena a moc silnika samochodu używanego (używane, Price ≤ 500 000) – korelacja r",
+    align = "c",
+    col.names = c("Marka", "Liczba", "Średnia", "Q1", "Mediana", "Q3", "Wsp korelacji")
+  ) %>%
+  kable_styling(
+    full_width = FALSE,
+    bootstrap_options = c("striped", "condensed", "hover")
+  ) %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#2C3E50")
+```
 Hipoteza H8 (Paliwo a cena – BMW vs Mercedes) Weryfikacja: boxplot `Price` \~ `Fuel_type` \* `Vehicle_brand`, regresja z kontrolą Mileage_km + Production_year.
 
 ```{r}
@@ -1007,7 +1141,60 @@ ggplot(dane_used, aes(x = Fuel_type, y = Price, fill = Vehicle_brand)) +
   )
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
+```{r}
+library(dplyr)
+library(knitr)
+library(kableExtra)
+library(scales)
 
+# Przygotowanie danych do tabeli H8
+tab_h8 <- dane %>%
+  filter(
+    Condition == "Used",
+    Vehicle_brand %in% c("BMW", "Mercedes-Benz"),
+    !is.na(Fuel_type),
+    !is.na(Price),
+    Price <= 400000
+  ) %>%
+  # Polskie nazwy paliw (tak jak na wykresie)
+  mutate(
+    Rodzaj_paliwa = case_when(
+      Fuel_type == "Diesel" ~ "Diesel",
+      Fuel_type == "Electric" ~ "Elektryczny",
+      Fuel_type == "Gasoline" ~ "Benzyna",
+      Fuel_type == "Gasoline + CNG" ~ "Benzyna + CNG",
+      Fuel_type == "Gasoline + LPG" ~ "Benzyna + LPG",
+      Fuel_type == "Hybrid" ~ "Hybrydowy",
+      TRUE ~ Fuel_type
+    )
+  ) %>%
+  group_by(Vehicle_brand, Rodzaj_paliwa) %>%
+  summarise(
+    n = sum(!is.na(Price)),
+    Srednia = mean(Price, na.rm = TRUE),
+    Q1 = quantile(Price, 0.25, na.rm = TRUE),
+    Mediana = median(Price, na.rm = TRUE),
+    Q3 = quantile(Price, 0.75, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  rename(Marka = Vehicle_brand) %>%
+  arrange(Marka, Rodzaj_paliwa) %>%
+  mutate(across(c(n, Srednia, Q1, Mediana, Q3), ~comma(round(.x, 0), big.mark = " ")))
+
+# Render tabeli w stylu raportowym
+tab_h8 %>%
+  kable(
+    "html",
+    caption = "H8: Cena samochodu w zależności od rodzaju paliwa (używane, Price ≤ 400 000)",
+    align = "c",
+    col.names = c("Marka", "Rodzaj paliwa", "Liczba", "Średnia", "Q1", "Mediana", "Q3")
+  ) %>%
+  kable_styling(
+    full_width = FALSE,
+    bootstrap_options = c("striped", "condensed", "hover")
+  ) %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#2C3E50")
+```
 Hipoteza H9 (Kolor a cena – premium psychologia) Weryfikacja: boxplot `Price` \~ `Colour` \* `Vehicle_brand`, ANOVA z TukeyHSD post-hoc.
 
 ```{r}
@@ -1044,7 +1231,67 @@ ggplot(dane_used_top, aes(x = Colour, y = Price / 1000)) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
+```{r}
+library(dplyr)
+library(knitr)
+library(kableExtra)
+library(scales)
 
+# Przygotowanie danych do tabeli H9
+top_colors <- names(sort(table(dane$Colour), decreasing = TRUE))[1:10]
+
+tab_h9 <- dane %>%
+  filter(
+    Condition == "Used",
+    Vehicle_brand %in% c("BMW", "Mercedes-Benz"),
+    !is.na(Colour),
+    Colour %in% top_colors,
+    !is.na(Price),
+    Price <= 500000
+  ) %>%
+  # Polskie nazwy kolorów
+  mutate(
+    Kolor = case_when(
+      Colour == "black" ~ "czarny",
+      Colour == "blue" ~ "niebieski",
+      Colour == "brown" ~ "brązowy",
+      Colour == "golden" ~ "złoty",
+      Colour == "gray" ~ "szary",
+      Colour == "green" ~ "zielony",
+      Colour == "other" ~ "inny",
+      Colour == "red" ~ "czerwony",
+      Colour == "silver" ~ "srebrny",
+      Colour == "white" ~ "biały",
+      TRUE ~ Colour
+    )
+  ) %>%
+  group_by(Vehicle_brand, Kolor) %>%
+  summarise(
+    n = sum(!is.na(Price)),
+    Srednia = mean(Price, na.rm = TRUE),
+    Q1 = quantile(Price, 0.25, na.rm = TRUE),
+    Mediana = median(Price, na.rm = TRUE),
+    Q3 = quantile(Price, 0.75, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  rename(Marka = Vehicle_brand) %>%
+  arrange(Marka, Kolor) %>%
+  mutate(across(c(n, Srednia, Q1, Mediana, Q3), ~comma(round(.x, 0), big.mark = " ")))
+
+# Render tabeli w stylu raportowym
+tab_h9 %>%
+  kable(
+    "html",
+    caption = "H9: Cena samochodów używanych według koloru (10 najczęstszych, Price ≤ 500 000)",
+    align = "c",
+    col.names = c("Marka", "Kolor", "Liczba", "Średnia", "Q1", "Mediana", "Q3")
+  ) %>%
+  kable_styling(
+    full_width = FALSE,
+    bootstrap_options = c("striped", "condensed", "hover")
+  ) %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#2C3E50")
+```
 Hipoteza H10 (Trwałość marki – cena/km) Weryfikacja: cena_per_km \<- `Price` / `Mileage_km`, boxplot po grupach `Production_year` + `Brand`, t-test.
 
 ```{r}
@@ -1070,6 +1317,56 @@ ggplot(dane_used, aes(x = Production_year_group, y = cena_per_km, fill = Vehicle
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
+```{r}
+library(dplyr)
+library(knitr)
+library(kableExtra)
+library(scales)
+
+# Przygotowanie danych do tabeli H10
+tab_h10 <- dane %>%
+  filter(
+    Condition == "Used",
+    Vehicle_brand %in% c("BMW", "Mercedes-Benz"),
+    !is.na(Price),
+    !is.na(Mileage_km),
+    Mileage_km > 0
+  ) %>%
+  mutate(
+    cena_per_km = Price / Mileage_km,
+    Grupa_roku = case_when(
+      Production_year <= 2000 ~ "Do 2000",
+      Production_year > 2000 & Production_year <= 2010 ~ "2001-2010",
+      Production_year > 2010 ~ "Po 2010"
+    )
+  ) %>%
+  group_by(Vehicle_brand, Grupa_roku) %>%
+  summarise(
+    n = sum(!is.na(cena_per_km)),
+    Srednia = mean(cena_per_km, na.rm = TRUE),
+    Q1 = quantile(cena_per_km, 0.25, na.rm = TRUE),
+    Mediana = median(cena_per_km, na.rm = TRUE),
+    Q3 = quantile(cena_per_km, 0.75, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  rename(Marka = Vehicle_brand) %>%
+  arrange(Marka, Grupa_roku) %>%
+  mutate(across(c(n, Srednia, Q1, Mediana, Q3), ~comma(round(.x, 2), big.mark = " ")))
+
+# Render tabeli w stylu raportowym
+tab_h10 %>%
+  kable(
+    "html",
+    caption = "H10: Cena za kilometr samochodu używanego w zależności od grupy roku produkcji",
+    align = "c",
+    col.names = c("Marka", "Grupa roku produkcji", "Liczba", "Średnia", "Q1", "Mediana", "Q3")
+  ) %>%
+  kable_styling(
+    full_width = FALSE,
+    bootstrap_options = c("striped", "condensed", "hover")
+  ) %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#2C3E50")
+```
 Hipoteza H11 (Cena a moc i lokalizacja  – BMW vs Mercedes (województwa)) - kilka map
 
 ```{r}

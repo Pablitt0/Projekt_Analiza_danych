@@ -21,3 +21,4 @@ ggrepel
 corrplot
 knitr
 kableExtra
+scales
