@@ -426,7 +426,7 @@ tabela_opisowa %>%
   arrange(Vehicle_brand) %>%
   kable(
     "html",
-    caption = "Statystyki opisowe po czyszczeniu danych (auta używane) – BMW vs Mercedes-Benz",
+    caption = "Statystyki opisowe dla cen w PLN – BMW vs Mercedes-Benz",
     col.names = c("Marka", "Liczba ogłoszeń", "Średnia", "SD", "Min", "Q1", "Mediana", "Q3", "Max"),
     align = "c"  # wyśrodkowanie wszystkich kolumn
   ) %>%
@@ -500,8 +500,9 @@ library(dplyr)
 library(tidyr)
 library(knitr)
 library(kableExtra)
+library(scales)
 
-# 1) Ten sam filtr co do wykresu (Used + ucięcie 99% w obrębie marki)
+# 1) Filtracja danych
 dane_used <- dane %>%
   filter(
     Condition == "Used",
@@ -522,15 +523,15 @@ corr_tab <- dane_used %>%
     .groups = "drop"
   )
 
-# 3) Statystyki opisowe dla Price i Mileage_km (long -> wide)
+# 3) Statystyki opisowe dla Mileage_km
 tab_long <- dane_used %>%
-  select(Vehicle_brand, Price, Mileage_km) %>%
+  select(Vehicle_brand, Mileage_km) %>%
   pivot_longer(
-    cols = c(Price, Mileage_km),
+    cols = Mileage_km,
     names_to = "Zmienna",
     values_to = "Wartosc"
   ) %>%
-  group_by(Vehicle_brand, Zmienna) %>%
+  group_by(Vehicle_brand) %>%
   summarise(
     n = sum(!is.na(Wartosc)),
     Srednia = mean(Wartosc, na.rm = TRUE),
@@ -543,35 +544,33 @@ tab_long <- dane_used %>%
     .groups = "drop"
   )
 
-tab_wide <- tab_long %>%
-  mutate(Zmienna = recode(Zmienna,
-                          Price = "cena",
-                          Mileage_km = "przebieg")) %>%
-  pivot_wider(
-    id_cols = Vehicle_brand,
-    names_from = Zmienna,
-    values_from = c(n, Srednia, SD, Min, Q1, Mediana, Q3, Max),
-    names_glue = "{.value}_{Zmienna}"
-  )
-
-# 4) Sklejenie: marka + r + statystyki (i ustawienie r jako 1. kolumny po marce)
-tab_final <- tab_wide %>%
+# 4) Sklejenie: marka + r + statystyki przebiegu
+tab_final <- tab_long %>%
   left_join(corr_tab, by = "Vehicle_brand") %>%
-  transmute(
+  select(
     Marka = Vehicle_brand,
     r_cena_przebieg,
-    n_cena, Srednia_cena, SD_cena, Min_cena, Q1_cena, Mediana_cena, Q3_cena, Max_cena,
-    n_przebieg, Srednia_przebieg, SD_przebieg, Min_przebieg, Q1_przebieg, Mediana_przebieg, Q3_przebieg, Max_przebieg
+    n,
+    Srednia, SD, Min, Q1, Mediana, Q3, Max
+  ) %>%
+  mutate(
+    across(-c(Marka, r_cena_przebieg), ~comma(round(.x, 0), big.mark = " ")),
+    r_cena_przebieg = round(r_cena_przebieg, 2)
   )
 
-# 5) Render tabeli (spans muszą sumować się do liczby kolumn = 18)
+# 5) Render tabeli w tym samym stylu
 tab_final %>%
-  kbl(
-    caption = "Statystyki opisowe + korelacja r (używane; po odcięciu 99. percentyla): BMW vs Mercedes-Benz",
-    digits = 2
+  kable(
+    "html",
+    caption = "Statystyki opisowe przebiegu w KM oraz wartość korelacji z ceną: BMW vs Mercedes-Benz",
+    align = "c",
+    col.names = c("Marka", "Wsp korelacji", "Liczba", "Średnia", "SD", "Min", "Q1", "Mediana", "Q3", "Max")
   ) %>%
-  add_header_above(c(" " = 2, "Cena (Price)" = 8, "Przebieg (Mileage_km)" = 8)) %>%
-  kable_styling(full_width = FALSE)
+  kable_styling(
+    full_width = FALSE,
+    bootstrap_options = c("striped", "condensed", "hover")
+  ) %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#2C3E50")
 
 
 ```
@@ -639,6 +638,25 @@ ggplot(
 library(dplyr)
 library(knitr)
 library(kableExtra)
+library(scales)
+dane_used <- dane %>%
+  filter(Condition == "Used") %>%
+  mutate(
+    Year_group = cut(
+      Production_year,
+      breaks = c(1995, 2000, 2005, 2010, 2015, 2020, 2025),
+      labels = c(
+        "96–00",
+        "01–05",
+        "06–10",
+        "11–15",
+        "16–20",
+        "21–24"
+      ),
+      right = FALSE  # lewy przedział włącznie, prawy wyłącznie
+    )
+  )%>%
+  filter(!is.na(Year_group))
 
 tab_h2 <- dane_used %>%
   filter(Price <= 450000) %>%
@@ -651,14 +669,21 @@ tab_h2 <- dane_used %>%
     Q3 = quantile(Price, 0.75, na.rm = TRUE),
     .groups = "drop"
   ) %>%
-  arrange(Vehicle_brand, Year_group)
+  arrange(Vehicle_brand, Year_group) %>%
+  mutate(across(c(n, Q1, Mediana, Q3), ~comma(round(.x, 0), big.mark = " ")))
 
 tab_h2 %>%
-  kbl(
-    caption = "H2: Cena vs rok produkcji (używane)",
-    digits = 0
+  kable(
+    "html",
+    caption = "H2: Cena samochodów według roku produkcji",
+    align = "c",
+    col.names = c("Marka", "Rok grupy", "Liczba", "Q1", "Mediana", "Q3")
   ) %>%
-  kable_styling(full_width = FALSE)
+  kable_styling(
+    full_width = FALSE,
+    bootstrap_options = c("striped", "condensed", "hover")
+  ) %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#2C3E50")
 ```
 Dla aut używanych (BMW i Mercedes-Benz) porównano ceny w przedziałach rocznika produkcji, a do analizy przyjęto ten sam zakres co na wykresie (ceny ograniczone do 450000 PLN).
 
@@ -712,8 +737,9 @@ ggplot(dane_used, aes(x = Type, y = Price, fill = Vehicle_brand)) +
 library(dplyr)
 library(knitr)
 library(kableExtra)
+library(scales)
 
-# Używane + 2 marki + zakres jak na wykresie (widok 0–400k)
+# Tabela H3: Cena vs typ nadwozia z dodaną średnią
 tab_h3 <- dane %>%
   filter(
     Condition == "Used",
@@ -724,19 +750,28 @@ tab_h3 <- dane %>%
   group_by(Vehicle_brand, Type) %>%
   summarise(
     n = sum(!is.na(Price)),
+    Srednia = mean(Price, na.rm = TRUE),
     Q1 = quantile(Price, 0.25, na.rm = TRUE),
     Mediana = median(Price, na.rm = TRUE),
     Q3 = quantile(Price, 0.75, na.rm = TRUE),
     .groups = "drop"
   ) %>%
-  arrange(Vehicle_brand, desc(Mediana)) 
+  arrange(Vehicle_brand, desc(Mediana)) %>%
+  mutate(across(c(n, Srednia, Q1, Mediana, Q3), ~comma(round(.x, 0), big.mark = " ")))
 
+# Render tabeli w tym samym stylu
 tab_h3 %>%
-  kbl(
-    caption = "H3: Cena a typ nadwozia (używane, Price ≤ 400 000)",
-    digits = 0
+  kable(
+    "html",
+    caption = "H3: Cena w PLN według typów nadwozia BMW vs Mercedes-Benz",
+    align = "c",
+    col.names = c("Marka", "Typ nadwozia", "Liczba", "Średnia", "Q1", "Mediana", "Q3")
   ) %>%
-  kable_styling(full_width = FALSE)
+  kable_styling(
+    full_width = FALSE,
+    bootstrap_options = c("striped", "condensed", "hover")
+  ) %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#2C3E50")
 ```
 Wyniki dla aut używanych (Price ≤ 400000) pokazują, że cena różni się między typami nadwozia, co jest zgodne z hipotezą H3. Zarówno na boxplotach, jak i w tabeli kwartylowej widać, że SUV ma najwyższą medianę ceny w obu markach: BMW 79900 PLN, Mercedes-Benz 115945 PLN.
 
