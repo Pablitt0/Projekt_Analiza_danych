@@ -939,6 +939,13 @@ tab_h5 %>%
   ) %>%
   row_spec(0, bold = TRUE, color = "white", background = "#2C3E50")
 ```
+Na podstawie tabeli i wykresu widać, że samochody oznaczone jako „pierwszy właściciel = Tak” są wyraźnie droższe od pozostałych w obu markach. Dla BMW mediana rośnie z ok. 38900 PLN („Nie”) do ok. 89900 PLN („Tak”), a dla Mercedes-Benz z ok. 38499 PLN („Nie”) do ok. 114900 PLN („Tak”), co pokazuje silne przesunięcie „typowej” ceny w górę. Dodatkowo wyższe wartości Q1 i Q3 w grupie „Tak” wskazują, że przewaga cenowa dotyczy nie tylko mediany, ale też całej pozostałych części rozkładu, co wspiera hipotezę H5 na poziomie opisu danych.
+
+
+
+
+
+
 Hipoteza H6 (Napęd a cena) - tylko dla używanych samochodów Weryfikacja: porównanie rozkładów ceny pomiędzy kategoriami zmiennej `Drive` (np. FWD, RWD, 4x4) z uwzględnieniem innych cech w modelu (m.in. `Power_HP`, `Production_year`) - boxplot
 
 
@@ -1029,6 +1036,10 @@ tab_h6 %>%
   ) %>%
   row_spec(0, bold = TRUE, color = "white", background = "#2C3E50")
 ```
+Dla aut używanych widać wyraźną zależność ceny od typu napędu: warianty 4x4 osiągają najwyższe poziomy cen w obu markach, co jest spójne z hipotezą H6. Zarówno w BMW, jak i w Mercedes-Benz mediany oraz kwartyle (Q1 i Q3) dla 4x4 są istotnie wyżej położone niż dla napędów na jedną oś, co wsazuje przewagę cenową 4x4.
+
+Jednocześnie rozkłady dla napędów na jedną oś nie są identyczne między markami: w BMW „napęd na przód” jest cenowo zbliżony do 4x4 dołączanego (automat) i wyraźnie wyższy niż „napęd na tył”. W Mercedes-Benz sytuacja jest bardziej jednoznaczna: napęd na przód i na tył mają podobne poziomy cen, natomiast 4x4 (stały i dołączany) tworzy wyraźnie droższy segment, co wzmacnia ogólny wniosek o przewadze cenowej 4x4.
+
 
 Hipoteza H7 (Moc silnika a cena) - tylko dla używanych samochodów, według mocy\
 Weryfikacja: model regresji z ceną `Price` jako zmienną zależną i `Power_HP`, `Mileage_km`, `Production_year` jako głównymi zmiennymi objaśniającymi.
@@ -1103,6 +1114,12 @@ tab_h7 %>%
   ) %>%
   row_spec(0, bold = TRUE, color = "white", background = "#2C3E50")
 ```
+Dane na wykresie i w tabeli wspierają Hipotezę 7: mocniejsze samochody używane są przeciętnie droższe, a zależność ma zbliżoną siłę w BMW i Mercedes-Benz (r ≈ 0.55). Jednocześnie widoczny rozrzut punktów wokół linii trendu pokazuje, że sama moc nie wyjaśnia całej zmienności ceny, ale stanowi ważny czynnik różnicujący oferty.
+
+
+
+
+
 Hipoteza H8 (Paliwo a cena – BMW vs Mercedes) Weryfikacja: boxplot `Price` \~ `Fuel_type` \* `Vehicle_brand`, regresja z kontrolą Mileage_km + Production_year.
 
 ```{r}
@@ -1195,6 +1212,14 @@ tab_h8 %>%
   ) %>%
   row_spec(0, bold = TRUE, color = "white", background = "#2C3E50")
 ```
+W autach używanych widać wyraźne różnice cen między rodzajami paliwa i są one podobnie uporządkowane w BMW oraz Mercedes-Benz. Najwyżej wyceniane są napędy alternatywne: w BMW najwyższą medianę mają hybrydy (ok. 197900 PLN) oraz auta elektryczne (ok. 97900 PLN), a w Mercedes-Benz elektryki są zdecydowanie najdroższe (mediana ok. 336450 PLN) i wyraźnie odstają od pozostałych typów.
+
+W „klasycznych” paliwach Mercedes-Benz jest przeciętnie droższy od BMW: mediana dla benzyny to ok. 62000 PLN w Mercedesie vs 50000 PLN w BMW, a dla diesla ok. 45900 PLN vs 50900 PLN (tu BMW wypada nieco wyżej medianą, ale Mercedes ma szerszą górę rozkładu w benzynie). W obu markach instalacje gazowe (Benzyna + LPG) są najtańszą kategorią (BMW mediana ok. 16900 PLN, Mercedes ok. 22000 PLN), co tworzy wyraźny kontrast względem hybryd i elektryków.
+
+Dodatkowo widać, że kategorie alternatywne mają mniejsze liczebności (np. elektryki i hybrydy), ale jednocześnie bardzo wysokie kwartyle, co przekłada się na „drogi” profil tych ofert w całym środkowym zakresie rozkładu (Q1–Q3). W efekcie paliwo jest jedną z cech, która najsilniej segmentuje ceny: od najtańszych aut LPG przez benzynę/diesla po wyraźnie droższe hybrydy i elektryki, szczególnie w Mercedes-Benz.
+
+
+
 Hipoteza H9 (Kolor a cena – premium psychologia) Weryfikacja: boxplot `Price` \~ `Colour` \* `Vehicle_brand`, ANOVA z TukeyHSD post-hoc.
 
 ```{r}
@@ -1292,6 +1317,15 @@ tab_h9 %>%
   ) %>%
   row_spec(0, bold = TRUE, color = "white", background = "#2C3E50")
 ```
+W analizie 10 najczęstszych kolorów wśród aut używanych widać, że różnice cen między kolorami istnieją, ale ich kierunek nie jest jednolity „premium vs nie-premium” — bardziej przypominają efekt tego, jakie modele i roczniki dominują w danym kolorze. W obu markach wyraźnie wyżej wypadają kolory takie jak biały i czerwony: w BMW mediana dla białych aut to 89900 PLN, a dla czerwonych 62700 PLN, natomiast w Mercedes-Benz białe mają medianę 96000 PLN, a czerwone 99000 PLN.
+
+Kolory „popularne” (czarny, szary) zwykle plasują się w środku rozkładu: w BMW czarny ma medianę 49900 PLN, a szary 44900 PLN, a w Mercedes-Benz czarny 60950 PLN i szary 76900 PLN. Jednocześnie w obu markach srebrny oraz „inne” kolory mają relatywnie niższe mediany (BMW srebrny 24800 PLN; Mercedes srebrny 25900 PLN), co sugeruje, że w tych barwach częściej występują tańsze oferty.
+
+Warto też zwrócić uwagę na to, że rozkłady cen dla części kolorów mają szeroką górę (wysokie Q3), co widać szczególnie dla białego i czerwonego w Mercedesie (Q3 odpowiednio ok. 154979 i 169900 PLN) oraz dla białego w BMW (Q3 ok. 135900 PLN). Całościowo kolor może różnicować ceny, ale nie jest to „prosty” wzorzec — w tej próbce najwyżej wyceniane są wybrane barwy (zwłaszcza biały i czerwony), podczas gdy srebrny i część mniej typowych kolorów częściej pojawiają się w niższych segmentach cenowych.
+
+
+
+
 Hipoteza H10 (Trwałość marki – cena/km) Weryfikacja: cena_per_km \<- `Price` / `Mileage_km`, boxplot po grupach `Production_year` + `Brand`, t-test.
 
 ```{r}
@@ -1367,6 +1401,19 @@ tab_h10 %>%
   ) %>%
   row_spec(0, bold = TRUE, color = "white", background = "#2C3E50")
 ```
+Wyniki dla „ceny za kilometr” pokazują bardzo wyraźny podział według rocznika: w obu markach najnowsze auta (Po 2010) mają zdecydowanie wyższą medianę ceny/km niż starsze grupy, co widać też na boxplotach jako przesunięcie rozkładu w górę. Dla BMW mediana rośnie z ok. 0.05–0.10 PLN/km w grupach „Do 2000” i „2001–2010” do ok. 0.87 PLN/km po 2010, a dla Mercedes-Benz z ok. 0.11 PLN/km do ok. 1.55 PLN/km.
+
+Porównując marki w tej samej grupie rocznika, Mercedes-Benz jest droższy „na kilometr” w najnowszej grupie: po 2010 mediana to ok. 1.55 PLN/km wobec ok. 0.87 PLN/km w BMW, a także wyższy jest cały środek rozkładu (Q1–Q3). Dla roczników 2001–2010 mediany są bardzo zbliżone (ok. 0.10–0.11 PLN/km), co sugeruje, że różnice między markami najmocniej ujawniają się w segmencie nowszych aut.
+
+Widać też silną prawostronną skośność „ceny/km” (szczególnie w grupach „Do 2000” i „Po 2010”), gdzie mediany są relatywnie niskie, ale średnie są wielokrotnie wyższe, co wynika z pojedynczych przypadków ekstremalnie wysokiej ceny/km (np. bardzo mały przebieg przy wysokiej cenie). Dlatego w tej hipotezie najbardziej miarodajne do porównań są mediana i kwartyle, które stabilnie pokazują wzrost ceny/km wraz z nowszym rokiem produkcji oraz przewagę Mercedesa w autach po 2010.
+
+
+
+
+
+
+
+
 Hipoteza H11 (Cena a moc i lokalizacja  – BMW vs Mercedes (województwa)) - kilka map
 
 ```{r}
@@ -1481,6 +1528,9 @@ ggplot(
   theme_minimal()
 
 ```
+Średnie ceny aut używanych różnią się między województwami, a w wielu regionach Mercedes-Benz osiąga wyższe wartości niż BMW (np. dolnośląskie: ok. 80 tys. PLN vs ok. 61 tys. PLN). Na mapach widać więc, że poziom cen nie jest przestrzennie jednolity i zależy od regionu, co sugeruje zróżnicowanie „profilu” ofert w skali kraju.
+
+
 
 ```{r}
 # 1. Pakiety ------------------------------------------------
@@ -1593,6 +1643,10 @@ ggplot(
 
 
 ```
+Mapy średniej mocy pokazują podobny regionalny wzorzec: województwa z wyższymi średnimi cenami często mają też wyższą przeciętną moc silnika (np. w dolnośląskim średnia moc jest wyższa dla Mercedes-Benz niż dla BMW: ok. 202 KM vs ok. 198 KM). Oznacza to, że w części regionów struktura ogłoszeń przesuwa się w stronę mocniejszych wersji, co naturalnie podnosi ogólny poziom ofert.
+
+
+
 ```{r}
 ############################################################
 # H13 – Udział samochodów >200 KM
@@ -1718,6 +1772,12 @@ ggplot(
   theme_minimal()
 
 ```
+Udział aut o mocy powyżej 200 KM domyka ten obraz: różnice między województwami są widoczne i spójne kierunkowo dla obu marek. Najwyższe udziały występują w podlaskim (BMW ok. 50%, Mercedes-Benz ok. 46%), a najniższe odpowiednio w lubuskim (BMW ok. 31%) i opolskim (Mercedes-Benz ok. 30%), co pokazuje, że „mocny” segment rynku ma wyraźną koncentrację regionalną.
+
+
+
+
+
 # 4. Analiza opisowa
 ## 4.1. Wykres korelacji
 ```{r}

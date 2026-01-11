@@ -14,11 +14,11 @@ VIM
 naniar
 mice
 validate
+knitr
+kableExtra
+scales
 sf
 terra
 geodata
 ggrepel
 corrplot
-knitr
-kableExtra
-scales
