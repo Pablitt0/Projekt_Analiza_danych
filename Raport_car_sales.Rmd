@@ -1,0 +1,130 @@
+---
+title: "Analiza danych - projekt"
+author: "Paweł Cyrocki; Damian Skinder; Patryk Siuda"
+date: "`r Sys.Date()`"
+output:
+  rmdformats::robobook:
+    self_contained: true
+---
+
+<style>
+:root {
+    --primary-color: #1f77b4; /* BMW Blue */
+    --main-container-left-side-aside-bg-color: #1f77b4;
+}
+
+/* Zmiana koloru paska bocznego */
+#sidebar {
+    background-color: #1f77b4 !important;
+}
+
+/* Zmiana koloru akcentów na szary Mercedesa */
+a, .book .book-summary ul.summary li.active>a {
+    color: #7f7f7f !important;
+}
+
+/* Nagłówki */
+h1, h2, h3 {
+    color: #1f77b4 !important;
+}
+</style>
+
+# 1.Wstęp
+
+Niniejszy dokument opisuje projekt zespołowy dotyczący analizy danych przy użycia języka R. Projekt obejmuje zbieranie, przetwarzanie, analizę oraz wizualizację danych. Jego celem jest porównawcza analiza cenowa i predykcja wartości samochodów premium na polskim rynku wtórnym.
+
+Dane do analizy pozyskano ze strony: <https://www.kaggle.com/datasets/bartoszpieniak/poland-cars-for-sale-dataset>.
+
+## 1.1 Założenia projektu
+
+Analizę ograniczono do samochodów marek BMW i Mercedes-Benz, co wynika z konieczności zapewnienia wysokiej jakości statystycznej danych. Szeroki zakres wszystkich marek (\~200k obserwacji, 20+ brandów) wprowadza znaczną heteroskedastyczność (różną wariancję reszt w modelach regresji) oraz nadmiar obserwacji odstających, co destabilizuje estymatory i obniża moc testów hipotez. Aby analizowane wartosci były bardziej miarodajne do badania posłużyły ogłoszenia dla samochodów używanych.
+
+## 1.2 Opis zmiennych
+
+`Index` - unikalny identyfikator ogłoszenia
+
+`Price` - cena samochodu
+
+`Currency` - waluta, w której podana jest cena
+
+`Condition` - stan samochodu (nowy/używany)
+
+`Vehicle_brand` - marka samochodu
+
+`Vehicle_model` - model samochodu
+
+`Vehicle_version` - wersja samochodu
+
+`Vehicle__generation` - generacja samochodu
+
+`Production_year` - rok produkcji samochodu
+
+`Mileage__km` - przebieg samochodu w kilometrach
+
+`Power_HP` - moc samochodu w koniach mechanicznych
+
+`Displacement__cm3` - pojemność silnika w centymetrach sześciennych
+
+`Fuel_type` - rodzaj paliwa
+
+`CO2_emission` - emisja CO2 w gramach na kilometr
+
+`Drive` - typ napędu
+
+`Transmission` - rodzaj skrzyni biegów
+
+`Type` - typ nadwozia
+
+`Doors_nuber1` - liczba drzwi
+
+`Colour` - kolor samochodu
+
+`Orgin_country` - kraj pochodzenia
+
+`First_owner` - czy właściciel jest pierwszym właścicielem
+
+`First_registration_date` - data pierwszej rejestracji
+
+`Offer_publication_date` - data publikacji ogłoszenia
+
+`Offer_location` - lokalizacja oferty
+
+`Features` - cechy dodatkowe samochodu
+
+## 1.3 Hipotezy badawcze
+
+W tej części definiujemy hipotezy, które będą weryfikowane w dalszej analizie eksploracyjnej oraz modelowaniu.
+
+**H1 (Cena a przebieg)**\
+Samochody BMW i Mercedes z większym przebiegiem mają istotnie niższą cenę niż z mniejszym przebiegiem, z potencjalnie silniejszą zależnością u Mercedes. Weryfikacja: analiza zależności między zmiennymi `Price` i `Mileage_km` (wykresy rozrzutu, korelacja, model regresji).
+
+**H2 (Cena a rok produkcji)**\
+Nowsze modele BMW i Mercedes są droższe niż starsze, przy czym BMW może szybciej tracić na wartości w porównaniu do Mercedes. Weryfikacja: analiza związku `Price` z `Production_year` (przedziały roczników, wykresy pudełkowe, modele regresji).
+
+**H3 (Typ nadwozia a cena)**\
+W segmencie BMW i Mercedes SUV-y/crossovery są droższe niż sedany/hatchbacki, z różnicami między markami (np. większe premiowanie SUV-ów u BMW). Weryfikacja: porównanie rozkładów `Price`między kategoriami zmiennej `Type` (boxploty, testy różnic średnich / ANOVA).
+
+**H4 (Skrzynia biegów a cena)**\
+Samochody BMW i Mercedes z automatyczną skrzynią biegów są średnio droższe niż samochody z manualną skrzynią biegów (mocniej dla Mercedesa) Weryfikacja: porównanie cen w dwóch grupach (`Transmission` = automat vs manual) z użyciem odpowiednich testów statystycznych i wizualizacji - proponowane wykorzystanie t-test lub Wilcoxon Price \~ Transmission w podzbiorach marek, wizualizacja violin plots.
+
+**H5 (Pierwszy właściciel a cena)**\
+BMW i Mercedes od pierwszego właściciela są droższe, z większą premią u Mercedes ze względu na prestiż. Weryfikacja: porównanie cen dla zmiennej `First_owner` (tak vs nie) z wykorzystaniem wykresów oraz testów różnic średnich.
+
+**H6 (Napęd a cena)**\
+Samochody BMW i Mercedes z napędem na cztery koła (4x4) są średnio droższe niż samochody z napędem na jedną oś, przy porównywalnych pozostałych parametrach, szczególnie w modelach BMW. Weryfikacja: porównanie rozkładów ceny pomiędzy kategoriami zmiennej `Drive` (np. FWD, RWD, 4x4) z uwzględnieniem innych cech w modelu (m.in. `Power_HP`, `Production_year`), np. regresja `Price` \~ `Drive` \* `Vehicle_brand` + `Power_HP` + `Production_year`
+
+**H7 (Moc silnika a cena)**\
+Wyższa moc (Power_HP) koreluje z ceną w obu markach po kontroli przebiegu i roku, z silniejszą relacją u BMW sportowych modeli. Weryfikacja: model regresji z ceną jako zmienną zależną i `Power_HP`, `Mileage_km`, `Production_year` jako głównymi zmiennymi objaśniającymi.
+
+
+**H8 (Paliwo a cena – BMW vs Mercedes)** Hybrydy i elektryki BMW/Mercedes są droższe niż diesle/benzyna przy porównywalnym przebiegu i roku, z większą premią u Mercedes (ekoprestiż). Weryfikacja: boxplot `Price` \~ `Fuel_type` \* `Vehicle_brand`, regresja z kontrolą `Mileage_km` + `Production_year`.
+
+**H9 (Kolor a cena – premium psychologia)** Popularne kolory kojarzone z markami premium (czarny, szary, biały) osiągają wyższe ceny niż mniej typowe (czerwony, zielony), mocniej u Mercedes. Weryfikacja: violin plot `Price` \~ `Coluor` \* `Vehicle_brand`, ANOVA z TukeyHSD post-hoc.
+
+**H10 (Trwałość marki – cena/km)** Mercedes ma wyższy stosunek `Price`/`Mileage_km` niż BMW (lepsza wartość rezydualna) dla aut \>10 lat. Weryfikacja: cena_per_km \<- `Price` / `Mileage_km`, boxplot po grupach `Production_year` + marka, t-test.
+
+**H11 (Cena a moc i lokalizacja – BMW vs Mercedes (województwa))** Średnia moc silnika `Power_HP` BMW i Mercedesa jest wyższa w regionach o wyższej średniej cenie `Price` ofert.
+
+# 2. Porządkowanie danych
+
+## 2.1. Braki danych
