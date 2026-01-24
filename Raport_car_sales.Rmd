@@ -29,6 +29,15 @@ h1, h2, h3 {
 }
 </style>
 
+```{r setup, include=FALSE}
+## Global options
+knitr::opts_chunk$set(cache = TRUE)
+library(tidyverse)
+library(zip)
+unzip("dane/Car_sale_ads.csv.zip", exdir = "dane")
+dane <- read.csv("dane/Car_sale_ads.csv")
+```
+
 # 1.Wstęp
 
 Niniejszy dokument opisuje projekt zespołowy dotyczący analizy danych przy użycia języka R. Projekt obejmuje zbieranie, przetwarzanie, analizę oraz wizualizację danych. Jego celem jest porównawcza analiza cenowa i predykcja wartości samochodów premium na polskim rynku wtórnym.
@@ -127,4 +136,38 @@ Wyższa moc (Power_HP) koreluje z ceną w obu markach po kontroli przebiegu i ro
 
 # 2. Porządkowanie danych
 
+W tym rozdziale opisano proces porządkowania danych, w tym obsługę braków danych, transformacje zmiennych oraz usuwanie obserwacji odstających. Podjęte zdiałania mają na celu przygotowanie danych do dalszej analizy opisowej i testowania statystycznego.
+
 ## 2.1. Braki danych
+
+Pierszym krokiem będzie identyfikacja zmiennych, które zawierają braki. Za pomocą funkcji `aggr` z pakietu `VIM` utworzono wykres pokazujący braki danych w poszczególnych zmiennych.
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+library(VIM)
+library(naniar)
+
+# Obliczenia wykonają się w tle, ale wyniki tekstowe nie pojawią się w raporcie
+procent <- prop_complete_var(dane)
+
+# Wyświetli się tylko ten wykres
+VIM::aggr(dane, numbers = TRUE, sortVars = TRUE, 
+          labels = names(dane), cex.axis = .7, gap = 3, 
+          ylab = c("Procent braków w zmiennych", "Histogram braków"))
+```
+
+Wykres pokazuje bardzo duże braki w zmiennej `CO2_emissions`, która nie jest parametrem kluczowym dla naszych analiz, dlatego zostanie usunięta z dalszej analizy. Pozostałe zmienne z brakami danych będą poddane dalszej analizie w celu określenia, czy braki są losowe, czy systematyczne. 
+
+Następnie, za pomocą funkcji `geom_miss_point` z pakietu `naniar`, wizualizujemy braki danych w dwóch kluczowych zmiennych: `Displacement_cm3` i `Power_HP`. Pozwoli to ocenić, czy braki w tych zmiennych są powiązane ze sobą lub z innymi cechami danych.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+library(ggplot2)
+ggplot(data = dane) +
+  geom_miss_point(aes(x = Displacement_cm3, y = Power_HP), size = 2, alpha = 0.5) +
+  labs(title = "Braki danych w Displacement_cm3 i Power_HP",
+       x = "Displacement_cm3",
+       y = "Power_HP") +
+  theme_minimal()
+```
+
+Na podstawie wykresu możemy zauważyć występowanie liniowej zależności między zmiennymi `Displacement_cm3` i `Power_HP`, dlatego braki w danych zostały uzupełnione za pomocą metody `mice`. Po wykonanej implementacji danych sprawdzamy za pomocą takiego samego wykresy, czy wszystkie braki dla wymienionych zmiennych zostały wyeliminowane.
