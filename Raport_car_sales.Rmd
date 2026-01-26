@@ -7,6 +7,7 @@ output:
     self_contained: true
 ---
 
+```{=html}
 <style>
 :root {
     --primary-color: #1f77b4; /* BMW Blue */
@@ -28,6 +29,7 @@ h1, h2, h3 {
     color: #1f77b4 !important;
 }
 </style>
+```
 
 ```{r setup, include=FALSE}
 ## Global options
@@ -125,7 +127,6 @@ Samochody BMW i Mercedes z napędem na cztery koła (4x4) są średnio droższe 
 **H7 (Moc silnika a cena)**\
 Wyższa moc (Power_HP) koreluje z ceną w obu markach po kontroli przebiegu i roku, z silniejszą relacją u BMW sportowych modeli. Weryfikacja: model regresji z ceną jako zmienną zależną i `Power_HP`, `Mileage_km`, `Production_year` jako głównymi zmiennymi objaśniającymi.
 
-
 **H8 (Paliwo a cena – BMW vs Mercedes)** Hybrydy i elektryki BMW/Mercedes są droższe niż diesle/benzyna przy porównywalnym przebiegu i roku, z większą premią u Mercedes (ekoprestiż). Weryfikacja: boxplot `Price` \~ `Fuel_type` \* `Vehicle_brand`, regresja z kontrolą `Mileage_km` + `Production_year`.
 
 **H9 (Kolor a cena – premium psychologia)** Popularne kolory kojarzone z markami premium (czarny, szary, biały) osiągają wyższe ceny niż mniej typowe (czerwony, zielony), mocniej u Mercedes. Weryfikacja: violin plot `Price` \~ `Coluor` \* `Vehicle_brand`, ANOVA z TukeyHSD post-hoc.
@@ -142,7 +143,6 @@ W tym rozdziale opisano proces porządkowania danych, w tym obsługę braków da
 
 Pierszym krokiem będzie identyfikacja zmiennych, które zawierają braki. Za pomocą funkcji `aggr` z pakietu `VIM` utworzono wykres pokazujący braki danych w poszczególnych zmiennych.
 
-
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
 library(VIM)
 library(naniar)
@@ -156,7 +156,7 @@ VIM::aggr(dane, numbers = TRUE, sortVars = TRUE,
           ylab = c("Procent braków w zmiennych", "Histogram braków"))
 ```
 
-Wykres pokazuje bardzo duże braki w zmiennej `CO2_emissions`, która nie jest parametrem kluczowym dla naszych analiz, dlatego zostanie usunięta z dalszej analizy. Pozostałe zmienne z brakami danych będą poddane dalszej analizie w celu określenia, czy braki są losowe, czy systematyczne. 
+Wykres pokazuje bardzo duże braki w zmiennej `CO2_emissions`, która nie jest parametrem kluczowym dla naszych analiz, dlatego zostanie usunięta z dalszej analizy. Pozostałe zmienne z brakami danych będą poddane dalszej analizie w celu określenia, czy braki są losowe, czy systematyczne.
 
 Następnie, za pomocą funkcji `geom_miss_point` z pakietu `naniar`, wizualizujemy braki danych w dwóch kluczowych zmiennych: `Displacement_cm3` i `Power_HP`. Pozwoli to ocenić, czy braki w tych zmiennych są powiązane ze sobą lub z innymi cechami danych.
 
@@ -170,4 +170,16 @@ ggplot(data = dane) +
   theme_minimal()
 ```
 
-Na podstawie wykresu możemy zauważyć występowanie liniowej zależności między zmiennymi `Displacement_cm3` i `Power_HP`, dlatego braki w danych zostały uzupełnione za pomocą metody `mice`. Po wykonanej implementacji danych sprawdzamy za pomocą takiego samego wykresy, czy wszystkie braki dla wymienionych zmiennych zostały wyeliminowane.
+Na podstawie wykresu możemy zauważyć występowanie liniowej zależności między zmiennymi `Displacement_cm3` i `Power_HP`, dlatego braki w danych zostały uzupełnione za pomocą metody `mice`. Po wykonanej implementacji danych sprawdzamy za pomocą takiego samego wykresu, czy wszystkie braki dla wymienionych zmiennych zostały wyeliminowane.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+library(ggplot2)
+ggplot(data = dane) +
+  geom_miss_point(aes(x = Displacement_cm3, y = Power_HP), size = 2, alpha = 0.5) +
+  labs(title = "Braki danych w Displacement_cm3 i Power_HP",
+       x = "Displacement_cm3",
+       y = "Power_HP") +
+  theme_minimal()
+```
+
+Dla pozostałych zmiennych, wktórych występowały braki danych również zastosowaliśmy metodę `mice`, zmienna `Mileage` została wyestymowana za pomocą zależności od zmiennych: `Production_yea` oraz `Power_HP`, natomiast zmienna `Doors_number` na podstawie zmiennej `Type`.
