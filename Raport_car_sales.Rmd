@@ -156,6 +156,12 @@ VIM::aggr(dane, numbers = TRUE, sortVars = TRUE,
           ylab = c("Procent braków w zmiennych", "Histogram braków"))
 ```
 
+```{r, include=FALSE}
+# Usunięcie zmiennych z dużą ilością braków
+dane <- dane %>%
+  select(-c(CO2_emissions))
+```
+
 Wykres pokazuje bardzo duże braki w zmiennej `CO2_emissions`, która nie jest parametrem kluczowym dla naszych analiz, dlatego zostanie usunięta z dalszej analizy. Pozostałe zmienne z brakami danych będą poddane dalszej analizie w celu określenia, czy braki są losowe, czy systematyczne.
 
 Następnie, za pomocą funkcji `geom_miss_point` z pakietu `naniar`, wizualizujemy braki danych w dwóch kluczowych zmiennych: `Displacement_cm3` i `Power_HP`. Pozwoli to ocenić, czy braki w tych zmiennych są powiązane ze sobą lub z innymi cechami danych.
@@ -170,6 +176,18 @@ ggplot(data = dane) +
   theme_minimal()
 ```
 
+```{r, include=FALSE}
+library(mice)
+# Wybór zmiennych do imputacji
+dane_impute <- dane %>%
+  select(Power_HP, Displacement_cm3)
+# Imputacja braków za pomocą metody MICE
+imputed_data <- mice(dane_impute, m = 5, method = 'pmm', maxit = 5, seed = 123)
+# Uzupełnienie oryginalnych danych
+dane$Power_HP <- complete(imputed_data)$Power_HP
+dane$Displacement_cm3 <- complete(imputed_data)$Displacement_cm3
+```
+
 Na podstawie wykresu możemy zauważyć występowanie liniowej zależności między zmiennymi `Displacement_cm3` i `Power_HP`, dlatego braki w danych zostały uzupełnione za pomocą metody `mice`. Po wykonanej implementacji danych sprawdzamy za pomocą takiego samego wykresu, czy wszystkie braki dla wymienionych zmiennych zostały wyeliminowane.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
@@ -182,4 +200,258 @@ ggplot(data = dane) +
   theme_minimal()
 ```
 
-Dla pozostałych zmiennych, wktórych występowały braki danych również zastosowaliśmy metodę `mice`, zmienna `Mileage` została wyestymowana za pomocą zależności od zmiennych: `Production_yea` oraz `Power_HP`, natomiast zmienna `Doors_number` na podstawie zmiennej `Type`.
+Dla pozostałych zmiennych, wktórych występowały braki danych również zastosowano metodę `mice`, zmienna `Mileage` została wyestymowana za pomocą zależności od zmiennych: `Production_yea` oraz `Power_HP`, natomiast zmienna `Doors_number` na podstawie zmiennej `Type`.
+
+```{r, include=FALSE}
+library(mice)
+# Wybór zmiennych do imputacji
+dane_impute <- dane %>%
+  select(Mileage_km,Production_year,Power_HP)
+# Imputacja braków za pomocą metody MICE
+imputed_data <- mice(dane_impute, m = 5, method = 'pmm', maxit = 5, seed = 123)
+# Uzupełnienie oryginalnych danych
+dane$Mileage_km <- complete(imputed_data)$Mileage_km
+```
+
+```{r, include=FALSE}
+library(mice)
+dane_impute <- dane %>%
+  select(Doors_number,Type)
+# Imputacja braków za pomocą metody MICE
+imputed_data <- mice(dane_impute, m = 5, method = 'pmm', maxit = 5, seed = 123)
+# Uzupełnienie oryg inalnych danych
+dane$Doors_number <- complete(imputed_data)$Doors_number
+
+```
+
+Na koniec sprawdzono czy wszystkie braki danych zostały usunięte.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+library(VIM)
+library( naniar )
+# Procent braków w każdej zmiennej
+procent <- prop_complete_var(dane)
+procent
+VIM::aggr(dane, numbers = TRUE, sortVars = TRUE, 
+          labels = names(dane), cex.axis = .7, gap = 3, 
+          ylab = c("Procent braków w zmiennych", "Histogram braków"))
+```
+
+## 2.2. Walidacja danych
+
+W celu eliminacji obserwacji odstających, które mogą zniekształcić wyniki analizy, przeprowadzono walidację danych dla kluczowych zmiennych. Poniżej przedstawiono przyjęte kryteria walidacji:
+
+`Price` - powinna być większa od 0.
+
+`Mileage_km` - musi być liczbą nieujemną i mniejsze od 999999 km.
+
+`Production_year` - musi być liczbą całkowitą mieszczącą się w rozsądnym zakresie od 1886 do 2025r.
+
+`Power_HP` - musi być liczbą większą niż 1.
+
+`Displacement_cm3` - musi być liczbą większą niż 1.
+
+`Doors_number` - musi być liczbą całkowitą z przedziału 1-6.
+
+Poniższa tabela przedstawia liczebności obserwacji spełniających oraz niespełnijących powyższe kryteria:
+
+```{r, echo=FALSE, include=FALSE}
+library(validate)
+rules <- validator(
+  Price > 0,
+  Production_year >= 1886 & Production_year <= as.numeric(format(Sys.Date(), "%Y")),
+  Mileage_km >= 0,
+  Mileage_km < 999999,
+  Power_HP > 1,
+  Displacement_cm3 > 0,
+  Doors_number %in% c(1:6)
+)
+```
+
+```{r, echo=FALSE, message=FALSE}
+library(validate)
+library(dplyr)
+library(knitr)
+library(kableExtra)
+
+cf <- confront(dane, rules)
+
+summary(cf) %>%
+  as.data.frame() %>%     # kluczowy krok
+  select(1:4) %>%         # tylko pierwsze 4 kolumny
+  kable(
+    "html",
+    caption = "Podsumowanie reguł walidacyjnych danych",
+    col.names = c("Reguła", "Łącznie", "Spełnione", "Niespełnione"),
+    align = "c"
+  ) %>%
+  kable_styling(
+    full_width = FALSE,
+    bootstrap_options = c("striped", "condensed", "hover")
+  ) %>%
+  row_spec(
+    0,
+    bold = TRUE,
+    color = "white",
+    background = "#2C3E50"
+  )
+```
+
+
+Zmienne niespełniające kryteria walidacji zostały oznaczone jako braki danych (NA). Natępnie przeprowadzono kolejną walidację dla nowych braków zmiennych analogicznie jak w kroku 2.1.
+
+```{r, include=FALSE}
+dane$Price[!(dane$Price > 0)] <- NA
+dane$Production_year[!(dane$Production_year >= 1886 & 
+                       dane$Production_year <= as.numeric(format(Sys.Date(), "%Y")))] <- NA
+dane$Mileage_km[!(dane$Mileage_km >= 0 & dane$Mileage_km < 999999)] <- NA
+dane$Power_HP[!(dane$Power_HP > 1)] <- NA
+dane$Displacement_cm3[!(dane$Displacement_cm3 > 0)] <- NA
+dane$Doors_number[!(dane$Doors_number %in% 1:6)] <- NA
+```
+
+
+```{r,include=FALSE}
+library(VIM)
+library( naniar )
+# Procent braków w każdej zmiennej
+procent <- prop_complete_var(dane)
+procent
+VIM::aggr(dane, numbers = TRUE, sortVars = TRUE, 
+          labels = names(dane), cex.axis = .7, gap = 3, 
+          ylab = c("Procent braków w zmiennych", "Histogram braków"))
+```
+
+```{r, include=FALSE}
+library(mice)
+# Wybór zmiennych do imputacji
+dane_impute <- dane %>%
+  select(Power_HP, Doors_number, Displacement_cm3, Type)
+# Imputacja braków za pomocą metody MICE
+imputed_data <- mice(dane_impute, m = 5, method = 'pmm', maxit = 5, seed = 123)
+# Uzupełnienie oryginalnych danych
+dane$Power_HP <- complete(imputed_data)$Power_HP
+```
+
+```{r, include=FALSE}
+library(VIM)
+
+dane <- kNN(dane, variable = "Doors_number", k = 5, dist_var = c("Type","Vehicle_model"))
+```
+
+```{r, include=FALSE}
+library(mice)
+# Wybór zmiennych do imputacji
+dane_impute <- dane %>%
+  select(Mileage_km,Production_year,Power_HP)
+# Imputacja braków za pomocą metody MICE
+imputed_data <- mice(dane_impute, m = 5, method = 'pmm', maxit = 5, seed = 123)
+# Uzupełnienie oryginalnych danych
+dane$Mileage_km <- complete(imputed_data)$Mileage_km
+```
+
+Po walidacji sprawdzono czy wszystkie braki danych zostały usunięte.
+
+```{r, echo=FALSE, results='asis', message=FALSE}
+library(VIM)
+library(naniar)
+
+procent <- mean(prop_complete_var(dane)) * 100
+
+cat(
+  "Finalna procentowa zawartość danych bez braków: ",
+  round(procent, 2),
+  "%\n"
+)
+```
+
+Ostatecznie mamy dane, które spełniają kryteria walidacji i nie zawierają braków danych. Możemy przejść do dalszej analizy danych. Dla uzyskanych danych wybieramy marki Mercedes i BMW do dalszej analizy.
+
+```{r, include=FALSE}
+dane <- dane %>%
+  filter(
+    Vehicle_brand %in% c("BMW", "Mercedes-Benz"),
+    Currency == "PLN",
+    Condition == "Used"
+  )
+
+write.csv(dane, "dane/Car_sale_ads_cleaned.csv", row.names = FALSE)
+```
+
+# 3. Werifikacja hipotez, wizualizacja, analiza opisowa oraz testy statystyczne
+
+```{r, include=FALSE}
+# Paleta kolorów marek (do wielokrotnego użycia w całym projekcie)
+brand_colors <- c(
+  "BMW" = "#1f77b4",        # niebieski premium
+  "Mercedes" = "#7f7f7f"   # elegancka szarość
+)
+```
+
+### Główna statystyka opisowa
+Poniżej przedstawiono główne statystyki opisowe dla zmiennych numerycznych w zbiorze danych. Statystyki dotyczą używanych samochodów marek BMW oraz Mercedes Benz. Poniżej przedstawiono tabelę zawierającą liczebność próby, średnie wartości kluczonych zmiennych.
+ 
+```{r opisowa_tabela, echo=FALSE, message=FALSE, warning=FALSE}
+library(dplyr)
+library(tidyr)
+library(knitr)
+library(kableExtra)
+library(scales)
+
+# Filtrujemy tylko auta używane i wybrane marki
+daneused <- dane %>% 
+  filter(Condition == "Used", Vehicle_brand %in% c("BMW", "Mercedes-Benz"))
+
+# Lista zmiennych numerycznych, które istnieją w danych
+num_vars <- c("Price", "Mileagekm", "Productionyear", "PowerHP", "Displacementcm3")
+num_vars_exist <- intersect(num_vars, names(daneused))
+
+# Tworzymy tabelę opisową
+tabela_opisowa <- daneused %>%
+  group_by(Vehicle_brand) %>%
+  summarise(
+    n = n(),
+    across(all_of(num_vars_exist),
+           list(
+             mean = ~mean(.x, na.rm = TRUE),
+             sd   = ~sd(.x, na.rm = TRUE),
+             min  = ~min(.x, na.rm = TRUE),
+             q1   = ~quantile(.x, 0.25, na.rm = TRUE),
+             med  = ~median(.x, na.rm = TRUE),
+             q3   = ~quantile(.x, 0.75, na.rm = TRUE),
+             max  = ~max(.x, na.rm = TRUE)
+           ),
+           .names = "{.col}_{.fn}"
+    ),
+    .groups = "drop"
+  ) %>%
+  pivot_longer(
+    -c(Vehicle_brand, n),
+    names_to = c("Zmienna", "Stat"),
+    names_sep = "_",
+    values_to = "Wartosc"
+  ) %>%
+  pivot_wider(names_from = Stat, values_from = Wartosc) %>%
+  # Usuwamy kolumnę Zmienna
+  select(-Zmienna) %>%
+  relocate(Vehicle_brand, n, mean, sd, min, q1, med, q3, max) %>%
+  mutate(
+    across(c(mean, sd, min, q1, med, q3, max), ~round(.x, 0)),
+    across(c(mean, sd, min, q1, med, q3, max), ~comma(.x, big.mark = " "))
+  )
+
+# Tworzymy tabelę HTML z wyśrodkowanymi kolumnami
+tabela_opisowa %>%
+  arrange(Vehicle_brand) %>%
+  kable(
+    "html",
+    caption = "Statystyki opisowe dla cen w PLN – BMW vs Mercedes-Benz",
+    col.names = c("Marka", "Liczba ogłoszeń", "Średnia", "SD", "Min", "Q1", "Mediana", "Q3", "Max"),
+    align = "c"  # wyśrodkowanie wszystkich kolumn
+  ) %>%
+  kable_styling(
+    full_width = FALSE,
+    bootstrap_options = c("striped", "condensed", "hover")
+  ) %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#2C3E50")  # nagłówek
+```
