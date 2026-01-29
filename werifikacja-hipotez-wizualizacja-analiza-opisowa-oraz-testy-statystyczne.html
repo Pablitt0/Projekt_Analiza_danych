@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>3 3. Werifikacja hipotez, wizualizacja, analiza opisowa oraz testy statystyczne | Analiza danych - projekt</title>
+  <meta name="description" content="3 3. Werifikacja hipotez, wizualizacja, analiza opisowa oraz testy statystyczne | Analiza danych - projekt" />
+  <meta name="generator" content="bookdown 0.45 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="3 3. Werifikacja hipotez, wizualizacja, analiza opisowa oraz testy statystyczne | Analiza danych - projekt" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="3 3. Werifikacja hipotez, wizualizacja, analiza opisowa oraz testy statystyczne | Analiza danych - projekt" />
+  
+  
+  
+
+<meta name="author" content="Paweł Cyrocki; Damian Skinder; Patryk Siuda" />
+
+
+<meta name="date" content="2026-01-30" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="porządkowanie-danych.html"/>
+
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<link href="libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet" />
+<script src="libs/bsTable-3.3.7/bootstrapTable.js"></script>
+
+
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="wstęp.html"><a href="wstęp.html"><i class="fa fa-check"></i><b>1</b> 1.Wstęp</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="wstęp.html"><a href="wstęp.html#za%C5%82o%C5%BCenia-projektu"><i class="fa fa-check"></i><b>1.1</b> 1.1 Założenia projektu</a></li>
+<li class="chapter" data-level="1.2" data-path="wstęp.html"><a href="wstęp.html#opis-zmiennych"><i class="fa fa-check"></i><b>1.2</b> 1.2 Opis zmiennych</a></li>
+<li class="chapter" data-level="1.3" data-path="wstęp.html"><a href="wstęp.html#hipotezy-badawcze"><i class="fa fa-check"></i><b>1.3</b> 1.3 Hipotezy badawcze</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="porządkowanie-danych.html"><a href="porządkowanie-danych.html"><i class="fa fa-check"></i><b>2</b> 2. Porządkowanie danych</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="porządkowanie-danych.html"><a href="porządkowanie-danych.html#braki-danych"><i class="fa fa-check"></i><b>2.1</b> 2.1. Braki danych</a></li>
+<li class="chapter" data-level="2.2" data-path="porządkowanie-danych.html"><a href="porządkowanie-danych.html#walidacja-danych"><i class="fa fa-check"></i><b>2.2</b> 2.2. Walidacja danych</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html"><a href="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html"><i class="fa fa-check"></i><b>3</b> 3. Werifikacja hipotez, wizualizacja, analiza opisowa oraz testy statystyczne</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Analiza danych - projekt</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne" class="section level1 hasAnchor" number="3">
+<h1><span class="header-section-number">3</span> 3. Werifikacja hipotez, wizualizacja, analiza opisowa oraz testy statystyczne<a href="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html#werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="główna-statystyka-opisowa" class="section level3 hasAnchor" number="3.0.1">
+<h3><span class="header-section-number">3.0.1</span> Główna statystyka opisowa<a href="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html#g%C5%82%C3%B3wna-statystyka-opisowa" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Poniżej przedstawiono główne statystyki opisowe dla zmiennych numerycznych w zbiorze danych. Statystyki dotyczą używanych samochodów marek BMW oraz Mercedes Benz. Poniżej przedstawiono tabelę zawierającą liczebność próby, średnie wartości kluczonych zmiennych.</p>
+<table class="table table-striped table-condensed table-hover" style="color: black; width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+(#tab:opisowa_tabela)Statystyki opisowe dla cen w PLN – BMW vs Mercedes-Benz
+</caption>
+<thead>
+<tr>
+<th style="text-align:center;font-weight: bold;color: white !important;background-color: rgba(44, 62, 80, 255) !important;">
+Marka
+</th>
+<th style="text-align:center;font-weight: bold;color: white !important;background-color: rgba(44, 62, 80, 255) !important;">
+Liczba ogłoszeń
+</th>
+<th style="text-align:center;font-weight: bold;color: white !important;background-color: rgba(44, 62, 80, 255) !important;">
+Średnia
+</th>
+<th style="text-align:center;font-weight: bold;color: white !important;background-color: rgba(44, 62, 80, 255) !important;">
+SD
+</th>
+<th style="text-align:center;font-weight: bold;color: white !important;background-color: rgba(44, 62, 80, 255) !important;">
+Min
+</th>
+<th style="text-align:center;font-weight: bold;color: white !important;background-color: rgba(44, 62, 80, 255) !important;">
+Q1
+</th>
+<th style="text-align:center;font-weight: bold;color: white !important;background-color: rgba(44, 62, 80, 255) !important;">
+Mediana
+</th>
+<th style="text-align:center;font-weight: bold;color: white !important;background-color: rgba(44, 62, 80, 255) !important;">
+Q3
+</th>
+<th style="text-align:center;font-weight: bold;color: white !important;background-color: rgba(44, 62, 80, 255) !important;">
+Max
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+BMW
+</td>
+<td style="text-align:center;">
+15150
+</td>
+<td style="text-align:center;">
+78 568
+</td>
+<td style="text-align:center;">
+100 574
+</td>
+<td style="text-align:center;">
+1 300
+</td>
+<td style="text-align:center;">
+24 500
+</td>
+<td style="text-align:center;">
+51 900
+</td>
+<td style="text-align:center;">
+99 000
+</td>
+<td style="text-align:center;">
+6 999 000
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Mercedes-Benz
+</td>
+<td style="text-align:center;">
+10928
+</td>
+<td style="text-align:center;">
+91 710
+</td>
+<td style="text-align:center;">
+111 847
+</td>
+<td style="text-align:center;">
+1 000
+</td>
+<td style="text-align:center;">
+22 500
+</td>
+<td style="text-align:center;">
+52 500
+</td>
+<td style="text-align:center;">
+120 824
+</td>
+<td style="text-align:center;">
+1 398 999
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="porządkowanie-danych.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+  "sharing": {
+    "github": false,
+    "facebook": true,
+    "twitter": true,
+    "linkedin": false,
+    "weibo": false,
+    "instapaper": false,
+    "vk": false,
+    "whatsapp": false,
+    "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+  },
+  "fontsettings": {
+    "theme": "white",
+    "family": "sans",
+    "size": 2
+  },
+  "edit": {
+    "link": null,
+    "text": null
+  },
+  "history": {
+    "link": null,
+    "text": null
+  },
+  "view": {
+    "link": null,
+    "text": null
+  },
+  "download": null,
+  "search": false,
+  "toc": {
+    "collapse": "none"
+  }
+});
+});
+</script>
+
+</body>
+
+</html>

@@ -22,3 +22,8 @@ terra
 geodata
 ggrepel
 corrplot
+plotly
+rlang
+carData
+car
+ggstatsplot

@@ -456,6 +456,7 @@ tutaj zdanie wstępu do statystyki opisowej, tabela dla zmiennych z wykresu, wyk
 
 ```{r}
 library(dplyr)
+library(rlang)
 library(ggplot2)
 
 dane_used <- dane %>%

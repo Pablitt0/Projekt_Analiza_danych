@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Analiza danych - projekt</title>
+  <meta name="description" content="Analiza danych - projekt" />
+  <meta name="generator" content="bookdown 0.45 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Analiza danych - projekt" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Analiza danych - projekt" />
+  
+  
+  
+
+<meta name="author" content="Paweł Cyrocki; Damian Skinder; Patryk Siuda" />
+
+
+<meta name="date" content="2026-01-30" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+
+<link rel="next" href="porządkowanie-danych.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<link href="libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet" />
+<script src="libs/bsTable-3.3.7/bootstrapTable.js"></script>
+
+
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="wstęp.html"><a href="wstęp.html"><i class="fa fa-check"></i><b>1</b> 1.Wstęp</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="wstęp.html"><a href="wstęp.html#za%C5%82o%C5%BCenia-projektu"><i class="fa fa-check"></i><b>1.1</b> 1.1 Założenia projektu</a></li>
+<li class="chapter" data-level="1.2" data-path="wstęp.html"><a href="wstęp.html#opis-zmiennych"><i class="fa fa-check"></i><b>1.2</b> 1.2 Opis zmiennych</a></li>
+<li class="chapter" data-level="1.3" data-path="wstęp.html"><a href="wstęp.html#hipotezy-badawcze"><i class="fa fa-check"></i><b>1.3</b> 1.3 Hipotezy badawcze</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="porządkowanie-danych.html"><a href="porządkowanie-danych.html"><i class="fa fa-check"></i><b>2</b> 2. Porządkowanie danych</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="porządkowanie-danych.html"><a href="porządkowanie-danych.html#braki-danych"><i class="fa fa-check"></i><b>2.1</b> 2.1. Braki danych</a></li>
+<li class="chapter" data-level="2.2" data-path="porządkowanie-danych.html"><a href="porządkowanie-danych.html#walidacja-danych"><i class="fa fa-check"></i><b>2.2</b> 2.2. Walidacja danych</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html"><a href="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html"><i class="fa fa-check"></i><b>3</b> 3. Werifikacja hipotez, wizualizacja, analiza opisowa oraz testy statystyczne</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Analiza danych - projekt</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="header">
+<h1 class="title">Analiza danych - projekt</h1>
+<p class="author"><em>Paweł Cyrocki; Damian Skinder; Patryk Siuda</em></p>
+<p class="date"><em>2026-01-30</em></p>
+</div>
+<div id="wstęp" class="section level1 hasAnchor" number="1">
+<h1><span class="header-section-number">1</span> 1.Wstęp<a href="wstęp.html#wst%C4%99p" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>Niniejszy dokument opisuje projekt zespołowy dotyczący analizy danych przy użycia języka R. Projekt obejmuje zbieranie, przetwarzanie, analizę oraz wizualizację danych. Jego celem jest porównawcza analiza cenowa i predykcja wartości samochodów premium na polskim rynku wtórnym.</p>
+<p>Dane do analizy pozyskano ze strony: <a href="https://www.kaggle.com/datasets/bartoszpieniak/poland-cars-for-sale-dataset" class="uri">https://www.kaggle.com/datasets/bartoszpieniak/poland-cars-for-sale-dataset</a>.</p>
+<div id="założenia-projektu" class="section level2 hasAnchor" number="1.1">
+<h2><span class="header-section-number">1.1</span> 1.1 Założenia projektu<a href="wstęp.html#za%C5%82o%C5%BCenia-projektu" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Analizę ograniczono do samochodów marek BMW i Mercedes-Benz, co wynika z konieczności zapewnienia wysokiej jakości statystycznej danych. Szeroki zakres wszystkich marek (~200k obserwacji, 20+ brandów) wprowadza znaczną heteroskedastyczność (różną wariancję reszt w modelach regresji) oraz nadmiar obserwacji odstających, co destabilizuje estymatory i obniża moc testów hipotez. Aby analizowane wartosci były bardziej miarodajne do badania posłużyły ogłoszenia dla samochodów używanych.</p>
+</div>
+<div id="opis-zmiennych" class="section level2 hasAnchor" number="1.2">
+<h2><span class="header-section-number">1.2</span> 1.2 Opis zmiennych<a href="wstęp.html#opis-zmiennych" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><code>Index</code> - unikalny identyfikator ogłoszenia</p>
+<p><code>Price</code> - cena samochodu</p>
+<p><code>Currency</code> - waluta, w której podana jest cena</p>
+<p><code>Condition</code> - stan samochodu (nowy/używany)</p>
+<p><code>Vehicle_brand</code> - marka samochodu</p>
+<p><code>Vehicle_model</code> - model samochodu</p>
+<p><code>Vehicle_version</code> - wersja samochodu</p>
+<p><code>Vehicle__generation</code> - generacja samochodu</p>
+<p><code>Production_year</code> - rok produkcji samochodu</p>
+<p><code>Mileage__km</code> - przebieg samochodu w kilometrach</p>
+<p><code>Power_HP</code> - moc samochodu w koniach mechanicznych</p>
+<p><code>Displacement__cm3</code> - pojemność silnika w centymetrach sześciennych</p>
+<p><code>Fuel_type</code> - rodzaj paliwa</p>
+<p><code>CO2_emission</code> - emisja CO2 w gramach na kilometr</p>
+<p><code>Drive</code> - typ napędu</p>
+<p><code>Transmission</code> - rodzaj skrzyni biegów</p>
+<p><code>Type</code> - typ nadwozia</p>
+<p><code>Doors_nuber1</code> - liczba drzwi</p>
+<p><code>Colour</code> - kolor samochodu</p>
+<p><code>Orgin_country</code> - kraj pochodzenia</p>
+<p><code>First_owner</code> - czy właściciel jest pierwszym właścicielem</p>
+<p><code>First_registration_date</code> - data pierwszej rejestracji</p>
+<p><code>Offer_publication_date</code> - data publikacji ogłoszenia</p>
+<p><code>Offer_location</code> - lokalizacja oferty</p>
+<p><code>Features</code> - cechy dodatkowe samochodu</p>
+</div>
+<div id="hipotezy-badawcze" class="section level2 hasAnchor" number="1.3">
+<h2><span class="header-section-number">1.3</span> 1.3 Hipotezy badawcze<a href="wstęp.html#hipotezy-badawcze" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>W tej części definiujemy hipotezy, które będą weryfikowane w dalszej analizie eksploracyjnej oraz modelowaniu.</p>
+<p><strong>H1 (Cena a przebieg)</strong><br />
+Samochody BMW i Mercedes z większym przebiegiem mają istotnie niższą cenę niż z mniejszym przebiegiem, z potencjalnie silniejszą zależnością u Mercedes. Weryfikacja: analiza zależności między zmiennymi <code>Price</code> i <code>Mileage_km</code> (wykresy rozrzutu, korelacja, model regresji).</p>
+<p><strong>H2 (Cena a rok produkcji)</strong><br />
+Nowsze modele BMW i Mercedes są droższe niż starsze, przy czym BMW może szybciej tracić na wartości w porównaniu do Mercedes. Weryfikacja: analiza związku <code>Price</code> z <code>Production_year</code> (przedziały roczników, wykresy pudełkowe, modele regresji).</p>
+<p><strong>H3 (Typ nadwozia a cena)</strong><br />
+W segmencie BMW i Mercedes SUV-y/crossovery są droższe niż sedany/hatchbacki, z różnicami między markami (np. większe premiowanie SUV-ów u BMW). Weryfikacja: porównanie rozkładów <code>Price</code>między kategoriami zmiennej <code>Type</code> (boxploty, testy różnic średnich / ANOVA).</p>
+<p><strong>H4 (Skrzynia biegów a cena)</strong><br />
+Samochody BMW i Mercedes z automatyczną skrzynią biegów są średnio droższe niż samochody z manualną skrzynią biegów (mocniej dla Mercedesa) Weryfikacja: porównanie cen w dwóch grupach (<code>Transmission</code> = automat vs manual) z użyciem odpowiednich testów statystycznych i wizualizacji - proponowane wykorzystanie t-test lub Wilcoxon Price ~ Transmission w podzbiorach marek, wizualizacja violin plots.</p>
+<p><strong>H5 (Pierwszy właściciel a cena)</strong><br />
+BMW i Mercedes od pierwszego właściciela są droższe, z większą premią u Mercedes ze względu na prestiż. Weryfikacja: porównanie cen dla zmiennej <code>First_owner</code> (tak vs nie) z wykorzystaniem wykresów oraz testów różnic średnich.</p>
+<p><strong>H6 (Napęd a cena)</strong><br />
+Samochody BMW i Mercedes z napędem na cztery koła (4x4) są średnio droższe niż samochody z napędem na jedną oś, przy porównywalnych pozostałych parametrach, szczególnie w modelach BMW. Weryfikacja: porównanie rozkładów ceny pomiędzy kategoriami zmiennej <code>Drive</code> (np. FWD, RWD, 4x4) z uwzględnieniem innych cech w modelu (m.in. <code>Power_HP</code>, <code>Production_year</code>), np. regresja <code>Price</code> ~ <code>Drive</code> * <code>Vehicle_brand</code> + <code>Power_HP</code> + <code>Production_year</code></p>
+<p><strong>H7 (Moc silnika a cena)</strong><br />
+Wyższa moc (Power_HP) koreluje z ceną w obu markach po kontroli przebiegu i roku, z silniejszą relacją u BMW sportowych modeli. Weryfikacja: model regresji z ceną jako zmienną zależną i <code>Power_HP</code>, <code>Mileage_km</code>, <code>Production_year</code> jako głównymi zmiennymi objaśniającymi.</p>
+<p><strong>H8 (Paliwo a cena – BMW vs Mercedes)</strong> Hybrydy i elektryki BMW/Mercedes są droższe niż diesle/benzyna przy porównywalnym przebiegu i roku, z większą premią u Mercedes (ekoprestiż). Weryfikacja: boxplot <code>Price</code> ~ <code>Fuel_type</code> * <code>Vehicle_brand</code>, regresja z kontrolą <code>Mileage_km</code> + <code>Production_year</code>.</p>
+<p><strong>H9 (Kolor a cena – premium psychologia)</strong> Popularne kolory kojarzone z markami premium (czarny, szary, biały) osiągają wyższe ceny niż mniej typowe (czerwony, zielony), mocniej u Mercedes. Weryfikacja: violin plot <code>Price</code> ~ <code>Coluor</code> * <code>Vehicle_brand</code>, ANOVA z TukeyHSD post-hoc.</p>
+<p><strong>H10 (Trwałość marki – cena/km)</strong> Mercedes ma wyższy stosunek <code>Price</code>/<code>Mileage_km</code> niż BMW (lepsza wartość rezydualna) dla aut &gt;10 lat. Weryfikacja: cena_per_km &lt;- <code>Price</code> / <code>Mileage_km</code>, boxplot po grupach <code>Production_year</code> + marka, t-test.</p>
+<p><strong>H11 (Cena a moc i lokalizacja – BMW vs Mercedes (województwa))</strong> Średnia moc silnika <code>Power_HP</code> BMW i Mercedesa jest wyższa w regionach o wyższej średniej cenie <code>Price</code> ofert.</p>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+
+<a href="porządkowanie-danych.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+  "sharing": {
+    "github": false,
+    "facebook": true,
+    "twitter": true,
+    "linkedin": false,
+    "weibo": false,
+    "instapaper": false,
+    "vk": false,
+    "whatsapp": false,
+    "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+  },
+  "fontsettings": {
+    "theme": "white",
+    "family": "sans",
+    "size": 2
+  },
+  "edit": {
+    "link": null,
+    "text": null
+  },
+  "history": {
+    "link": null,
+    "text": null
+  },
+  "view": {
+    "link": null,
+    "text": null
+  },
+  "download": null,
+  "search": false,
+  "toc": {
+    "collapse": "none"
+  }
+});
+});
+</script>
+
+</body>
+
+</html>

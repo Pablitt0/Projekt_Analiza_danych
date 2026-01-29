@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>2 2. Porządkowanie danych | Analiza danych - projekt</title>
+  <meta name="description" content="2 2. Porządkowanie danych | Analiza danych - projekt" />
+  <meta name="generator" content="bookdown 0.45 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="2 2. Porządkowanie danych | Analiza danych - projekt" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="2 2. Porządkowanie danych | Analiza danych - projekt" />
+  
+  
+  
+
+<meta name="author" content="Paweł Cyrocki; Damian Skinder; Patryk Siuda" />
+
+
+<meta name="date" content="2026-01-30" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="wstęp.html"/>
+<link rel="next" href="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<link href="libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet" />
+<script src="libs/bsTable-3.3.7/bootstrapTable.js"></script>
+
+
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="wstęp.html"><a href="wstęp.html"><i class="fa fa-check"></i><b>1</b> 1.Wstęp</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="wstęp.html"><a href="wstęp.html#za%C5%82o%C5%BCenia-projektu"><i class="fa fa-check"></i><b>1.1</b> 1.1 Założenia projektu</a></li>
+<li class="chapter" data-level="1.2" data-path="wstęp.html"><a href="wstęp.html#opis-zmiennych"><i class="fa fa-check"></i><b>1.2</b> 1.2 Opis zmiennych</a></li>
+<li class="chapter" data-level="1.3" data-path="wstęp.html"><a href="wstęp.html#hipotezy-badawcze"><i class="fa fa-check"></i><b>1.3</b> 1.3 Hipotezy badawcze</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="porządkowanie-danych.html"><a href="porządkowanie-danych.html"><i class="fa fa-check"></i><b>2</b> 2. Porządkowanie danych</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="porządkowanie-danych.html"><a href="porządkowanie-danych.html#braki-danych"><i class="fa fa-check"></i><b>2.1</b> 2.1. Braki danych</a></li>
+<li class="chapter" data-level="2.2" data-path="porządkowanie-danych.html"><a href="porządkowanie-danych.html#walidacja-danych"><i class="fa fa-check"></i><b>2.2</b> 2.2. Walidacja danych</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html"><a href="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html"><i class="fa fa-check"></i><b>3</b> 3. Werifikacja hipotez, wizualizacja, analiza opisowa oraz testy statystyczne</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Analiza danych - projekt</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="porządkowanie-danych" class="section level1 hasAnchor" number="2">
+<h1><span class="header-section-number">2</span> 2. Porządkowanie danych<a href="porządkowanie-danych.html#porz%C4%85dkowanie-danych" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>W tym rozdziale opisano proces porządkowania danych, w tym obsługę braków danych, transformacje zmiennych oraz usuwanie obserwacji odstających. Podjęte zdiałania mają na celu przygotowanie danych do dalszej analizy opisowej i testowania statystycznego.</p>
+<div id="braki-danych" class="section level2 hasAnchor" number="2.1">
+<h2><span class="header-section-number">2.1</span> 2.1. Braki danych<a href="porządkowanie-danych.html#braki-danych" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Pierszym krokiem będzie identyfikacja zmiennych, które zawierają braki. Za pomocą funkcji <code>aggr</code> z pakietu <code>VIM</code> utworzono wykres pokazujący braki danych w poszczególnych zmiennych.</p>
+<p><img src="Raport_car_sales_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>Wykres pokazuje bardzo duże braki w zmiennej <code>CO2_emissions</code>, która nie jest parametrem kluczowym dla naszych analiz, dlatego zostanie usunięta z dalszej analizy. Pozostałe zmienne z brakami danych będą poddane dalszej analizie w celu określenia, czy braki są losowe, czy systematyczne.</p>
+<p>Następnie, za pomocą funkcji <code>geom_miss_point</code> z pakietu <code>naniar</code>, wizualizujemy braki danych w dwóch kluczowych zmiennych: <code>Displacement_cm3</code> i <code>Power_HP</code>. Pozwoli to ocenić, czy braki w tych zmiennych są powiązane ze sobą lub z innymi cechami danych.</p>
+<p><img src="Raport_car_sales_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>Na podstawie wykresu możemy zauważyć występowanie liniowej zależności między zmiennymi <code>Displacement_cm3</code> i <code>Power_HP</code>, dlatego braki w danych zostały uzupełnione za pomocą metody <code>mice</code>. Po wykonanej implementacji danych sprawdzamy za pomocą takiego samego wykresu, czy wszystkie braki dla wymienionych zmiennych zostały wyeliminowane.</p>
+<p><img src="Raport_car_sales_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>Dla pozostałych zmiennych, wktórych występowały braki danych również zastosowano metodę <code>mice</code>, zmienna <code>Mileage</code> została wyestymowana za pomocą zależności od zmiennych: <code>Production_yea</code> oraz <code>Power_HP</code>, natomiast zmienna <code>Doors_number</code> na podstawie zmiennej <code>Type</code>.</p>
+<p>Na koniec sprawdzono czy wszystkie braki danych zostały usunięte.</p>
+<p><img src="Raport_car_sales_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+</div>
+<div id="walidacja-danych" class="section level2 hasAnchor" number="2.2">
+<h2><span class="header-section-number">2.2</span> 2.2. Walidacja danych<a href="porządkowanie-danych.html#walidacja-danych" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>W celu eliminacji obserwacji odstających, które mogą zniekształcić wyniki analizy, przeprowadzono walidację danych dla kluczowych zmiennych. Poniżej przedstawiono przyjęte kryteria walidacji:</p>
+<p><code>Price</code> - powinna być większa od 0.</p>
+<p><code>Mileage_km</code> - musi być liczbą nieujemną i mniejsze od 999999 km.</p>
+<p><code>Production_year</code> - musi być liczbą całkowitą mieszczącą się w rozsądnym zakresie od 1886 do 2025r.</p>
+<p><code>Power_HP</code> - musi być liczbą większą niż 1.</p>
+<p><code>Displacement_cm3</code> - musi być liczbą większą niż 1.</p>
+<p><code>Doors_number</code> - musi być liczbą całkowitą z przedziału 1-6.</p>
+<p>Poniższa tabela przedstawia liczebności obserwacji spełniających oraz niespełnijących powyższe kryteria:</p>
+<table class="table table-striped table-condensed table-hover" style="color: black; width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:unnamed-chunk-10">Table 2.1: </span>Podsumowanie reguł walidacyjnych danych
+</caption>
+<thead>
+<tr>
+<th style="text-align:center;font-weight: bold;color: white !important;background-color: rgba(44, 62, 80, 255) !important;">
+Reguła
+</th>
+<th style="text-align:center;font-weight: bold;color: white !important;background-color: rgba(44, 62, 80, 255) !important;">
+Łącznie
+</th>
+<th style="text-align:center;font-weight: bold;color: white !important;background-color: rgba(44, 62, 80, 255) !important;">
+Spełnione
+</th>
+<th style="text-align:center;font-weight: bold;color: white !important;background-color: rgba(44, 62, 80, 255) !important;">
+Niespełnione
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+V1
+</td>
+<td style="text-align:center;">
+208304
+</td>
+<td style="text-align:center;">
+208304
+</td>
+<td style="text-align:center;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+V2
+</td>
+<td style="text-align:center;">
+208304
+</td>
+<td style="text-align:center;">
+208304
+</td>
+<td style="text-align:center;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+V3
+</td>
+<td style="text-align:center;">
+208304
+</td>
+<td style="text-align:center;">
+208304
+</td>
+<td style="text-align:center;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+V4
+</td>
+<td style="text-align:center;">
+208304
+</td>
+<td style="text-align:center;">
+208260
+</td>
+<td style="text-align:center;">
+44
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+V5
+</td>
+<td style="text-align:center;">
+208304
+</td>
+<td style="text-align:center;">
+208251
+</td>
+<td style="text-align:center;">
+53
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+V6
+</td>
+<td style="text-align:center;">
+208304
+</td>
+<td style="text-align:center;">
+208304
+</td>
+<td style="text-align:center;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+V7
+</td>
+<td style="text-align:center;">
+208304
+</td>
+<td style="text-align:center;">
+208291
+</td>
+<td style="text-align:center;">
+13
+</td>
+</tr>
+</tbody>
+</table>
+<p>Zmienne niespełniające kryteria walidacji zostały oznaczone jako braki danych (NA). Natępnie przeprowadzono kolejną walidację dla nowych braków zmiennych analogicznie jak w kroku 2.1.</p>
+<p>Po walidacji sprawdzono czy wszystkie braki danych zostały usunięte.</p>
+<p>Finalna procentowa zawartość danych bez braków: 100 %</p>
+<p>Ostatecznie mamy dane, które spełniają kryteria walidacji i nie zawierają braków danych. Możemy przejść do dalszej analizy danych. Dla uzyskanych danych wybieramy marki Mercedes i BMW do dalszej analizy.</p>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="wstęp.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+  "sharing": {
+    "github": false,
+    "facebook": true,
+    "twitter": true,
+    "linkedin": false,
+    "weibo": false,
+    "instapaper": false,
+    "vk": false,
+    "whatsapp": false,
+    "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+  },
+  "fontsettings": {
+    "theme": "white",
+    "family": "sans",
+    "size": 2
+  },
+  "edit": {
+    "link": null,
+    "text": null
+  },
+  "history": {
+    "link": null,
+    "text": null
+  },
+  "view": {
+    "link": null,
+    "text": null
+  },
+  "download": null,
+  "search": false,
+  "toc": {
+    "collapse": "none"
+  }
+});
+});
+</script>
+
+</body>
+
+</html>
