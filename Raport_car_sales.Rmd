@@ -268,7 +268,7 @@ rules <- validator(
 )
 ```
 
-```{r, echo=FALSE, message=FALSE}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 library(validate)
 library(dplyr)
 library(knitr)

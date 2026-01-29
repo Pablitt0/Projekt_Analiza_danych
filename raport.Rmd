@@ -266,8 +266,7 @@ rules <- validator(
 
 ```{r}
 cf <- confront(dane, rules)
-summary(cf)
-barplot(cf)
+summary(cf)[,1:4]
 ```
 
 Zamiana niespełnionych kryteriów v4 i v6 na braki danych
