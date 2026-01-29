@@ -19,6 +19,7 @@ library(zip)
 unzip("dane/Car_sale_ads.csv.zip", exdir = "dane")
 dane <- read.csv("dane/Car_sale_ads.csv")
 ```
+
 ## Założenia projektu
 
 Analizę ograniczono do samochodów marek BMW i Mercedes-Benz, co wynika z konieczności zapewnienia wysokiej jakości statystycznej danych. Szeroki zakres wszystkich marek (\~200k obserwacji, 20+ brandów) wprowadza znaczną heteroskedastyczność (różną wariancję reszt w modelach regresji) oraz nadmiar obserwacji odstających, co destabilizuje estymatory i obniża moc testów hipotez. Aby analizowane wartosci były bardziej miarodajne do badania posłużyły ogłoszenia dla samochodów używanych.
@@ -59,7 +60,7 @@ Analizę ograniczono do samochodów marek BMW i Mercedes-Benz, co wynika z konie
 
 `Type` - typ nadwozia
 
-`Doors_nuber1` - liczba drzwi
+`Doors_number` - liczba drzwi
 
 `Colour` - kolor samochodu
 
@@ -108,7 +109,8 @@ Dodatkowe hipotezy (dopisane 11.12.2025)
 
 **H10 (Trwałość marki – cena/km)** Mercedes ma wyższy stosunek `Price`/`Mileage_km` niż BMW (lepsza wartość rezydualna) dla aut \>10 lat. Weryfikacja: cena_per_km \<- `Price` / `Mileage_km`, boxplot po grupach `Production_year` + marka, t-test.
 
-**H11 (Cena a moc i lokalizacja – BMW vs Mercedes (województwa))** Średnia moc silnika `Power_HP` BMW i Mercedesa jest wyższa w regionach o wyższej średniej cenie `Price` ofert.
+**H11 (Cena a moc i lokalizacja – BMW vs Mercedes (województwa))** Średnia moc silnika `Power_HP` BMW i Mercedesa jest wyższa w regionach o wyższej średniej cenie `Price` ofert. \# 2. Porządkowanie danych
+
 # 2. Porządkowanie danych
 
 ## 2.1. Braki danych
@@ -360,6 +362,7 @@ write.csv(dane, "dane/Car_sale_ads_cleaned.csv", row.names = FALSE)
 ```
 
 # 3. Wizualizacja danych w celu weryfikacji hipotez
+
 ```{r}
 # Paleta kolorów marek (do wielokrotnego użycia w całym projekcie)
 brand_colors <- c(
@@ -367,10 +370,10 @@ brand_colors <- c(
   "Mercedes" = "#7f7f7f"   # elegancka szarość
 )
 ```
-#Główna statystyka opisowa (opis badanych zmiennych podstawowe informacje i tabelka z nimi)
- Poniżej przedstawiono głowne statystyki opisowe dla zmiennych numerycznych w zbiorze danych. Statystyki dotyczą używanych samochodów marek BMW oraz Mercedes Benz. Poniżej przedstawiono tabelę zawierającą liczebność próby, średnie wartości kluczonych zmiennych i (tutaj pomysleć do dalej)
- 
- (tutaj tabela ze statystykami)
+
+#Główna statystyka opisowa (opis badanych zmiennych podstawowe informacje i tabelka z nimi) Poniżej przedstawiono głowne statystyki opisowe dla zmiennych numerycznych w zbiorze danych. Statystyki dotyczą używanych samochodów marek BMW oraz Mercedes Benz. Poniżej przedstawiono tabelę zawierającą liczebność próby, średnie wartości kluczonych zmiennych i (tutaj pomysleć do dalej)
+
+(tutaj tabela ze statystykami)
 
 ```{r opisowa_tabela, echo=TRUE, message=FALSE, warning=FALSE}
 library(dplyr)
@@ -436,6 +439,7 @@ tabela_opisowa %>%
   ) %>%
   row_spec(0, bold = TRUE, color = "white", background = "#2C3E50")  # nagłówek
 ```
+
 W tabeli widać, że po czyszczeniu danych liczba ogłoszeń aut używanych jest większa dla BMW (n = 15168) niż dla Mercedes-Benz (n = 10983), co sugeruje większą reprezentację BMW w tej próbce.
 
 Średnia cena Mercedesa jest wyższa (91645) niż BMW (78490), ale jednocześnie mediany są do siebie bardzo zbliżone (52500 vs 51800), co wskazuje, że „typowa” oferta w obu markach kosztuje podobnie, a różnica w średniej wynika raczej z droższych, nietypowych ogłoszeń.
@@ -444,8 +448,8 @@ Rozrzut cen jest duży w obu markach (SD ok. 100–112 tys.), a skrajne wartośc
 
 Kwartyle pokazują też, że górna część rozkładu jest droższa dla Mercedesa: Q3 to 120649,5 wobec 99000 dla BMW, czyli 25% najdroższych Mercedesów zaczyna się wyżej niż 25% najdroższych BMW
 
-
 # 3.1. Weryfikacja hipotez
+
 Hipoteza H1 (Cena a przebieg) - tylko dla używanych samochodów, dla Mercedesa i BMW
 
 tutaj zdanie wstępu do statystyki opisowej, tabela dla zmiennych z wykresu, wykres i na koniec opis wyników z tabeli i wykresu i tak dla wszystkich wykresów
@@ -495,6 +499,7 @@ ggplot(
   theme_minimal(base_size = 12) +
   theme(legend.position = "none")
 ```
+
 ```{r}
 library(dplyr)
 library(tidyr)
@@ -580,11 +585,6 @@ Wyniki dla aut używanych (po odcięciu górnego 1% wartości Price i Mileage_km
 Z tabeli wynika, że „typowe” ceny są bardzo zbliżone (mediany ok. 52 tys. PLN dla obu marek), ale Mercedes ma wyżej położoną górną część rozkładu cen (Q3 wyższe niż w BMW), co widać też w większej liczbie droższych punktów przy mniejszych przebiegach.
 
 Na wykresie widać również skośność cen: większość obserwacji skupia się przy niższych poziomach cen, a jednocześnie występuje „ogon” droższych ofert (zwłaszcza przy niskich przebiegach), co jest typowym obrazem prawostronnie skośnego rozkładu cen i tłumaczy, dlaczego średnia bywa wyższa od mediany.
-
-
-
-
-
 
 Hipoteza H2 (Cena a rok produkcji) - tylko dla używanych samochodów, weług marek (moze dodac tu ymax? i pokombinowac z rokiem zeby bylo czytelniej?)
 
@@ -690,12 +690,12 @@ tab_h2 %>%
   ) %>%
   row_spec(0, bold = TRUE, color = "white", background = "#2C3E50")
 ```
+
 Dla aut używanych (BMW i Mercedes-Benz) porównano ceny w przedziałach rocznika produkcji, a do analizy przyjęto ten sam zakres co na wykresie (ceny ograniczone do 450000 PLN).
 
 Z tabeli widać konsekwentny wzrost cen wraz z nowszym rokiem produkcji, co wspiera hipotezę H2: w BMW mediana rośnie od 10900 PLN (96–00) do 219900 PLN (21–24), a w Mercedes-Benz od 12900 PLN (96–00) do 229900 PLN (21–24). Podobny wzrost widać też w kwartylach (Q1 i Q3), czyli cały „środek” rozkładu cen przesuwa się w górę w nowszych rocznikach.
 
 Boxploty potwierdzają te obserwacje wizualnie: mediany w kolejnych grupach rocznika układają się „schodkowo” coraz wyżej, a rozrzut jest większy w nowszych przedziałach (16–20 i 21–24), co sugeruje większą różnorodność cen w nowszych autach (różne wersje/wyposażenia).
-
 
 Hipoteza H3 (Typ nadwozia a cena) - tylko dla używanych samochodów, weług marek Weryfikacja: porównanie rozkładów `Price`między kategoriami zmiennej `Type` (boxploty, testy różnic średnich / ANOVA).
 
@@ -738,6 +738,7 @@ ggplot(dane_used, aes(x = Type, y = Price, fill = Vehicle_brand)) +
     legend.position = "none"
   )
 ```
+
 ```{r}
 library(dplyr)
 library(knitr)
@@ -778,12 +779,12 @@ tab_h3 %>%
   ) %>%
   row_spec(0, bold = TRUE, color = "white", background = "#2C3E50")
 ```
+
 Wyniki dla aut używanych (Price ≤ 400000) pokazują, że cena różni się między typami nadwozia, co jest zgodne z hipotezą H3. Zarówno na boxplotach, jak i w tabeli kwartylowej widać, że SUV ma najwyższą medianę ceny w obu markach: BMW 79900 PLN, Mercedes-Benz 115945 PLN.
 
 W porównaniu do popularnych segmentów „bardziej codziennych” SUV-y są wyraźnie wyżej wyceniane: dla BMW mediana SUV (79900) jest wyższa niż dla compact (24900) i sedana (51000), a dla Mercedesa SUV (115945) jest wyższy niż compact (24900) i sedan (485875). To bezpośrednio wspiera tezę H3 o przewadze cenowej SUV-ów nad hatchbackami/kompaktami i sedanami.
 
 Warto też zauważyć, że rozrzut cen (Q1–Q3) dla SUV jest szeroki, co widać na wysokości pudełek na wykresie i sugeruje duże zróżnicowanie ofert w tym typie (różne roczniki, wersje i wyposażenie).
-
 
 Hipoteza H4 (Skrzynia biegów a cena) - tylko dla używanych samochodów Weryfikacja: porównanie cen `Price` w dwóch grupach (`Transmission` = automat vs manual) z użyciem odpowiednich testów statystycznych i wizualizacji - proponowane wykorzystanie t-test lub Wilcoxon `Price` \~ `Transmission` w podzbiorach marek, wizualizacja violin plots.
 
@@ -817,6 +818,7 @@ ggplot(dane_used, aes(x = Transmission, y = Price, fill = Vehicle_brand)) +
     legend.position = "none"  # ukrywamy legendę
   )
 ```
+
 ```{r}
 library(dplyr)
 library(knitr)
@@ -860,8 +862,8 @@ tab_h4_long %>%
   row_spec(0, bold = TRUE, color = "white", background = "#2C3E50")
 
 ```
-Na wykresie violin oraz w tabeli kwartylowej widać, że w obu markach rozkład cen dla aut z automatem jest przesunięty w górę względem manuali (Price ≤ 400000). Dla BMW mediana automatu to 78900 PLN, a manuala 23300 PLN (różnica median 55600 PLN), natomiast dla Mercedes-Benz odpowiednio 73900 PLN vs 19900 PLN (różnica 54000 PLN). Wniosek wspiera hipotezę H4 na poziomie opisu danych, przy czym obserwowana różnica może wynikać także z tego, że automaty częściej występują w droższych konfiguracjach (np. nowsze roczniki/wyższe wersje), a nie wyłącznie z samego typu skrzyni.
 
+Na wykresie violin oraz w tabeli kwartylowej widać, że w obu markach rozkład cen dla aut z automatem jest przesunięty w górę względem manuali (Price ≤ 400000). Dla BMW mediana automatu to 78900 PLN, a manuala 23300 PLN (różnica median 55600 PLN), natomiast dla Mercedes-Benz odpowiednio 73900 PLN vs 19900 PLN (różnica 54000 PLN). Wniosek wspiera hipotezę H4 na poziomie opisu danych, przy czym obserwowana różnica może wynikać także z tego, że automaty częściej występują w droższych konfiguracjach (np. nowsze roczniki/wyższe wersje), a nie wyłącznie z samego typu skrzyni.
 
 Hipoteza H5 (Pierwszy właściciel a cena) - tylko dla używanych samochodów Weryfikacja: porównanie `Price` dla zmiennej `First_owner` (tak vs nie) z wykorzystaniem wykresów oraz testów różnic średnich.
 
@@ -895,6 +897,7 @@ ggplot(dane_used, aes(x = First_owner_lab, y = Price, fill = Vehicle_brand)) +
     legend.position = "none"  # legendę możemy ukryć, bo mamy facet_grid
   )
 ```
+
 ```{r}
 library(dplyr)
 library(knitr)
@@ -939,15 +942,10 @@ tab_h5 %>%
   ) %>%
   row_spec(0, bold = TRUE, color = "white", background = "#2C3E50")
 ```
+
 Na podstawie tabeli i wykresu widać, że samochody oznaczone jako „pierwszy właściciel = Tak” są wyraźnie droższe od pozostałych w obu markach. Dla BMW mediana rośnie z ok. 38900 PLN („Nie”) do ok. 89900 PLN („Tak”), a dla Mercedes-Benz z ok. 38499 PLN („Nie”) do ok. 114900 PLN („Tak”), co pokazuje silne przesunięcie „typowej” ceny w górę. Dodatkowo wyższe wartości Q1 i Q3 w grupie „Tak” wskazują, że przewaga cenowa dotyczy nie tylko mediany, ale też całej pozostałych części rozkładu, co wspiera hipotezę H5 na poziomie opisu danych.
 
-
-
-
-
-
 Hipoteza H6 (Napęd a cena) - tylko dla używanych samochodów Weryfikacja: porównanie rozkładów ceny pomiędzy kategoriami zmiennej `Drive` (np. FWD, RWD, 4x4) z uwzględnieniem innych cech w modelu (m.in. `Power_HP`, `Production_year`) - boxplot
-
 
 ```{r}
 library(ggplot2)
@@ -983,6 +981,7 @@ ggplot(dane_used, aes(x = Drive, y = Price, fill = Vehicle_brand)) +
     legend.position = "none"  # ukrywamy legendę
   )
 ```
+
 ```{r}
 library(dplyr)
 library(knitr)
@@ -1036,10 +1035,10 @@ tab_h6 %>%
   ) %>%
   row_spec(0, bold = TRUE, color = "white", background = "#2C3E50")
 ```
+
 Dla aut używanych widać wyraźną zależność ceny od typu napędu: warianty 4x4 osiągają najwyższe poziomy cen w obu markach, co jest spójne z hipotezą H6. Zarówno w BMW, jak i w Mercedes-Benz mediany oraz kwartyle (Q1 i Q3) dla 4x4 są istotnie wyżej położone niż dla napędów na jedną oś, co wsazuje przewagę cenową 4x4.
 
 Jednocześnie rozkłady dla napędów na jedną oś nie są identyczne między markami: w BMW „napęd na przód” jest cenowo zbliżony do 4x4 dołączanego (automat) i wyraźnie wyższy niż „napęd na tył”. W Mercedes-Benz sytuacja jest bardziej jednoznaczna: napęd na przód i na tył mają podobne poziomy cen, natomiast 4x4 (stały i dołączany) tworzy wyraźnie droższy segment, co wzmacnia ogólny wniosek o przewadze cenowej 4x4.
-
 
 Hipoteza H7 (Moc silnika a cena) - tylko dla używanych samochodów, według mocy\
 Weryfikacja: model regresji z ceną `Price` jako zmienną zależną i `Power_HP`, `Mileage_km`, `Production_year` jako głównymi zmiennymi objaśniającymi.
@@ -1071,6 +1070,7 @@ ggplot(dane_used, aes(x = Power_HP, y = Price, color = Vehicle_brand)) +
   )
 
 ```
+
 ```{r}
 library(dplyr)
 library(knitr)
@@ -1114,11 +1114,8 @@ tab_h7 %>%
   ) %>%
   row_spec(0, bold = TRUE, color = "white", background = "#2C3E50")
 ```
+
 Dane na wykresie i w tabeli wspierają Hipotezę 7: mocniejsze samochody używane są przeciętnie droższe, a zależność ma zbliżoną siłę w BMW i Mercedes-Benz (r ≈ 0.55). Jednocześnie widoczny rozrzut punktów wokół linii trendu pokazuje, że sama moc nie wyjaśnia całej zmienności ceny, ale stanowi ważny czynnik różnicujący oferty.
-
-
-
-
 
 Hipoteza H8 (Paliwo a cena – BMW vs Mercedes) Weryfikacja: boxplot `Price` \~ `Fuel_type` \* `Vehicle_brand`, regresja z kontrolą Mileage_km + Production_year.
 
@@ -1158,6 +1155,7 @@ ggplot(dane_used, aes(x = Fuel_type, y = Price, fill = Vehicle_brand)) +
   )
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
+
 ```{r}
 library(dplyr)
 library(knitr)
@@ -1212,13 +1210,12 @@ tab_h8 %>%
   ) %>%
   row_spec(0, bold = TRUE, color = "white", background = "#2C3E50")
 ```
+
 W autach używanych widać wyraźne różnice cen między rodzajami paliwa i są one podobnie uporządkowane w BMW oraz Mercedes-Benz. Najwyżej wyceniane są napędy alternatywne: w BMW najwyższą medianę mają hybrydy (ok. 197900 PLN) oraz auta elektryczne (ok. 97900 PLN), a w Mercedes-Benz elektryki są zdecydowanie najdroższe (mediana ok. 336450 PLN) i wyraźnie odstają od pozostałych typów.
 
 W „klasycznych” paliwach Mercedes-Benz jest przeciętnie droższy od BMW: mediana dla benzyny to ok. 62000 PLN w Mercedesie vs 50000 PLN w BMW, a dla diesla ok. 45900 PLN vs 50900 PLN (tu BMW wypada nieco wyżej medianą, ale Mercedes ma szerszą górę rozkładu w benzynie). W obu markach instalacje gazowe (Benzyna + LPG) są najtańszą kategorią (BMW mediana ok. 16900 PLN, Mercedes ok. 22000 PLN), co tworzy wyraźny kontrast względem hybryd i elektryków.
 
 Dodatkowo widać, że kategorie alternatywne mają mniejsze liczebności (np. elektryki i hybrydy), ale jednocześnie bardzo wysokie kwartyle, co przekłada się na „drogi” profil tych ofert w całym środkowym zakresie rozkładu (Q1–Q3). W efekcie paliwo jest jedną z cech, która najsilniej segmentuje ceny: od najtańszych aut LPG przez benzynę/diesla po wyraźnie droższe hybrydy i elektryki, szczególnie w Mercedes-Benz.
-
-
 
 Hipoteza H9 (Kolor a cena – premium psychologia) Weryfikacja: boxplot `Price` \~ `Colour` \* `Vehicle_brand`, ANOVA z TukeyHSD post-hoc.
 
@@ -1256,6 +1253,7 @@ ggplot(dane_used_top, aes(x = Colour, y = Price / 1000)) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
+
 ```{r}
 library(dplyr)
 library(knitr)
@@ -1317,38 +1315,59 @@ tab_h9 %>%
   ) %>%
   row_spec(0, bold = TRUE, color = "white", background = "#2C3E50")
 ```
+
 W analizie 10 najczęstszych kolorów wśród aut używanych widać, że różnice cen między kolorami istnieją, ale ich kierunek nie jest jednolity „premium vs nie-premium” — bardziej przypominają efekt tego, jakie modele i roczniki dominują w danym kolorze. W obu markach wyraźnie wyżej wypadają kolory takie jak biały i czerwony: w BMW mediana dla białych aut to 89900 PLN, a dla czerwonych 62700 PLN, natomiast w Mercedes-Benz białe mają medianę 96000 PLN, a czerwone 99000 PLN.
 
 Kolory „popularne” (czarny, szary) zwykle plasują się w środku rozkładu: w BMW czarny ma medianę 49900 PLN, a szary 44900 PLN, a w Mercedes-Benz czarny 60950 PLN i szary 76900 PLN. Jednocześnie w obu markach srebrny oraz „inne” kolory mają relatywnie niższe mediany (BMW srebrny 24800 PLN; Mercedes srebrny 25900 PLN), co sugeruje, że w tych barwach częściej występują tańsze oferty.
 
 Warto też zwrócić uwagę na to, że rozkłady cen dla części kolorów mają szeroką górę (wysokie Q3), co widać szczególnie dla białego i czerwonego w Mercedesie (Q3 odpowiednio ok. 154979 i 169900 PLN) oraz dla białego w BMW (Q3 ok. 135900 PLN). Całościowo kolor może różnicować ceny, ale nie jest to „prosty” wzorzec — w tej próbce najwyżej wyceniane są wybrane barwy (zwłaszcza biały i czerwony), podczas gdy srebrny i część mniej typowych kolorów częściej pojawiają się w niższych segmentach cenowych.
 
-
-
-
 Hipoteza H10 (Trwałość marki – cena/km) Weryfikacja: cena_per_km \<- `Price` / `Mileage_km`, boxplot po grupach `Production_year` + `Brand`, t-test.
 
 ```{r}
 library(ggplot2)
-dane_used <- dane %>% filter(Condition == "Used")
-dane_used <- dane_used %>%
-  mutate(cena_per_km = Price / Mileage_km,
-         Production_year_group = case_when(
-           Production_year <= 2000 ~ "Do 2000",
-           Production_year > 2000 & Production_year <= 2010 ~ "2001-2010",
-           Production_year > 2010 ~ "Po 2010"
-         ))
-ggplot(dane_used, aes(x = Production_year_group, y = cena_per_km, fill = Vehicle_brand)) +
+library(plotly)
+library(dplyr)
+
+dane_used <- dane %>%
+  filter(Condition == "Used") %>%
+  mutate(
+    cena_per_km = Price / Mileage_km,
+    Production_year_group = case_when(
+      Production_year <= 2000 ~ "Do 2000",
+      Production_year <= 2010 ~ "2001-2010",
+      TRUE ~ "Po 2010"
+    )
+  )
+
+p <- ggplot(
+  dane_used,
+  aes(
+    x = Production_year_group,
+    y = cena_per_km,
+    fill = Vehicle_brand,
+    text = paste(
+      "Marka:", Vehicle_brand,
+      "<br>Rok (grupa):", Production_year_group,
+      "<br>Cena/km:", round(cena_per_km, 2), "PLN"
+    )
+  )
+) +
   geom_boxplot(outlier.shape = NA, alpha = 0.7) +
   facet_grid(~ Vehicle_brand, scales = "fixed") +
   coord_cartesian(ylim = c(0, 15)) +
-  labs(title = "Zależność ceny za kilometr od roku produkcji samochodu używanego:",
-       x = "Grupa roku produkcji",
-       y = "Cena za kilometr (PLN/km)",
-       fill = "Marka Samochodu") +
+  labs(
+    title = "Zależność ceny za kilometr od roku produkcji samochodu używanego",
+    x = "Grupa roku produkcji",
+    y = "Cena za kilometr (PLN/km)",
+    fill = "Marka samochodu"
+  ) +
   scale_fill_manual(values = brand_colors) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+ggplotly(p, tooltip = "text")
+
 ```
 
 ```{r}
@@ -1401,20 +1420,14 @@ tab_h10 %>%
   ) %>%
   row_spec(0, bold = TRUE, color = "white", background = "#2C3E50")
 ```
+
 Wyniki dla „ceny za kilometr” pokazują bardzo wyraźny podział według rocznika: w obu markach najnowsze auta (Po 2010) mają zdecydowanie wyższą medianę ceny/km niż starsze grupy, co widać też na boxplotach jako przesunięcie rozkładu w górę. Dla BMW mediana rośnie z ok. 0.05–0.10 PLN/km w grupach „Do 2000” i „2001–2010” do ok. 0.87 PLN/km po 2010, a dla Mercedes-Benz z ok. 0.11 PLN/km do ok. 1.55 PLN/km.
 
 Porównując marki w tej samej grupie rocznika, Mercedes-Benz jest droższy „na kilometr” w najnowszej grupie: po 2010 mediana to ok. 1.55 PLN/km wobec ok. 0.87 PLN/km w BMW, a także wyższy jest cały środek rozkładu (Q1–Q3). Dla roczników 2001–2010 mediany są bardzo zbliżone (ok. 0.10–0.11 PLN/km), co sugeruje, że różnice między markami najmocniej ujawniają się w segmencie nowszych aut.
 
 Widać też silną prawostronną skośność „ceny/km” (szczególnie w grupach „Do 2000” i „Po 2010”), gdzie mediany są relatywnie niskie, ale średnie są wielokrotnie wyższe, co wynika z pojedynczych przypadków ekstremalnie wysokiej ceny/km (np. bardzo mały przebieg przy wysokiej cenie). Dlatego w tej hipotezie najbardziej miarodajne do porównań są mediana i kwartyle, które stabilnie pokazują wzrost ceny/km wraz z nowszym rokiem produkcji oraz przewagę Mercedesa w autach po 2010.
 
-
-
-
-
-
-
-
-Hipoteza H11 (Cena a moc i lokalizacja  – BMW vs Mercedes (województwa)) - kilka map
+Hipoteza H11 (Cena a moc i lokalizacja – BMW vs Mercedes (województwa)) - kilka map
 
 ```{r}
 # Pakiety --------------------------------------------------
@@ -1528,9 +1541,8 @@ ggplot(
   theme_minimal()
 
 ```
+
 Średnie ceny aut używanych różnią się między województwami, a w wielu regionach Mercedes-Benz osiąga wyższe wartości niż BMW (np. dolnośląskie: ok. 80 tys. PLN vs ok. 61 tys. PLN). Na mapach widać więc, że poziom cen nie jest przestrzennie jednolity i zależy od regionu, co sugeruje zróżnicowanie „profilu” ofert w skali kraju.
-
-
 
 ```{r}
 # 1. Pakiety ------------------------------------------------
@@ -1643,9 +1655,8 @@ ggplot(
 
 
 ```
+
 Mapy średniej mocy pokazują podobny regionalny wzorzec: województwa z wyższymi średnimi cenami często mają też wyższą przeciętną moc silnika (np. w dolnośląskim średnia moc jest wyższa dla Mercedes-Benz niż dla BMW: ok. 202 KM vs ok. 198 KM). Oznacza to, że w części regionów struktura ogłoszeń przesuwa się w stronę mocniejszych wersji, co naturalnie podnosi ogólny poziom ofert.
-
-
 
 ```{r}
 ############################################################
@@ -1772,14 +1783,13 @@ ggplot(
   theme_minimal()
 
 ```
+
 Udział aut o mocy powyżej 200 KM domyka ten obraz: różnice między województwami są widoczne i spójne kierunkowo dla obu marek. Najwyższe udziały występują w podlaskim (BMW ok. 50%, Mercedes-Benz ok. 46%), a najniższe odpowiednio w lubuskim (BMW ok. 31%) i opolskim (Mercedes-Benz ok. 30%), co pokazuje, że „mocny” segment rynku ma wyraźną koncentrację regionalną.
 
-
-
-
-
 # 4. Analiza opisowa
+
 ## 4.1. Wykres korelacji
+
 ```{r}
 library(dplyr)
 library(corrplot)
@@ -1806,4 +1816,183 @@ corrplot(
   order = "AOE",
   diag = FALSE
 )
+
+```
+Analiza korelacji dostarczyła informacji o zależnościach między zmiennymi numerycznymi w zbiorze danych dotyczących samochodów używanych. Najbardziej skorelowane ze sobą są zmienne `Displacement_cm3` oraz `Power_HP` (korelacja = 0.82 - dość silna). Umiarkowaną korelacją charakteryzują się zmienne `Price` i `Power_HP` (korelacja = 0.64). Słabaszą, ale wartą uwagi zależnością charakteryzują się zmienne `Price` i `Production_year` oraz `Production_year` i `Doors_number`.
+# 5. Wnioskowanie statystyczne
+## 5.1. Test ANCOVA
+```{r}
+library(dplyr)
+library(car)
+dane_used <- dane %>% filter(Condition == "Used")
+# Model ANCOVA dla H1: Price ~ Vehicle_brand + Mileage_km + Production_year
+model_h1 <- aov(
+  Price ~ Vehicle_brand + Mileage_km + Production_year,
+  data = dane_used
+)
+# Podsumowanie wyników ANCOVA
+summary(model_h1)
+
+#Zapisywanie wyniku za pomoca pakietu kable
+library(knitr)
+library(kableExtra)
+ancova_table_h1 <- as.data.frame(summary(model_h1)[[1]])
+ancova_table_h1 %>%
+  kable(
+    "html",
+    caption = "Tabela wyników ANCOVA dla ceny w zależności od marki, wielkości przebiegu i roku produkcji",
+    align = "c",
+    col.names = c("Źródło", "Df", "Sum Sq", "Mean Sq", "F value", "Pr(>F)")
+  ) %>%
+  kable_styling(
+    full_width = FALSE,
+    bootstrap_options = c("striped", "condensed", "hover")
+  ) %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#2C3E50")
+
+#wykres z wykorzystaniem pakietu ggstatsplot
+library(ggstatsplot)
+ggstatsplot::ggbetweenstats(
+  data = dane_used,
+  x = Vehicle_brand,
+  y = Price,
+  covariate = c("Mileage_km", "Production_year"),
+  title = "Wpływ marki pojazdu na cenę po kontrolowaniu przebiegu i roku produkcji",
+  xlab = "Marka pojazdu",
+  ylab = "Cena (PLN)"
+)
+```
+Wyniki ANCOVA dla hipotezy H1 pokazują, że marka pojazdu (Vehicle_brand) ma istotny wpływ na cenę (Price) po kontrolowaniu przebiegu (Mileage_km) i roku produkcji (Production_year). Wartość p dla Vehicle_brand jest mniejsza niż 0.05, co pozwala odrzucić hipotezę zerową o braku różnic cen między markami po uwzględnieniu tych czynników kontrolnych. Oznacza to, że nawet po uwzględnieniu wpływu przebiegu i roku produkcji, marka samochodu pozostaje istotnym czynnikiem różnicującym ceny samochodów używanych.
+
+## 5.2. ANOVA Price ~ Fuel_type + Transmission
+```{r}
+# H₀₁: brak wpływu Fuel_type na Price
+# H₀₂: brak wpływu Transmission na Price
+# H₀₃: brak interakcji Fuel_type × Transmission
+# H₁: przynajmniej jeden z powyższych wpływów jest istotny
+library(dplyr)
+#analizujemy tylko dla samochodow uzywanych
+dane_i <- dane %>%
+  filter(!is.na(Price) & !is.na(Fuel_type) & !is.na(Transmission) & Condition == "Used")
+# Test ANOVA
+model_i <- aov(
+  Price ~ Fuel_type * Transmission,
+  data = dane_i
+)
+summary(model_i)
+# Wykonanie interaktywnego boxplotu dla ceny w zależności od typu paliwa i skrzyni biegów z użyciem pakietu plotly i ggplot2 oraz ggstatsplot
+library(ggplot2)
+library(plotly)
+boxplot_i <- ggplot(dane_i, aes(x = Fuel_type, y = Price, fill = Transmission)) +
+  geom_boxplot() +
+  labs(title = "Boxplot ceny samochodów używanych w zależności od typu paliwa i skrzyni biegów", x = "Typ paliwa", y = "Cena (PLN)") +
+  theme_minimal()
+boxplot_i_plotly <- ggplotly(boxplot_i)
+boxplot_i_plotly
+#tabela z wynikami
+library(knitr)
+library(kableExtra)
+median_table_i <- dane_i %>%
+  group_by(Fuel_type, Transmission) %>%
+  summarise(
+    Mediana = median(Price, na.rm = TRUE),
+    Q1 = quantile(Price, 0.25, na.rm = TRUE),
+    Q3 = quantile(Price, 0.75, na.rm = TRUE),
+    n = n()
+  )
+median_table_i %>%
+  kable(
+    "html",
+    caption = "Mediany cen samochodów używanych w zależności od typu paliwa i skrzyni biegów",
+    align = "c",
+    col.names = c("Typ paliwa", "Skrzynia biegów", "Mediana", "Q1", "Q3", "Liczba obserwacji")
+  ) %>%
+  kable_styling(
+    full_width = FALSE,
+    bootstrap_options = c("striped", "condensed", "hover")
+  ) %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#2C3E50")
+```
+Na podstawie wyników analizy ANOVA można stwierdzić, że zarówno typ paliwa (Fuel_type), jak i skrzynia biegów (Transmission) mają istotny wpływ na cenę samochodów używanych (p < 0.05). Ponadto, interakcja między tymi dwoma czynnikami również jest istotna statystycznie (p < 0.05). Odrzucamy hipotezy zerowe i przyjmujemy hipotezę alternatywną, co oznacza, że ceny samochodów różnią się istotnie w zależności od typu paliwa i skrzyni biegów. Boxplot wizualizuje te różnice, pokazując zróżnicowanie cen dla różnych kombinacji typu paliwa i skrzyni biegów. Tabela z medianami cen dodatkowo ilustruje, które kombinacje są związane z wyższymi lub niższymi medianami cen samochodów używanych.
+
+ rynkowymi.
+## 5.3. Test ANOVA / Kruskal–Wallis Price ~ Fuel_type
+```{r}
+# H0: Średnia (lub mediana) ceny samochodów jest taka sama dla różnych typów paliwa
+# H1: Średnia (lub mediana) ceny samochodów różni się w zależności od typu paliwa
+
+library(dplyr)
+dane_h <- dane %>%
+  filter(!is.na(Price) & !is.na(Fuel_type) & Condition == "Used")
+# Test Kruskala-Wallisa (nieparametryczny) dla porównania median cen w zależności od typu paliwa
+test_h <- kruskal.test(
+  Price ~ Fuel_type,
+  data = dane_h
+)
+test_h
+# Wykonanie interaktywnego boxplotu dla ceny w zależności od typu paliwa z użyciem pakietu plotly i ggplot2
+library(ggplot2)
+library(plotly)
+boxplot_h <- ggplot(dane_h, aes(x = Fuel_type, y = Price, fill = Fuel_type)) +
+  geom_boxplot() +
+  labs(title = "Boxplot ceny samochodów używanych w zależności od typu paliwa", x = "Typ paliwa", y = "Cena (PLN)") +
+  theme_minimal()
+boxplot_h_plotly <- ggplotly(boxplot_h)
+boxplot_h_plotly
+
+# umieszczenie danych w tabeli
+library(knitr)
+library(kableExtra)
+median_table_h <- dane_h %>%
+  group_by(Fuel_type) %>%
+  summarise(
+    Mediana = median(Price, na.rm = TRUE),
+    Q1 = quantile(Price, 0.25, na.rm = TRUE),
+    Q3 = quantile(Price, 0.75, na.rm = TRUE),
+    n = n()
+  )
+median_table_h %>%
+  kable(
+    "html",
+    caption = "Mediany cen samochodów używanych w zależności od typu paliwa",
+    align = "c",
+    col.names = c("Typ paliwa", "Mediana", "Q1", "Q3", "Liczba obserwacji")
+  ) %>%
+  kable_styling(
+    full_width = FALSE,
+    bootstrap_options = c("striped", "condensed", "hover")
+  ) %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#2C3E50")
+```
+Na podstawie testu Kruskala-Wallisa można stwierdzić, że istnieje istotna różnica w medianach cen samochodów używanych w zależności od typu paliwa (p < 0.05). Odrzucamy hipotezę zerową i przyjmujemy hipotezę alternatywną, co oznacza, że ceny samochodów różnią się istotnie statystycznie w zależności od rodzaju paliwa. Boxplot wizualizuje te różnice, pokazując zróżnicowanie cen dla różnych typów paliwa. Tabela z medianami cen dodatkowo ilustruje, które typy paliwa są związane z wyższymi lub niższymi medianami cen samochodów używanych.
+
+## 5.4. Model liniowy funkcji ceny
+```{r}
+library(dplyr)
+library(ggplot2)
+dane_used <- dane %>% filter(Condition == "Used")
+# Model liniowy dla ceny z wybranymi predyktorami
+model_price <- lm(
+  Price ~ Mileage_km + Production_year + Power_HP + Displacement_cm3 + Doors_number,
+  data = dane_used
+)
+# Podsumowanie wyników modelu
+summary(model_price)
+
+# wyniki w tabeli
+library(knitr)
+library(kableExtra)
+model_summary <- as.data.frame(summary(model_price)$coefficients)
+model_summary %>%
+  kable(
+    "html",
+    caption = "Tabela wyników modelu liniowego dla ceny samochodów używanych",
+    align = "c",
+    col.names = c("Predyktor", "Estymator", "Std. Error", "t value", "Pr(>|t|)")
+  ) %>%
+  kable_styling(
+    full_width = FALSE,
+    bootstrap_options = c("striped", "condensed", "hover")
+  ) %>%
+  row_spec(0, bold = TRUE, color = "white", background = "#2C3E50")
 ```
