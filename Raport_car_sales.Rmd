@@ -1830,7 +1830,9 @@ Wyniki ANCOVA dla hipotezy H1 pokazują, że marka pojazdu (`Vehicle_brand`) ma 
 library(dplyr)
 #analizujemy tylko dla samochodow uzywanych
 dane_i <- dane %>%
-  filter(!is.na(Price) & !is.na(Fuel_type) & !is.na(Transmission) & Condition == "Used")
+ filter(Condition == "Used", !is.na(Price), !is.na(Fuel_type)) %>%
+  mutate(Transmission = na_if(Transmission, "")) %>%
+  filter(!is.na(Transmission))
 # Test ANOVA
 model_i <- aov(
   Price ~ Fuel_type * Transmission,

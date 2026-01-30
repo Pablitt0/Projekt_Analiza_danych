@@ -781,6 +781,7 @@ tab_h3 %>%
   row_spec(0, bold = TRUE, color = "white", background = "#2C3E50")
 ```
 
+
 Wyniki dla aut używanych (Price ≤ 400000) pokazują, że cena różni się między typami nadwozia, co jest zgodne z hipotezą H3. Zarówno na boxplotach, jak i w tabeli kwartylowej widać, że SUV ma najwyższą medianę ceny w obu markach: BMW 79900 PLN, Mercedes-Benz 115945 PLN.
 
 W porównaniu do popularnych segmentów „bardziej codziennych” SUV-y są wyraźnie wyżej wyceniane: dla BMW mediana SUV (79900) jest wyższa niż dla compact (24900) i sedana (51000), a dla Mercedesa SUV (115945) jest wyższy niż compact (24900) i sedan (485875). To bezpośrednio wspiera tezę H3 o przewadze cenowej SUV-ów nad hatchbackami/kompaktami i sedanami.
@@ -1916,7 +1917,6 @@ median_table_i %>%
 ```
 Na podstawie wyników analizy ANOVA można stwierdzić, że zarówno typ paliwa (Fuel_type), jak i skrzynia biegów (Transmission) mają istotny wpływ na cenę samochodów używanych (p < 0.05). Ponadto, interakcja między tymi dwoma czynnikami również jest istotna statystycznie (p < 0.05). Odrzucamy hipotezy zerowe i przyjmujemy hipotezę alternatywną, co oznacza, że ceny samochodów różnią się istotnie w zależności od typu paliwa i skrzyni biegów. Boxplot wizualizuje te różnice, pokazując zróżnicowanie cen dla różnych kombinacji typu paliwa i skrzyni biegów. Tabela z medianami cen dodatkowo ilustruje, które kombinacje są związane z wyższymi lub niższymi medianami cen samochodów używanych.
 
- rynkowymi.
 ## 5.3. Test ANOVA / Kruskal–Wallis Price ~ Fuel_type
 ```{r}
 # H0: Średnia (lub mediana) ceny samochodów jest taka sama dla różnych typów paliwa
