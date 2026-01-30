@@ -17,3 +17,13 @@ validate
 knitr
 kableExtra
 scales
+rlang
+plotly
+sf
+terra
+geodata
+ggrepel
+corrplot
+carData
+car
+ggstatsplot

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>4 Analiza opisowa | Analiza danych - projekt</title>
+  <meta name="description" content="4 Analiza opisowa | Analiza danych - projekt" />
+  <meta name="generator" content="bookdown 0.45 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="4 Analiza opisowa | Analiza danych - projekt" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="4 Analiza opisowa | Analiza danych - projekt" />
+  
+  
+  
+
+<meta name="author" content="Paweł Cyrocki; Damian Skinder; Patryk Siuda" />
+
+
+<meta name="date" content="2026-01-30" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html"/>
+<link rel="next" href="wnioskowanie-statystyczne.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<link href="libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet" />
+<script src="libs/bsTable-3.3.7/bootstrapTable.js"></script>
+<link href="libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet" />
+<script src="libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.12.0/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.2.2/css/crosstalk.min.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.2.2/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-2.25.2/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-2.25.2/plotly-latest.min.js"></script>
+
+
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="wstęp.html"><a href="wstęp.html"><i class="fa fa-check"></i><b>1</b> Wstęp</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="wstęp.html"><a href="wstęp.html#za%C5%82o%C5%BCenia-projektu"><i class="fa fa-check"></i><b>1.1</b> Założenia projektu</a></li>
+<li class="chapter" data-level="1.2" data-path="wstęp.html"><a href="wstęp.html#opis-zmiennych"><i class="fa fa-check"></i><b>1.2</b> Opis zmiennych</a></li>
+<li class="chapter" data-level="1.3" data-path="wstęp.html"><a href="wstęp.html#hipotezy-badawcze"><i class="fa fa-check"></i><b>1.3</b> Hipotezy badawcze</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="porządkowanie-danych.html"><a href="porządkowanie-danych.html"><i class="fa fa-check"></i><b>2</b> Porządkowanie danych</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="porządkowanie-danych.html"><a href="porządkowanie-danych.html#braki-danych"><i class="fa fa-check"></i><b>2.1</b> Braki danych</a></li>
+<li class="chapter" data-level="2.2" data-path="porządkowanie-danych.html"><a href="porządkowanie-danych.html#walidacja-danych"><i class="fa fa-check"></i><b>2.2</b> Walidacja danych</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html"><a href="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html"><i class="fa fa-check"></i><b>3</b> Werifikacja hipotez, wizualizacja, analiza opisowa oraz testy statystyczne</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html"><a href="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html#g%C5%82%C3%B3wna-statystyka-opisowa"><i class="fa fa-check"></i><b>3.1</b> Główna statystyka opisowa</a></li>
+<li class="chapter" data-level="3.2" data-path="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html"><a href="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html#weryfikacja-hipotez"><i class="fa fa-check"></i><b>3.2</b> Weryfikacja hipotez</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html"><a href="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html#hipoteza-h1-cena-a-przebieg"><i class="fa fa-check"></i><b>3.2.1</b> Hipoteza H1 (<code>Cena a przebieg</code>)</a></li>
+<li class="chapter" data-level="3.2.2" data-path="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html"><a href="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html#hipoteza-h2-cena-a-rok-produkcji"><i class="fa fa-check"></i><b>3.2.2</b> Hipoteza H2 (<code>Cena a rok produkcji</code>)</a></li>
+<li class="chapter" data-level="3.2.3" data-path="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html"><a href="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html#hipoteza-h3-typ-nadwozia-a-cena"><i class="fa fa-check"></i><b>3.2.3</b> Hipoteza H3 (<code>Typ nadwozia a cena</code>)</a></li>
+<li class="chapter" data-level="3.2.4" data-path="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html"><a href="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html#hipoteza-h4-skrzynia-bieg%C3%B3w-a-cena"><i class="fa fa-check"></i><b>3.2.4</b> Hipoteza H4 (<code>Skrzynia biegów a cena</code>)</a></li>
+<li class="chapter" data-level="3.2.5" data-path="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html"><a href="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html#hipoteza-h5-pierwszy-w%C5%82a%C5%9Bciciel-a-cena"><i class="fa fa-check"></i><b>3.2.5</b> Hipoteza H5 (<code>Pierwszy właściciel a cena</code>)</a></li>
+<li class="chapter" data-level="3.2.6" data-path="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html"><a href="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html#hipoteza-h6-nap%C4%99d-a-cena"><i class="fa fa-check"></i><b>3.2.6</b> Hipoteza H6 (<code>Napęd a cena</code>)</a></li>
+<li class="chapter" data-level="3.2.7" data-path="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html"><a href="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html#hipoteza-h7-moc-silnika-a-cena"><i class="fa fa-check"></i><b>3.2.7</b> Hipoteza H7 (<code>Moc silnika a cena</code>)</a></li>
+<li class="chapter" data-level="3.2.8" data-path="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html"><a href="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html#hipoteza-h8-paliwo-a-cena-bmw-vs-mercedes"><i class="fa fa-check"></i><b>3.2.8</b> Hipoteza H8 (<code>Paliwo a cena – BMW vs Mercedes</code>)</a></li>
+<li class="chapter" data-level="3.2.9" data-path="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html"><a href="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html#hipoteza-h9-kolor-a-cena-premium-psychologia"><i class="fa fa-check"></i><b>3.2.9</b> Hipoteza H9 (<code>Kolor a cena – premium psychologia</code>)</a></li>
+<li class="chapter" data-level="3.2.10" data-path="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html"><a href="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html#hipoteza-h10-trwa%C5%82o%C5%9B%C4%87-marki-cenakm"><i class="fa fa-check"></i><b>3.2.10</b> Hipoteza H10 (<code>Trwałość marki – cena/km</code>)</a></li>
+<li class="chapter" data-level="3.2.11" data-path="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html"><a href="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html#hipoteza-h11-cena-a-moc-i-lokalizacja-bmw-vs-mercedes-wojew%C3%B3dztwa---kilka-map"><i class="fa fa-check"></i><b>3.2.11</b> Hipoteza H11 (<code>Cena a moc i lokalizacja – BMW vs Mercedes (województwa</code>) - kilka map</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="analiza-opisowa.html"><a href="analiza-opisowa.html"><i class="fa fa-check"></i><b>4</b> Analiza opisowa</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="analiza-opisowa.html"><a href="analiza-opisowa.html#wykres-korelacji"><i class="fa fa-check"></i><b>4.1</b> Wykres korelacji</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="wnioskowanie-statystyczne.html"><a href="wnioskowanie-statystyczne.html"><i class="fa fa-check"></i><b>5</b> Wnioskowanie statystyczne</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="wnioskowanie-statystyczne.html"><a href="wnioskowanie-statystyczne.html#test-ancova"><i class="fa fa-check"></i><b>5.1</b> Test ANCOVA</a></li>
+<li class="chapter" data-level="5.2" data-path="wnioskowanie-statystyczne.html"><a href="wnioskowanie-statystyczne.html#anova-price-fuel_type-transmission"><i class="fa fa-check"></i><b>5.2</b> ANOVA Price ~ Fuel_type + Transmission</a></li>
+<li class="chapter" data-level="5.3" data-path="wnioskowanie-statystyczne.html"><a href="wnioskowanie-statystyczne.html#test-anova-kruskalwallis-price-fuel_type"><i class="fa fa-check"></i><b>5.3</b> Test ANOVA / Kruskal–Wallis Price ~ Fuel_type</a></li>
+<li class="chapter" data-level="5.4" data-path="wnioskowanie-statystyczne.html"><a href="wnioskowanie-statystyczne.html#model-liniowy-funkcji-ceny"><i class="fa fa-check"></i><b>5.4</b> Model liniowy funkcji ceny</a></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Analiza danych - projekt</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="analiza-opisowa" class="section level1 hasAnchor" number="4">
+<h1><span class="header-section-number">4</span> Analiza opisowa<a href="analiza-opisowa.html#analiza-opisowa" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="wykres-korelacji" class="section level2 hasAnchor" number="4.1">
+<h2><span class="header-section-number">4.1</span> Wykres korelacji<a href="analiza-opisowa.html#wykres-korelacji" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><img src="Raport_car_sales_files/figure-html/unnamed-chunk-41-1.png" width="672" /></p>
+<p>Analiza korelacji dostarczyła informacji o zależnościach między zmiennymi numerycznymi w zbiorze danych dotyczących samochodów używanych. <code>Najbardziej skorelowane</code> ze sobą są zmienne <code>Displacement_cm3</code> oraz <code>Power_HP</code> (korelacja = 0.82 - dość silna). <code>Umiarkowaną korelacją</code> charakteryzują się zmienne <code>Price</code> i <code>Power_HP</code> (korelacja = 0.64). <code>Słabaszą</code>, ale wartą uwagi zależnością charakteryzują się zmienne <code>Price</code> i <code>Production_year</code> oraz <code>Production_year</code> i <code>Doors_number</code>.</p>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="wnioskowanie-statystyczne.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+  "sharing": {
+    "github": false,
+    "facebook": true,
+    "twitter": true,
+    "linkedin": false,
+    "weibo": false,
+    "instapaper": false,
+    "vk": false,
+    "whatsapp": false,
+    "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+  },
+  "fontsettings": {
+    "theme": "white",
+    "family": "sans",
+    "size": 2
+  },
+  "edit": {
+    "link": null,
+    "text": null
+  },
+  "history": {
+    "link": null,
+    "text": null
+  },
+  "view": {
+    "link": null,
+    "text": null
+  },
+  "download": null,
+  "search": false,
+  "toc": {
+    "collapse": "none"
+  }
+});
+});
+</script>
+
+</body>
+
+</html>
