@@ -16,15 +16,20 @@ Struktura zespołu
 
 W projekcie analizujemy zależności między ceną samochodu a jego cechami technicznymi i dodatkowymi. Zdefiniowano następujące hipotezy badawcze:
 
-H1: Samochody z większym przebiegiem mają istotnie niższą cenę niż samochody z mniejszym przebiegiem.
+H1: Samochody z większym przebiegiem mają istotnie niższą cenę niż samochody z niższym przebiegiem.
 H2: Nowsze samochody (z wyższym rokiem produkcji) są istotnie droższe niż starsze samochody.
 H3: Cena samochodu zależy od typu nadwozia; SUV-y i crossovery są średnio droższe niż hatchbacki i sedany.
 H4: Samochody z automatyczną skrzynią biegów są średnio droższe niż samochody z manualną skrzynią biegów.
-H5: Samochody od pierwszego właściciela osiągają wyższą cenę niż samochody z wieloma właścicielami.
+H5: Samochody od pierwszego właściciela (First_owner = tak) osiągają istotnie wyższą cenę (Price) niż samochody, które miały więcej niż jednego właściciela.
 H6: Samochody z napędem na cztery koła (4x4) są średnio droższe niż samochody z napędem na jedną oś, przy porównywalnych pozostałych parametrach.
 H7: Wyższa moc silnika wiąże się z wyższą ceną samochodu, nawet po uwzględnieniu przebiegu i roku produkcji.
+H8: Samochody hybrydowe i elektryczne są istotnie droższe niż samochody benzynowe i z silnikiem Diesla, przy porównywalnym przebiegu i roczniku
+H9: Samochody w popularnych kolorach siągają istotnie wyższe ceny niż samochody w kolorach mniej typowych.
+H10: Dla samochodów starszych niż 10 lat wskaźnik „cena na km” różni się istotnie między analizowanymi grupami aut w tej kategorii wieku.
+H11: W regionach (województwach) o wyższej średniej cenie ofert średnia moc silnika jest istotnie wyższa niż w regionach o niższej średniej cenie.
 
-Etapy projektu
+
+#Etapy projektu
 1. Zbieranie danych
 2. Porządkowanie danych
 3. Analiza danych
