@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>6 Podsumowanie | Analiza danych - projekt</title>
+  <meta name="description" content="6 Podsumowanie | Analiza danych - projekt" />
+  <meta name="generator" content="bookdown 0.45 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="6 Podsumowanie | Analiza danych - projekt" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="6 Podsumowanie | Analiza danych - projekt" />
+  
+  
+  
+
+<meta name="author" content="Paweł Cyrocki; Damian Skinder; Patryk Siuda" />
+
+
+<meta name="date" content="2026-01-31" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="wnioskowanie-statystyczne.html"/>
+
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<link href="libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet" />
+<script src="libs/bsTable-3.3.7/bootstrapTable.js"></script>
+<link href="libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet" />
+<script src="libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.12.0/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.2.2/css/crosstalk.min.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.2.2/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-2.25.2/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-2.25.2/plotly-latest.min.js"></script>
+
+
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="wstęp.html"><a href="wstęp.html"><i class="fa fa-check"></i><b>1</b> Wstęp</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="wstęp.html"><a href="wstęp.html#za%C5%82o%C5%BCenia-projektu"><i class="fa fa-check"></i><b>1.1</b> Założenia projektu</a></li>
+<li class="chapter" data-level="1.2" data-path="wstęp.html"><a href="wstęp.html#opis-zmiennych"><i class="fa fa-check"></i><b>1.2</b> Opis zmiennych</a></li>
+<li class="chapter" data-level="1.3" data-path="wstęp.html"><a href="wstęp.html#hipotezy-badawcze"><i class="fa fa-check"></i><b>1.3</b> Hipotezy badawcze</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="porządkowanie-danych.html"><a href="porządkowanie-danych.html"><i class="fa fa-check"></i><b>2</b> Porządkowanie danych</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="porządkowanie-danych.html"><a href="porządkowanie-danych.html#braki-danych"><i class="fa fa-check"></i><b>2.1</b> Braki danych</a></li>
+<li class="chapter" data-level="2.2" data-path="porządkowanie-danych.html"><a href="porządkowanie-danych.html#walidacja-danych"><i class="fa fa-check"></i><b>2.2</b> Walidacja danych</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html"><a href="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html"><i class="fa fa-check"></i><b>3</b> Werifikacja hipotez, wizualizacja, analiza opisowa oraz testy statystyczne</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html"><a href="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html#g%C5%82%C3%B3wna-statystyka-opisowa"><i class="fa fa-check"></i><b>3.1</b> Główna statystyka opisowa</a></li>
+<li class="chapter" data-level="3.2" data-path="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html"><a href="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html#weryfikacja-hipotez"><i class="fa fa-check"></i><b>3.2</b> Weryfikacja hipotez</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html"><a href="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html#hipoteza-h1-cena-a-przebieg"><i class="fa fa-check"></i><b>3.2.1</b> Hipoteza H1 (<code>Cena a przebieg</code>)</a></li>
+<li class="chapter" data-level="3.2.2" data-path="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html"><a href="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html#hipoteza-h2-cena-a-rok-produkcji"><i class="fa fa-check"></i><b>3.2.2</b> Hipoteza H2 (<code>Cena a rok produkcji</code>)</a></li>
+<li class="chapter" data-level="3.2.3" data-path="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html"><a href="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html#hipoteza-h3-typ-nadwozia-a-cena"><i class="fa fa-check"></i><b>3.2.3</b> Hipoteza H3 (<code>Typ nadwozia a cena</code>)</a></li>
+<li class="chapter" data-level="3.2.4" data-path="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html"><a href="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html#hipoteza-h4-skrzynia-bieg%C3%B3w-a-cena"><i class="fa fa-check"></i><b>3.2.4</b> Hipoteza H4 (<code>Skrzynia biegów a cena</code>)</a></li>
+<li class="chapter" data-level="3.2.5" data-path="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html"><a href="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html#hipoteza-h5-pierwszy-w%C5%82a%C5%9Bciciel-a-cena"><i class="fa fa-check"></i><b>3.2.5</b> Hipoteza H5 (<code>Pierwszy właściciel a cena</code>)</a></li>
+<li class="chapter" data-level="3.2.6" data-path="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html"><a href="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html#hipoteza-h6-nap%C4%99d-a-cena"><i class="fa fa-check"></i><b>3.2.6</b> Hipoteza H6 (<code>Napęd a cena</code>)</a></li>
+<li class="chapter" data-level="3.2.7" data-path="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html"><a href="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html#hipoteza-h7-moc-silnika-a-cena"><i class="fa fa-check"></i><b>3.2.7</b> Hipoteza H7 (<code>Moc silnika a cena</code>)</a></li>
+<li class="chapter" data-level="3.2.8" data-path="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html"><a href="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html#hipoteza-h8-paliwo-a-cena-bmw-vs-mercedes"><i class="fa fa-check"></i><b>3.2.8</b> Hipoteza H8 (<code>Paliwo a cena – BMW vs Mercedes</code>)</a></li>
+<li class="chapter" data-level="3.2.9" data-path="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html"><a href="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html#hipoteza-h9-kolor-a-cena-premium-psychologia"><i class="fa fa-check"></i><b>3.2.9</b> Hipoteza H9 (<code>Kolor a cena – premium psychologia</code>)</a></li>
+<li class="chapter" data-level="3.2.10" data-path="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html"><a href="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html#hipoteza-h10-trwa%C5%82o%C5%9B%C4%87-marki-cenakm"><i class="fa fa-check"></i><b>3.2.10</b> Hipoteza H10 (<code>Trwałość marki – cena/km</code>)</a></li>
+<li class="chapter" data-level="3.2.11" data-path="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html"><a href="werifikacja-hipotez-wizualizacja-analiza-opisowa-oraz-testy-statystyczne.html#hipoteza-h11-cena-a-moc-i-lokalizacja-bmw-vs-mercedes-wojew%C3%B3dztwa---kilka-map"><i class="fa fa-check"></i><b>3.2.11</b> Hipoteza H11 (<code>Cena a moc i lokalizacja – BMW vs Mercedes (województwa</code>) - kilka map</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="analiza-opisowa.html"><a href="analiza-opisowa.html"><i class="fa fa-check"></i><b>4</b> Analiza opisowa</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="analiza-opisowa.html"><a href="analiza-opisowa.html#wykres-korelacji"><i class="fa fa-check"></i><b>4.1</b> Wykres korelacji</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="wnioskowanie-statystyczne.html"><a href="wnioskowanie-statystyczne.html"><i class="fa fa-check"></i><b>5</b> Wnioskowanie statystyczne</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="wnioskowanie-statystyczne.html"><a href="wnioskowanie-statystyczne.html#test-ancova"><i class="fa fa-check"></i><b>5.1</b> Test ANCOVA</a></li>
+<li class="chapter" data-level="5.2" data-path="wnioskowanie-statystyczne.html"><a href="wnioskowanie-statystyczne.html#anova-price-fuel_type-transmission"><i class="fa fa-check"></i><b>5.2</b> ANOVA Price ~ Fuel_type + Transmission</a></li>
+<li class="chapter" data-level="5.3" data-path="wnioskowanie-statystyczne.html"><a href="wnioskowanie-statystyczne.html#test-anova-kruskalwallis-price-fuel_type"><i class="fa fa-check"></i><b>5.3</b> Test ANOVA / Kruskal–Wallis Price ~ Fuel_type</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="podsumowanie.html"><a href="podsumowanie.html"><i class="fa fa-check"></i><b>6</b> Podsumowanie</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="podsumowanie.html"><a href="podsumowanie.html#cel-badawczy"><i class="fa fa-check"></i><b>6.1</b> Cel Badawczy</a></li>
+<li class="chapter" data-level="6.2" data-path="podsumowanie.html"><a href="podsumowanie.html#kluczowe-hipotezy-i-wyniki"><i class="fa fa-check"></i><b>6.2</b> Kluczowe Hipotezy i Wyniki</a></li>
+<li class="chapter" data-level="6.3" data-path="podsumowanie.html"><a href="podsumowanie.html#g%C5%82%C3%B3wne-ustalenia"><i class="fa fa-check"></i><b>6.3</b> Główne Ustalenia</a>
+<ul>
+<li class="chapter" data-level="6.3.1" data-path="podsumowanie.html"><a href="podsumowanie.html#ceny-i-rozk%C5%82ady"><i class="fa fa-check"></i><b>6.3.1</b> Ceny i Rozkłady</a></li>
+<li class="chapter" data-level="6.3.2" data-path="podsumowanie.html"><a href="podsumowanie.html#czynniki-cenowe"><i class="fa fa-check"></i><b>6.3.2</b> Czynniki Cenowe</a></li>
+<li class="chapter" data-level="6.3.3" data-path="podsumowanie.html"><a href="podsumowanie.html#r%C3%B3%C5%BCnice-mi%C4%99dzy-markami"><i class="fa fa-check"></i><b>6.3.3</b> Różnice Między Markami</a></li>
+<li class="chapter" data-level="6.3.4" data-path="podsumowanie.html"><a href="podsumowanie.html#wnioskowanie-statystyczne-1"><i class="fa fa-check"></i><b>6.3.4</b> Wnioskowanie Statystyczne</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="podsumowanie.html"><a href="podsumowanie.html#wk%C5%82ad-projektu"><i class="fa fa-check"></i><b>6.4</b> Wkład Projektu</a></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Analiza danych - projekt</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="podsumowanie" class="section level1 hasAnchor" number="6">
+<h1><span class="header-section-number">6</span> Podsumowanie<a href="podsumowanie.html#podsumowanie" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="cel-badawczy" class="section level2 hasAnchor" number="6.1">
+<h2><span class="header-section-number">6.1</span> Cel Badawczy<a href="podsumowanie.html#cel-badawczy" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Projekt stanowi kompleksową analizę porównawczą cen i wartości samochodów marek BMW i Mercedes-Benz na polskim rynku wtórnym. Badanie opiera się na zbiorze danych z platformy Kaggle zawierającym ogłoszenia sprzedaży używanych samochodów w Polsce. Autorzy (Paweł Cyrocki, Damian Skinder, Patryk Siuda) zastosowali metodykę opracowaną w języku R z zamiarem identyfikacji kluczowych czynników wpływających na wycenę pojazdów premium.</p>
+</div>
+<div id="kluczowe-hipotezy-i-wyniki" class="section level2 hasAnchor" number="6.2">
+<h2><span class="header-section-number">6.2</span> Kluczowe Hipotezy i Wyniki<a href="podsumowanie.html#kluczowe-hipotezy-i-wyniki" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<table class="table table-striped table-hover table-condensed" style="color: black; width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:unnamed-chunk-46">Table 6.1: </span>Kluczowe Hipotezy i Wyniki
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Hipoteza
+</th>
+<th style="text-align:left;">
+Opis
+</th>
+<th style="text-align:left;">
+Rezultat
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+H1
+</td>
+<td style="text-align:left;">
+Przebieg a cena
+</td>
+<td style="text-align:left;">
+Potwierdzona – ujemna korelacja (r ≈ −0.67 BMW; −0.61 Mercedes)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+H2
+</td>
+<td style="text-align:left;">
+Rok produkcji a cena
+</td>
+<td style="text-align:left;">
+Potwierdzona – nowsze roczniki znacznie droższe
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+H3
+</td>
+<td style="text-align:left;">
+Typ nadwozia a cena
+</td>
+<td style="text-align:left;">
+Potwierdzona – SUV-y droższe niż sedany/kompakty
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+H4
+</td>
+<td style="text-align:left;">
+Skrzynia biegów a cena
+</td>
+<td style="text-align:left;">
+Potwierdzona – automaty o 55–54 tys. PLN droższe
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+H5
+</td>
+<td style="text-align:left;">
+Pierwszy właściciel a cena
+</td>
+<td style="text-align:left;">
+Potwierdzona – auta od 1. właściciela zdecydowanie droższe
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+H6
+</td>
+<td style="text-align:left;">
+Typ napędu a cena
+</td>
+<td style="text-align:left;">
+Potwierdzona – napęd 4×4 najwyżej wyceniany
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+H7
+</td>
+<td style="text-align:left;">
+Moc silnika a cena
+</td>
+<td style="text-align:left;">
+Potwierdzona – moc istotnie koreluje z ceną (r ≈ 0.55)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+H8
+</td>
+<td style="text-align:left;">
+Typ paliwa a cena
+</td>
+<td style="text-align:left;">
+Potwierdzona – elektryki/hybrydy droższe (Mercedes szczególnie)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+H9
+</td>
+<td style="text-align:left;">
+Kolor a cena
+</td>
+<td style="text-align:left;">
+Częściowo – biały i czerwony wyżej, ale nie ‘czysty’ efekt premium
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+H10
+</td>
+<td style="text-align:left;">
+Cena/km a rok produkcji
+</td>
+<td style="text-align:left;">
+Potwierdzona – Mercedes ma wyższy stosunek ceny/km w nowych autach
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+H11
+</td>
+<td style="text-align:left;">
+Cena, moc i lokalizacja
+</td>
+<td style="text-align:left;">
+Potwierdzona – zróżnicowanie regionalne (województwa)
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="główne-ustalenia" class="section level2 hasAnchor" number="6.3">
+<h2><span class="header-section-number">6.3</span> Główne Ustalenia<a href="podsumowanie.html#g%C5%82%C3%B3wne-ustalenia" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="ceny-i-rozkłady" class="section level3 hasAnchor" number="6.3.1">
+<h3><span class="header-section-number">6.3.1</span> Ceny i Rozkłady<a href="podsumowanie.html#ceny-i-rozk%C5%82ady" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Mediana cen aut używanych jest zbliżona w obu markach (BMW: 51 800 PLN; Mercedes-Benz: 52 500 PLN), jednak Mercedes ma wyżej umiejscowioną górną część rozkładu (Q3: 120 650 PLN vs 99 000 PLN w BMW). Średnie ceny znacznie się różnią (BMW: 78 490 PLN; Mercedes: 91 645 PLN), co wynika z obecności droższych outlierów.</p>
+</div>
+<div id="czynniki-cenowe" class="section level3 hasAnchor" number="6.3.2">
+<h3><span class="header-section-number">6.3.2</span> Czynniki Cenowe<a href="podsumowanie.html#czynniki-cenowe" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Najsilniej ceny różnicują:</p>
+<p>Rok produkcji i przebieg (negatywna korelacja z przebiegiem)</p>
+<p>Typ paliwa (elektryki/hybrydy premiowane, szczególnie u Mercedes)</p>
+<p>Typ napędu (4×4 najdroższy)</p>
+<p>Historia właściciela (pierwszy właściciel daje znaczną premię)</p>
+</div>
+<div id="różnice-między-markami" class="section level3 hasAnchor" number="6.3.3">
+<h3><span class="header-section-number">6.3.3</span> Różnice Między Markami<a href="podsumowanie.html#r%C3%B3%C5%BCnice-mi%C4%99dzy-markami" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Mercedes-Benz wykazuje wyższą premię za auta ekologiczne (elektryki: mediana 336 450 PLN vs niska reprezentacja w BMW). W segmencie klasycznych paliw (benzyna/diesel) różnice są mniejsze, jednak Mercedes utrzymuje wyższe kwartyle górne.</p>
+</div>
+<div id="wnioskowanie-statystyczne-1" class="section level3 hasAnchor" number="6.3.4">
+<h3><span class="header-section-number">6.3.4</span> Wnioskowanie Statystyczne<a href="podsumowanie.html#wnioskowanie-statystyczne-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Test ANCOVA potwierdził istotność marki na cenę po kontrolowaniu przebiegu i roku (p &lt; 0.05)</p>
+<p>Test Kruskala-Wallisa wykazał, że typ paliwa istotnie wpływa na ceny (p &lt; 0.05)</p>
+<p>Interakcja między paliwem a skrzynią biegów również istotna statystycznie</p>
+<p>Analiza Przestrzenna
+Ceny i moc silników wykazują wyraźne zróżnicowanie regionalne. Województwa takie jak podlaskie charakteryzują się wyższym udziałem aut o mocy &gt;200 KM, co wskazuje na heterogeniczność struktury ofert w kraju.</p>
+</div>
+</div>
+<div id="wkład-projektu" class="section level2 hasAnchor" number="6.4">
+<h2><span class="header-section-number">6.4</span> Wkład Projektu<a href="podsumowanie.html#wk%C5%82ad-projektu" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Projekt stanowi praktyczną aplikację technik analitycznych do rzeczywistego problemu rynku wtórnego. Wyniki mogą być użyteczne dla:</p>
+<p>Dealerów i sprzedawców (wycena pojazdów)</p>
+<p>Nabywców (identyfikacja uczciwej ceny za samochód)</p>
+<p>Analityków rynku (trendy w segmencie premium)</p>
+<p>Dokument jest napisany w RMarkdown z formatem bookdown, co ułatwia odtwarzalność i interaktywne przeglądanie wyników.</p>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="wnioskowanie-statystyczne.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+  "sharing": {
+    "github": false,
+    "facebook": true,
+    "twitter": true,
+    "linkedin": false,
+    "weibo": false,
+    "instapaper": false,
+    "vk": false,
+    "whatsapp": false,
+    "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+  },
+  "fontsettings": {
+    "theme": "white",
+    "family": "sans",
+    "size": 2
+  },
+  "edit": {
+    "link": null,
+    "text": null
+  },
+  "history": {
+    "link": null,
+    "text": null
+  },
+  "view": {
+    "link": null,
+    "text": null
+  },
+  "download": null,
+  "search": false,
+  "toc": {
+    "collapse": "none"
+  }
+});
+});
+</script>
+
+</body>
+
+</html>

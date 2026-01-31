@@ -626,7 +626,7 @@ tab_h2 <- dane_used %>%
 tab_h2 %>%
   kable(
     "html",
-    caption = "H2: Cena samochodów W PLN według roku produkcji",
+    caption = "Cena samochodów W PLN według roku produkcji",
     align = "c",
     col.names = c("Marka", "Rok grupy", "Liczba", "Średnia", "Q1", "Mediana", "Q3")
   ) %>%
@@ -716,7 +716,7 @@ tab_h3 <- dane %>%
 tab_h3 %>%
   kable(
     "html",
-    caption = "H3: Cena w PLN według typów nadwozia BMW vs Mercedes-Benz",
+    caption = "Cena w PLN według typów nadwozia BMW vs Mercedes-Benz",
     align = "c",
     col.names = c("Marka", "Typ nadwozia", "Liczba", "Średnia", "Q1", "Mediana", "Q3")
   ) %>%
@@ -799,7 +799,7 @@ tab_h4_long <- dane %>%
 tab_h4_long %>%
   kable(
     "html",
-    caption = "H4: Cena a skrzynia biegów (używane, Price ≤ 400 000)",
+    caption = "Cena a skrzynia biegów (używane, Price ≤ 400 000)",
     align = "c",
     col.names = c("Marka", "Skrzynia biegów", "Liczba", "Średnia", "Q1", "Mediana", "Q3")
   ) %>%
@@ -881,7 +881,7 @@ tab_h5 <- dane %>%
 tab_h5 %>%
   kable(
     "html",
-    caption = "H5: Cena samochodu w zależności od bycia pierwszym właścicielem (używane, Price ≤ 400 000)",
+    caption = "Cena samochodu w zależności od bycia pierwszym właścicielem (używane, Price ≤ 400 000)",
     align = "c",
     col.names = c("Marka", "Pierwszy właściciel", "Liczba", "Średnia", "Q1", "Mediana", "Q3")
   ) %>%
@@ -975,7 +975,7 @@ tab_h6 <- dane %>%
 tab_h6 %>%
   kable(
     "html",
-    caption = "H6: Cena samochodu w zależności od typu napędu (używane, Price ≤ 400 000)",
+    caption = "Cena samochodu w zależności od typu napędu (używane, Price ≤ 400 000)",
     align = "c",
     col.names = c("Marka", "Typ napędu", "Liczba", "Średnia", "Q1", "Mediana", "Q3")
   ) %>%
@@ -1054,7 +1054,7 @@ tab_h7 <- dane %>%
 tab_h7 %>%
   kable(
     "html",
-    caption = "H7: Cena a moc silnika samochodu używanego (używane, Price ≤ 500 000) – korelacja r",
+    caption = "Cena a moc silnika samochodu używanego (używane, Price ≤ 500 000) – korelacja r",
     align = "c",
     col.names = c("Marka", "Liczba", "Średnia", "Q1", "Mediana", "Q3", "Wsp korelacji")
   ) %>%
@@ -1151,7 +1151,7 @@ tab_h8 <- dane %>%
 tab_h8 %>%
   kable(
     "html",
-    caption = "H8: Cena samochodu w zależności od rodzaju paliwa (używane, Price ≤ 400 000)",
+    caption = "Cena samochodu w zależności od rodzaju paliwa (używane, Price ≤ 400 000)",
     align = "c",
     col.names = c("Marka", "Rodzaj paliwa", "Liczba", "Średnia", "Q1", "Mediana", "Q3")
   ) %>%
@@ -1257,7 +1257,7 @@ tab_h9 <- dane %>%
 tab_h9 %>%
   kable(
     "html",
-    caption = "H9: Cena samochodów używanych według koloru (10 najczęstszych, Price ≤ 500 000)",
+    caption = "Cena samochodów używanych według koloru (10 najczęstszych, Price ≤ 500 000)",
     align = "c",
     col.names = c("Marka", "Kolor", "Liczba", "Średnia", "Q1", "Mediana", "Q3")
   ) %>%
@@ -1363,7 +1363,7 @@ tab_h10 <- dane %>%
 tab_h10 %>%
   kable(
     "html",
-    caption = "H10: Cena za kilometr samochodu używanego w zależności od grupy roku produkcji",
+    caption = "Cena za kilometr samochodu używanego w zależności od grupy roku produkcji",
     align = "c",
     col.names = c("Marka", "Grupa roku produkcji", "Liczba", "Średnia", "Q1", "Mediana", "Q3")
   ) %>%
@@ -1780,14 +1780,14 @@ Analiza korelacji dostarczyła informacji o zależnościach między zmiennymi nu
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 library(dplyr)
 library(car)
-dane_used <- dane %>% filter(Condition == "Used")
+dane_used <- dane %>% filter(Condition == "Used", Price <= 3e6)
 # Model ANCOVA dla H1: Price ~ Vehicle_brand + Mileage_km + Production_year
 model_h1 <- aov(
   Price ~ Vehicle_brand + Mileage_km + Production_year,
   data = dane_used
 )
 # Podsumowanie wyników ANCOVA
-invisible(summary(model_h1))
+summary(model_h1)
 
 #Zapisywanie wyniku za pomoca pakietu kable
 library(knitr)
@@ -1818,6 +1818,7 @@ ggstatsplot::ggbetweenstats(
   ylab = "Cena (PLN)"
 )
 ```
+
 Wyniki ANCOVA dla hipotezy H1 pokazują, że marka pojazdu (`Vehicle_brand`) ma istotny wpływ na cenę (`Price`) po kontrolowaniu przebiegu (`Mileage_km`) i roku produkcji (`Production_year`). Wartość p dla Vehicle_brand jest mniejsza niż 0.05, co pozwala odrzucić hipotezę zerową o braku różnic cen między markami po uwzględnieniu tych czynników kontrolnych. Oznacza to, że `nawet po uwzględnieniu wpływu przebiegu i roku produkcji, marka samochodu pozostaje istotnym czynnikiem różnicującym ceny` samochodów używanych.
 
 ## ANOVA Price ~ Fuel_type + Transmission
@@ -1830,7 +1831,7 @@ Wyniki ANCOVA dla hipotezy H1 pokazują, że marka pojazdu (`Vehicle_brand`) ma 
 library(dplyr)
 #analizujemy tylko dla samochodow uzywanych
 dane_i <- dane %>%
- filter(Condition == "Used", !is.na(Price), !is.na(Fuel_type)) %>%
+ filter(Condition == "Used", !is.na(Price), Price <= 3e6, !is.na(Fuel_type)) %>%
   mutate(Transmission = na_if(Transmission, "")) %>%
   filter(!is.na(Transmission))
 # Test ANOVA
@@ -1838,7 +1839,7 @@ model_i <- aov(
   Price ~ Fuel_type * Transmission,
   data = dane_i
 )
-invisible(summary(model_i))
+summary(model_i)
 # Wykonanie interaktywnego boxplotu dla ceny w zależności od typu paliwa i skrzyni biegów z użyciem pakietu plotly i ggplot2 oraz ggstatsplot
 library(ggplot2)
 library(plotly)
@@ -1882,13 +1883,13 @@ Na podstawie wyników analizy ANOVA można stwierdzić, że zarówno typ paliwa 
 
 library(dplyr)
 dane_h <- dane %>%
-  filter(!is.na(Price) & !is.na(Fuel_type) & Condition == "Used")
+  filter(!is.na(Price) & !is.na(Fuel_type) & Condition == "Used" & Price <= 3e6)
 # Test Kruskala-Wallisa (nieparametryczny) dla porównania median cen w zależności od typu paliwa
 test_h <- kruskal.test(
   Price ~ Fuel_type,
   data = dane_h
 )
-invisible(test_h)
+test_h
 # Wykonanie interaktywnego boxplotu dla ceny w zależności od typu paliwa z użyciem pakietu plotly i ggplot2
 library(ggplot2)
 library(plotly)
@@ -1899,6 +1900,8 @@ boxplot_h <- ggplot(dane_h, aes(x = Fuel_type, y = Price, fill = Fuel_type)) +
 boxplot_h_plotly <- ggplotly(boxplot_h)
 boxplot_h_plotly
 
+```
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # umieszczenie danych w tabeli
 library(knitr)
 library(kableExtra)
@@ -1923,38 +1926,102 @@ median_table_h %>%
   ) %>%
   row_spec(0, bold = TRUE, color = "white", background = "#2C3E50")
 ```
+
 Na podstawie testu Kruskala-Wallisa można stwierdzić, że `istnieje istotna różnica w medianach cen samochodów używanych w zależności od typu paliwa` (p < 0.05). Odrzucamy hipotezę zerową i przyjmujemy hipotezę alternatywną, co oznacza, że ceny samochodów różnią się istotnie statystycznie w zależności od rodzaju paliwa. Boxplot wizualizuje te różnice, pokazując zróżnicowanie cen dla różnych typów paliwa. Tabela z medianami cen dodatkowo ilustruje, które typy paliwa są związane z wyższymi lub niższymi medianami cen samochodów używanych.
 
-## Model liniowy funkcji ceny
+# Podsumowanie
+## Cel Badawczy
+Projekt stanowi kompleksową analizę porównawczą cen i wartości samochodów marek BMW i Mercedes-Benz na polskim rynku wtórnym. Badanie opiera się na zbiorze danych z platformy Kaggle zawierającym ogłoszenia sprzedaży używanych samochodów w Polsce. Autorzy (Paweł Cyrocki, Damian Skinder, Patryk Siuda) zastosowali metodykę opracowaną w języku R z zamiarem identyfikacji kluczowych czynników wpływających na wycenę pojazdów premium.
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-library(dplyr)
-library(ggplot2)
-dane_used <- dane %>% filter(Condition == "Used")
-# Model liniowy dla ceny z wybranymi predyktorami
-model_price <- lm(
-  Price ~ Mileage_km + Production_year + Power_HP + Displacement_cm3 + Doors_number,
-  data = dane_used
+
+## Kluczowe Hipotezy i Wyniki
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+hipotezy_tabela <- tribble(
+  ~Hipoteza, ~Opis, ~Rezultat,
+  
+  "H1",  "Przebieg a cena",
+  "Potwierdzona – ujemna korelacja (r ≈ −0.67 BMW; −0.61 Mercedes)",
+  
+  "H2",  "Rok produkcji a cena",
+  "Potwierdzona – nowsze roczniki znacznie droższe",
+  
+  "H3",  "Typ nadwozia a cena",
+  "Potwierdzona – SUV-y droższe niż sedany/kompakty",
+  
+  "H4",  "Skrzynia biegów a cena",
+  "Potwierdzona – automaty o 55–54 tys. PLN droższe",
+  
+  "H5",  "Pierwszy właściciel a cena",
+  "Potwierdzona – auta od 1. właściciela zdecydowanie droższe",
+  
+  "H6",  "Typ napędu a cena",
+  "Potwierdzona – napęd 4×4 najwyżej wyceniany",
+  
+  "H7",  "Moc silnika a cena",
+  "Potwierdzona – moc istotnie koreluje z ceną (r ≈ 0.55)",
+  
+  "H8",  "Typ paliwa a cena",
+  "Potwierdzona – elektryki/hybrydy droższe (Mercedes szczególnie)",
+  
+  "H9",  "Kolor a cena",
+  "Częściowo – biały i czerwony wyżej, ale nie 'czysty' efekt premium",
+  
+  "H10", "Cena/km a rok produkcji",
+  "Potwierdzona – Mercedes ma wyższy stosunek ceny/km w nowych autach",
+  
+  "H11", "Cena, moc i lokalizacja",
+  "Potwierdzona – zróżnicowanie regionalne (województwa)"
 )
-# Podsumowanie wyników modelu
-invisible(summary(model_price))
 
-# wyniki w tabeli
-library(knitr)
-library(kableExtra)
-model_summary <- as.data.frame(summary(model_price)$coefficients)
-model_summary %>%
-  kable(
-    "html",
-    caption = "Tabela wyników modelu liniowego dla ceny samochodów używanych",
-    align = "c",
-    col.names = c("Predyktor", "Estymator", "Std. Error", "t value", "Pr(>|t|)")
+hipotezy_tabela %>%
+  knitr::kable(
+    format = "html",
+    caption = "Kluczowe Hipotezy i Wyniki"
   ) %>%
-  kable_styling(
-    full_width = FALSE,
-    bootstrap_options = c("striped", "condensed", "hover")
-  ) %>%
-  row_spec(0, bold = TRUE, color = "white", background = "#2C3E50")
+  kableExtra::kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed"),
+    full_width = FALSE
+)
+
 ```
+## Główne Ustalenia
+### Ceny i Rozkłady
+Mediana cen aut używanych jest zbliżona w obu markach (BMW: 51 800 PLN; Mercedes-Benz: 52 500 PLN), jednak Mercedes ma wyżej umiejscowioną górną część rozkładu (Q3: 120 650 PLN vs 99 000 PLN w BMW). Średnie ceny znacznie się różnią (BMW: 78 490 PLN; Mercedes: 91 645 PLN), co wynika z obecności droższych outlierów.
+
+### Czynniki Cenowe
+Najsilniej ceny różnicują:
+
+Rok produkcji i przebieg (negatywna korelacja z przebiegiem)
+
+Typ paliwa (elektryki/hybrydy premiowane, szczególnie u Mercedes)
+
+Typ napędu (4×4 najdroższy)
+
+Historia właściciela (pierwszy właściciel daje znaczną premię)
+
+### Różnice Między Markami
+Mercedes-Benz wykazuje wyższą premię za auta ekologiczne (elektryki: mediana 336 450 PLN vs niska reprezentacja w BMW). W segmencie klasycznych paliw (benzyna/diesel) różnice są mniejsze, jednak Mercedes utrzymuje wyższe kwartyle górne.
+
+### Wnioskowanie Statystyczne
+Test ANCOVA potwierdził istotność marki na cenę po kontrolowaniu przebiegu i roku (p < 0.05)
+
+Test Kruskala-Wallisa wykazał, że typ paliwa istotnie wpływa na ceny (p < 0.05)
+
+Interakcja między paliwem a skrzynią biegów również istotna statystycznie
+
+Analiza Przestrzenna
+Ceny i moc silników wykazują wyraźne zróżnicowanie regionalne. Województwa takie jak podlaskie charakteryzują się wyższym udziałem aut o mocy >200 KM, co wskazuje na heterogeniczność struktury ofert w kraju.
+
+## Wkład Projektu
+Projekt stanowi praktyczną aplikację technik analitycznych do rzeczywistego problemu rynku wtórnego. Wyniki mogą być użyteczne dla:
+
+Dealerów i sprzedawców (wycena pojazdów)
+
+Nabywców (identyfikacja uczciwej ceny za samochód)
+
+Analityków rynku (trendy w segmencie premium)
+
+Dokument jest napisany w RMarkdown z formatem bookdown, co ułatwia odtwarzalność i interaktywne przeglądanie wyników.
 
 
