@@ -3,13 +3,15 @@ title: "Analiza danych - projekt"
 author: "Paweł Cyrocki; Damian Skinder; Patryk Siuda"
 date: "`r Sys.Date()`"
 output:
-  bookdown::gitbook:
+  html_document:
+    theme: cosmo
+    toc: true
     toc_depth: 3
-    config:
-      toc:
-        collapse: none
-   
+    toc_float:
+      collapsed: true
+      smooth_scroll: true
 ---
+
 
 ```{=html}
 <style>
@@ -45,17 +47,17 @@ unzip("dane/Car_sale_ads.csv.zip", exdir = "dane")
 dane <- read.csv("dane/Car_sale_ads.csv")
 ```
 
-# Wstęp
+# 1.Wstęp
 
 Niniejszy dokument opisuje projekt zespołowy dotyczący analizy danych przy użycia języka R. Projekt obejmuje zbieranie, przetwarzanie, analizę oraz wizualizację danych. Jego celem jest porównawcza analiza cenowa i predykcja wartości samochodów premium na polskim rynku wtórnym.
 
 Dane do analizy pozyskano ze strony: <https://www.kaggle.com/datasets/bartoszpieniak/poland-cars-for-sale-dataset>.
 
-## Założenia projektu
+## 1.1 Założenia projektu
 
 Analizę ograniczono do samochodów marek BMW i Mercedes-Benz, co wynika z konieczności zapewnienia wysokiej jakości statystycznej danych. Szeroki zakres wszystkich marek (\~200k obserwacji, 20+ brandów) wprowadza znaczną heteroskedastyczność (różną wariancję reszt w modelach regresji) oraz nadmiar obserwacji odstających, co destabilizuje estymatory i obniża moc testów hipotez. Aby analizowane wartosci były bardziej miarodajne do badania posłużyły ogłoszenia dla samochodów używanych.
 
-## Opis zmiennych
+## 1.2 Opis zmiennych
 
 `Index` - unikalny identyfikator ogłoszenia
 
@@ -107,7 +109,7 @@ Analizę ograniczono do samochodów marek BMW i Mercedes-Benz, co wynika z konie
 
 `Features` - cechy dodatkowe samochodu
 
-## Hipotezy badawcze
+## 1.3 Hipotezy badawcze
 
 W tej części definiujemy hipotezy, które będą weryfikowane w dalszej analizie eksploracyjnej oraz modelowaniu.
 
@@ -140,11 +142,11 @@ Wyższa moc (Power_HP) koreluje z ceną w obu markach po kontroli przebiegu i ro
 
 **H11 (Cena a moc i lokalizacja – BMW vs Mercedes (województwa))** Średnia moc silnika `Power_HP` BMW i Mercedesa jest wyższa w regionach o wyższej średniej cenie `Price` ofert.
 
-# Porządkowanie danych
+# 2. Porządkowanie danych
 
 W tym rozdziale opisano proces porządkowania danych, w tym obsługę braków danych, transformacje zmiennych oraz usuwanie obserwacji odstających. Podjęte zdiałania mają na celu przygotowanie danych do dalszej analizy opisowej i testowania statystycznego.
 
-## Braki danych
+## 2.1 Braki danych
 
 Pierszym krokiem będzie identyfikacja zmiennych, które zawierają braki. Za pomocą funkcji `aggr` z pakietu `VIM` utworzono wykres pokazujący braki danych w poszczególnych zmiennych.
 
@@ -242,7 +244,7 @@ VIM::aggr(dane, numbers = TRUE, sortVars = TRUE,
           ylab = c("Procent braków w zmiennych", "Histogram braków"))
 ```
 
-## Walidacja danych
+## 2.2 Walidacja danych
 
 W celu eliminacji obserwacji odstających, które mogą zniekształcić wyniki analizy, przeprowadzono walidację danych dla kluczowych zmiennych. Poniżej przedstawiono przyjęte kryteria walidacji:
 
@@ -383,7 +385,7 @@ dane <- dane %>%
 write.csv(dane, "dane/Car_sale_ads_cleaned.csv", row.names = FALSE)
 ```
 
-# Werifikacja hipotez, wizualizacja, analiza opisowa oraz testy statystyczne
+# 3. Weryfikacja hipotez, wizualizacja, analiza opisowa oraz testy statystyczne
 
 ```{r, include=FALSE}
 # Paleta kolorów marek (do wielokrotnego użycia w całym projekcie)
@@ -393,7 +395,7 @@ brand_colors <- c(
 )
 ```
 
-## Główna statystyka opisowa
+## 3.1 Główna statystyka opisowa
 Poniżej przedstawiono główne statystyki opisowe dla zmiennych numerycznych w zbiorze danych. Statystyki dotyczą używanych samochodów marek BMW oraz Mercedes Benz. Poniżej przedstawiono tabelę zawierającą liczebność próby, średnie wartości kluczonych zmiennych.
  
 ```{r opisowa-tabela, echo=FALSE, message=FALSE, warning=FALSE}
@@ -474,9 +476,9 @@ w BMW widać bardzo wysoki maks (`6999000`) przy niskim minimum (`500`).
 `Kwartyle` pokazują też, że górna część rozkładu jest droższa dla Mercedesa: Q3 to `120649,5` wobec `99000` dla BMW, 
 czyli 25% najdroższych Mercedesów zaczyna się wyżej niż 25% najdroższych BMW
 
-## Weryfikacja hipotez
+## 3.2 Weryfikacja hipotez
 
-### Hipoteza H1 (`Cena a przebieg`) 
+### 3.2.1 Hipoteza H1 (`Cena a przebieg`) 
 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
@@ -532,7 +534,7 @@ Z tabeli wynika, że „typowe” ceny są bardzo zbliżone (`mediany ok. 52 tys
 
 Na wykresie `widać również skośność cen`: większość obserwacji skupia się przy niższych poziomach cen, a jednocześnie występuje „ogon” droższych ofert (zwłaszcza przy niskich przebiegach), co jest typowym obrazem prawostronnie skośnego rozkładu cen i tłumaczy, dlaczego średnia bywa wyższa od mediany.
 
-### Hipoteza H2 (`Cena a rok produkcji`) 
+### 3.2.2 Hipoteza H2 (`Cena a rok produkcji`) 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 dane_used <- dane %>%
@@ -643,7 +645,7 @@ Z tabeli widać konsekwentny `wzrost cen wraz z nowszym rokiem produkcji`, co ws
 
 Boxploty potwierdzają te obserwacje wizualnie: mediany w kolejnych grupach rocznika układają się „schodkowo” coraz wyżej, a `rozrzut jest większy w nowszych przedziałach` (16–20 i 21–24), co sugeruje `większą różnorodność cen w nowszych autach` (różne wersje/wyposażenia).
 
-### Hipoteza H3 (`Typ nadwozia a cena`) 
+### 3.2.3 Hipoteza H3 (`Typ nadwozia a cena`) 
 Weryfikacja: porównanie rozkładów `Price`między kategoriami zmiennej `Type`
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
@@ -733,7 +735,7 @@ Wyniki dla aut używanych (Price ≤ 400000) pokazują, że cena `różni się m
 
 Warto też zauważyć, że `rozrzut cen (Q1–Q3) dla SUV jest szeroki`, co widać na wysokości pudełek na wykresie i sugeruje `duże zróżnicowanie ofert w tym typie` (różne roczniki, wersje i wyposażenie).
 
-### Hipoteza H4 (`Skrzynia biegów a cena`)  
+### 3.2.4 Hipoteza H4 (`Skrzynia biegów a cena`)  
 Weryfikacja: porównanie cen `Price` w dwóch grupach (`Transmission` = automat vs manual) z użyciem odpowiednich testów statystycznych i wizualizacji
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
@@ -813,7 +815,7 @@ tab_h4_long %>%
 
 `Na wykresie violin` oraz w tabeli kwartylowej widać, że w obu markach `rozkład cen dla aut z automatem jest przesunięty w górę względem manuali` (Price ≤ 400000). Dla BMW mediana automatu to `78900 PLN`, a manuala `23300 PLN` (różnica median 55600 PLN), natomiast dla Mercedes-Benz odpowiednio `73900 PLN` vs `19900 PLN` (różnica 54000 PLN). Wniosek wspiera hipotezę H4 na poziomie opisu danych, przy czym obserwowana różnica może wynikać także z tego, że automaty częściej występują w droższych konfiguracjach (np. nowsze roczniki/wyższe wersje), a nie wyłącznie z samego typu skrzyni.
 
-### Hipoteza H5 (`Pierwszy właściciel a cena`)  
+### 3.2.5 Hipoteza H5 (`Pierwszy właściciel a cena`)  
 Weryfikacja: porównanie `Price` dla zmiennej `First_owner` (tak vs nie) z wykorzystaniem wykresów oraz testów różnic średnich.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
@@ -894,7 +896,7 @@ tab_h5 %>%
 
 Na podstawie tabeli i wykresu widać, że samochody oznaczone jako „`pierwszy właściciel = Tak`” są `wyraźnie droższe` od pozostałych w obu markach. Dla BMW mediana rośnie z ok. `38900 PLN` („Nie”) do ok. `89900 PLN` („Tak”), a dla Mercedes-Benz z ok. `38499 PLN` („Nie”) do ok. `114900 PLN` („Tak”), co pokazuje `silne przesunięcie „typowej” ceny w górę`. Dodatkowo wyższe wartości Q1 i Q3 w grupie „Tak” wskazują, że przewaga cenowa `dotyczy nie tylko mediany`, ale też całej pozostałej części rozkładu, co wspiera hipotezę H5 na poziomie opisu danych.
 
-### Hipoteza H6 (`Napęd a cena`) 
+### 3.2.6 Hipoteza H6 (`Napęd a cena`) 
 Weryfikacja: porównanie rozkładów ceny pomiędzy kategoriami zmiennej `Drive` (np. FWD, RWD, 4x4) z uwzględnieniem innych cech w modelu (m.in. `Power_HP`, `Production_year`)
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
@@ -990,7 +992,7 @@ Dla aut używanych `widać wyraźną zależność ceny od typu napędu`: wariant
 
 Jednocześnie `rozkłady dla napędów na jedną oś nie są identyczne między markami`: w BMW „napęd na przód” jest cenowo zbliżony do 4x4 dołączanego (automat) i wyraźnie wyższy niż „napęd na tył”. W Mercedes-Benz sytuacja jest bardziej jednoznaczna: napęd na przód i na tył mają podobne poziomy cen, natomiast 4x4 (stały i dołączany) tworzy wyraźnie droższy segment, co wzmacnia ogólny wniosek o przewadze cenowej 4x4.
 
-### Hipoteza H7 (`Moc silnika a cena`)  
+### 3.2.7 Hipoteza H7 (`Moc silnika a cena`)  
 Weryfikacja: model regresji z ceną `Price` jako zmienną zależną i `Power_HP`, `Mileage_km`, `Production_year` jako głównymi zmiennymi objaśniającymi.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
@@ -1067,7 +1069,7 @@ tab_h7 %>%
 
 Dane na wykresie i w tabeli wspierają Hipotezę 7: `mocniejsze samochody używane są przeciętnie droższe`, a zależność ma `zbliżoną siłę w BMW i Mercedes-Benz` (r ≈ `0.55`). Jednocześnie widoczny rozrzut punktów wokół linii trendu pokazuje, że `sama moc nie wyjaśnia całej zmienności ceny`, ale `stanowi ważny czynnik` różnicujący oferty.
 
-### Hipoteza H8 (`Paliwo a cena – BMW vs Mercedes`) 
+### 3.2.8 Hipoteza H8 (`Paliwo a cena – BMW vs Mercedes`) 
 Weryfikacja: boxplot `Price` \~ `Fuel_type` \* `Vehicle_brand`, regresja z kontrolą Mileage_km + Production_year.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
@@ -1168,7 +1170,7 @@ W autach `używanych widać wyraźne różnice cen między rodzajami paliwa` i s
 
 Dodatkowo widać, że `kategorie alternatywne mają mniejsze liczebności` (np. elektryki i hybrydy), ale jednocześnie bardzo wysokie kwartyle, co przekłada się na „drogi” profil tych ofert w całym środkowym zakresie rozkładu (Q1–Q3). W efekcie `paliwo jest jedną z cech, która najsilniej segmentuje ceny`: od najtańszych aut LPG przez benzynę/diesla po wyraźnie droższe hybrydy i elektryki, szczególnie w Mercedes-Benz.
 
-### Hipoteza H9 (`Kolor a cena – premium psychologia`) 
+### 3.2.9 Hipoteza H9 (`Kolor a cena – premium psychologia`) 
 Weryfikacja: boxplot `Price` \~ `Colour` \* `Vehicle_brand`, ANOVA z TukeyHSD post-hoc.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
@@ -1274,7 +1276,7 @@ Kolory „popularne” (`czarny, szary`) zwykle plasują się `w środku rozkła
 
 Warto też zwrócić uwagę na to, że `rozkłady cen dla części kolorów mają szeroką górę` (wysokie Q3), co widać szczególnie dla białego i czerwonego w Mercedesie (Q3 odpowiednio ok. 154979 i 169900 PLN) oraz dla białego w BMW (Q3 ok. 135900 PLN). Całościowo `kolor może różnicować ceny`, ale `nie jest to „prosty” wzorzec` — w tej próbce najwyżej wyceniane są wybrane barwy (zwłaszcza biały i czerwony), podczas gdy srebrny i część mniej typowych kolorów częściej pojawiają się w niższych segmentach cenowych.
 
-### Hipoteza H10 (`Trwałość marki – cena/km`) 
+### 3.2.10 Hipoteza H10 (`Trwałość marki – cena/km`) 
 Weryfikacja: cena_per_km \<- `Price` / `Mileage_km`, boxplot po grupach `Production_year` + `Brand`, t-test.
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
@@ -1380,7 +1382,7 @@ Porównując marki w tej samej grupie rocznika, Mercedes-Benz jest droższy „n
 
 `Widać też silną prawostronną skośność „ceny/km”` (szczególnie w grupach „Do 2000” i „Po 2010”), gdzie mediany są relatywnie niskie, ale średnie są wielokrotnie wyższe, co wynika z pojedynczych przypadków ekstremalnie wysokiej ceny/km (np. bardzo mały przebieg przy wysokiej cenie). Dlatego w tej hipotezie najbardziej miarodajne do porównań są `mediana i kwartyle`, które `stabilnie pokazują wzrost ceny/km wraz z nowszym rokiem produkcji` oraz `przewagę Mercedesa w autach po 2010`.
 
-### Hipoteza H11 (`Cena a moc i lokalizacja – BMW vs Mercedes (województwa`) - kilka map
+### 3.2.11 Hipoteza H11 (`Cena a moc i lokalizacja – BMW vs Mercedes (województwa`) - kilka map
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # Pakiety --------------------------------------------------
 library(ggplot2)
@@ -1738,9 +1740,9 @@ ggplot(
 
 `Udział aut o mocy powyżej 200 KM` domyka ten obraz: `różnice między województwami są widoczne i spójne kierunkowo dla obu marek`. Najwyższe udziały występują w podlaskim (BMW ok. 50%, Mercedes-Benz ok. 46%), a najniższe odpowiednio w lubuskim (BMW ok. 31%) i opolskim (Mercedes-Benz ok. 30%), co pokazuje, że „mocny” segment rynku ma wyraźną koncentrację regionalną.
 
-# Analiza opisowa
+# 4. Analiza opisowa
 
-## Wykres korelacji
+## 4.1 Wykres korelacji
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 library(dplyr)
@@ -1773,9 +1775,9 @@ corrplot(
 
 Analiza korelacji dostarczyła informacji o zależnościach między zmiennymi numerycznymi w zbiorze danych dotyczących samochodów używanych. `Najbardziej skorelowane` ze sobą są zmienne `Displacement_cm3` oraz `Power_HP` (korelacja = 0.82 - dość silna). `Umiarkowaną korelacją` charakteryzują się zmienne `Price` i `Power_HP` (korelacja = 0.64). `Słabaszą`, ale wartą uwagi zależnością charakteryzują się zmienne `Price` i `Production_year` oraz `Production_year` i `Doors_number`.
 
-# Wnioskowanie statystyczne
+# 5. Wnioskowanie statystyczne
 
-## Test ANCOVA
+## 5.1 Test ANCOVA
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 library(dplyr)
@@ -1821,7 +1823,7 @@ ggstatsplot::ggbetweenstats(
 
 Wyniki ANCOVA dla hipotezy H1 pokazują, że marka pojazdu (`Vehicle_brand`) ma istotny wpływ na cenę (`Price`) po kontrolowaniu przebiegu (`Mileage_km`) i roku produkcji (`Production_year`). Wartość p dla Vehicle_brand jest mniejsza niż 0.05, co pozwala odrzucić hipotezę zerową o braku różnic cen między markami po uwzględnieniu tych czynników kontrolnych. Oznacza to, że `nawet po uwzględnieniu wpływu przebiegu i roku produkcji, marka samochodu pozostaje istotnym czynnikiem różnicującym ceny` samochodów używanych.
 
-## ANOVA Price ~ Fuel_type + Transmission
+## 5.2 ANOVA Price ~ Fuel_type + Transmission
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # H₀₁: brak wpływu Fuel_type na Price
@@ -1875,7 +1877,7 @@ median_table_i %>%
 ```
 Na podstawie wyników analizy ANOVA można stwierdzić, że zarówno typ paliwa (`Fuel_type`), jak i skrzynia biegów (`Transmission`) mają `istotny wpływ` na cenę samochodów używanych (p < 0.05). Ponadto, `interakcja między tymi dwoma czynnikami` również jest `istotna statystycznie` (p < 0.05). Odrzucamy hipotezy zerowe i przyjmujemy hipotezę alternatywną, co oznacza, że `ceny używanych samochodów różnią się istotnie w zależności od typu paliwa i skrzyni biegów`. Boxplot wizualizuje te różnice, pokazując zróżnicowanie cen dla różnych kombinacji typu paliwa i skrzyni biegów. Tabela z medianami cen dodatkowo ilustruje, które kombinacje są związane z wyższymi lub niższymi medianami cen samochodów używanych.
 
-## Test ANOVA / Kruskal–Wallis Price ~ Fuel_type
+## 5.3 Test ANOVA / Kruskal–Wallis Price ~ Fuel_type
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # H0: Średnia (lub mediana) ceny samochodów jest taka sama dla różnych typów paliwa
@@ -1929,12 +1931,12 @@ median_table_h %>%
 
 Na podstawie testu Kruskala-Wallisa można stwierdzić, że `istnieje istotna różnica w medianach cen samochodów używanych w zależności od typu paliwa` (p < 0.05). Odrzucamy hipotezę zerową i przyjmujemy hipotezę alternatywną, co oznacza, że ceny samochodów różnią się istotnie statystycznie w zależności od rodzaju paliwa. Boxplot wizualizuje te różnice, pokazując zróżnicowanie cen dla różnych typów paliwa. Tabela z medianami cen dodatkowo ilustruje, które typy paliwa są związane z wyższymi lub niższymi medianami cen samochodów używanych.
 
-# Podsumowanie
-## Cel Badawczy
+# 6. Podsumowanie
+## 6.1 Cel Badawczy
 Projekt stanowi kompleksową analizę porównawczą cen i wartości samochodów marek BMW i Mercedes-Benz na polskim rynku wtórnym. Badanie opiera się na zbiorze danych z platformy Kaggle zawierającym ogłoszenia sprzedaży używanych samochodów w Polsce. Autorzy (Paweł Cyrocki, Damian Skinder, Patryk Siuda) zastosowali metodykę opracowaną w języku R z zamiarem identyfikacji kluczowych czynników wpływających na wycenę pojazdów premium.
 
 
-## Kluczowe Hipotezy i Wyniki
+## 6.2 Kluczowe Hipotezy i Wyniki
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 hipotezy_tabela <- tribble(
@@ -1985,11 +1987,11 @@ hipotezy_tabela %>%
 )
 
 ```
-## Główne Ustalenia
-### Ceny i Rozkłady
+## 6.3 Główne Ustalenia
+### 6.3.1 Ceny i Rozkłady
 Mediana cen aut używanych jest zbliżona w obu markach (BMW: 51 800 PLN; Mercedes-Benz: 52 500 PLN), jednak Mercedes ma wyżej umiejscowioną górną część rozkładu (Q3: 120 650 PLN vs 99 000 PLN w BMW). Średnie ceny znacznie się różnią (BMW: 78 490 PLN; Mercedes: 91 645 PLN), co wynika z obecności droższych outlierów.
 
-### Czynniki Cenowe
+### 6.3.2 Czynniki Cenowe
 Najsilniej ceny różnicują:
 
 Rok produkcji i przebieg (negatywna korelacja z przebiegiem)
@@ -2000,10 +2002,10 @@ Typ napędu (4×4 najdroższy)
 
 Historia właściciela (pierwszy właściciel daje znaczną premię)
 
-### Różnice Między Markami
+### 6.3.3 Różnice Między Markami
 Mercedes-Benz wykazuje wyższą premię za auta ekologiczne (elektryki: mediana 336 450 PLN vs niska reprezentacja w BMW). W segmencie klasycznych paliw (benzyna/diesel) różnice są mniejsze, jednak Mercedes utrzymuje wyższe kwartyle górne.
 
-### Wnioskowanie Statystyczne
+### 6.3.4 Wnioskowanie Statystyczne
 Test ANCOVA potwierdził istotność marki na cenę po kontrolowaniu przebiegu i roku (p < 0.05)
 
 Test Kruskala-Wallisa wykazał, że typ paliwa istotnie wpływa na ceny (p < 0.05)
@@ -2013,7 +2015,7 @@ Interakcja między paliwem a skrzynią biegów również istotna statystycznie
 Analiza Przestrzenna
 Ceny i moc silników wykazują wyraźne zróżnicowanie regionalne. Województwa takie jak podlaskie charakteryzują się wyższym udziałem aut o mocy >200 KM, co wskazuje na heterogeniczność struktury ofert w kraju.
 
-## Wkład Projektu
+## 6.4 Wkład Projektu
 Projekt stanowi praktyczną aplikację technik analitycznych do rzeczywistego problemu rynku wtórnego. Wyniki mogą być użyteczne dla:
 
 Dealerów i sprzedawców (wycena pojazdów)
